@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
+import { DashboardFilterProvider } from './context/DashboardFilterContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { RoleCopilotWidget } from './components/RoleCopilotWidget';
@@ -19,6 +20,7 @@ import { AiPrecheckPage } from './pages/AiPrecheckPage';
 import { ProjectsPage } from './pages/ProjectsPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { MpsPage } from './pages/MpsPage';
+import { ExploreMpsPage } from './pages/ExploreMpsPage';
 import { MpDetailPage } from './pages/MpDetailPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { ConstituencyMapPage } from './pages/ConstituencyMapPage';
@@ -116,14 +118,19 @@ export default function App() {
       return <ProjectDetailPage projectId={id} onNavigate={navigate} />;
     }
 
-    if (currentPath === '/mps' || currentPath.startsWith('/mps?')) {
+    if (
+      currentPath === '/mps' ||
+      currentPath.startsWith('/mps?') ||
+      currentPath === '/explore-mps' ||
+      currentPath.startsWith('/explore-mps?')
+    ) {
       const q = currentPath.includes('?')
         ? new URLSearchParams(currentPath.split('?')[1]).get('q') ||
           new URLSearchParams(currentPath.split('?')[1]).get('query') ||
           new URLSearchParams(currentPath.split('?')[1]).get('search') ||
           ''
         : '';
-      return <MpsPage initialQuery={q} onNavigate={navigate} />;
+      return <ExploreMpsPage initialQuery={q} onNavigate={navigate} />;
     }
 
     if (currentPath.startsWith('/search')) {
@@ -243,32 +250,34 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-amber-200 selection:text-slate-900">
-        {/* Navigation Bar */}
-        <Navbar
-          currentPath={currentPath}
-          onNavigate={navigate}
-          onOpenSearch={() => setIsSearchOpen(true)}
-        />
+      <DashboardFilterProvider>
+        <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-amber-200 selection:text-slate-900">
+          {/* Navigation Bar */}
+          <Navbar
+            currentPath={currentPath}
+            onNavigate={navigate}
+            onOpenSearch={() => setIsSearchOpen(true)}
+          />
 
-        {/* Active Page View */}
-        <main className="flex-1">
-          {renderCurrentView()}
-        </main>
+          {/* Active Page View */}
+          <main className="flex-1">
+            {renderCurrentView()}
+          </main>
 
-        {/* Global Footer */}
-        <Footer onNavigate={navigate} />
+          {/* Global Footer */}
+          <Footer onNavigate={navigate} />
 
-        {/* Role Copilot AI Floating Assistant */}
-        <RoleCopilotWidget onNavigate={navigate} />
+          {/* Role Copilot AI Floating Assistant */}
+          <RoleCopilotWidget onNavigate={navigate} />
 
-        {/* Global Search Dialog Modal */}
-        <GlobalSearchModal
-          isOpen={isSearchOpen}
-          onClose={() => setIsSearchOpen(false)}
-          onNavigate={navigate}
-        />
-      </div>
+          {/* Global Search Dialog Modal */}
+          <GlobalSearchModal
+            isOpen={isSearchOpen}
+            onClose={() => setIsSearchOpen(false)}
+            onNavigate={navigate}
+          />
+        </div>
+      </DashboardFilterProvider>
     </AuthProvider>
   );
 }

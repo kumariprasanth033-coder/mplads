@@ -26,6 +26,15 @@ export interface UnifiedSearchResultItem {
 
 export interface UnifiedSearchResponse {
   query: string;
+  understoodQuery?: string;
+  filtersDetected?: Record<string, string>;
+  aiExplanation?: string;
+  actions?: {
+    viewAllPath: string;
+    viewOnMapPath: string;
+    viewAnalyticsPath: string;
+    askDrishtiPrompt: string;
+  };
   totalMatches: number;
   counts: {
     all: number;
@@ -33,6 +42,7 @@ export interface UnifiedSearchResponse {
     constituencies: number;
     projects: number;
     locations: number;
+    riskAlerts?: number;
   };
   results: {
     all: UnifiedSearchResultItem[];
@@ -40,6 +50,7 @@ export interface UnifiedSearchResponse {
     constituencies: UnifiedSearchResultItem[];
     projects: UnifiedSearchResultItem[];
     locations: UnifiedSearchResultItem[];
+    riskAlerts?: UnifiedSearchResultItem[];
   };
   freshness: {
     status: 'LIVE' | 'CACHED' | 'DEMO';
@@ -209,8 +220,36 @@ export class UnifiedSearchService {
     // Combine All
     const allItems = [...mpItems, ...constituencyItems, ...projectItems, ...locationItems];
 
+    // Build intelligent query understanding
+    const filtersDetected: Record<string, string> = {};
+    if (q.includes('delayed') || q.includes('late')) filtersDetected['Status'] = 'Delayed Works';
+    if (q.includes('completed')) filtersDetected['Status'] = 'Completed Works';
+    if (q.includes('in progress')) filtersDetected['Status'] = 'In Progress Works';
+    if (q.includes('water')) filtersDetected['Sector'] = 'Drinking Water';
+    if (q.includes('road')) filtersDetected['Sector'] = 'Road Construction';
+    if (q.includes('high risk') || q.includes('risk')) filtersDetected['Risk'] = 'High Risk / Attention';
+
+    let understoodQuery = `Search for "${query}"`;
+    if (filtersDetected['Status']) {
+      understoodQuery = `${filtersDetected['Status']}`;
+      if (filtersDetected['Sector']) understoodQuery += ` in ${filtersDetected['Sector']}`;
+    }
+
+    const aiExplanation = allItems.length > 0
+      ? `Found ${allItems.length} verified records across projects, MPs, and administrative units.`
+      : `No direct records found for "${query}". Try broad geographic or status keywords.`;
+
     return {
       query,
+      understoodQuery,
+      filtersDetected,
+      aiExplanation,
+      actions: {
+        viewAllPath: `/projects?search=${encodeURIComponent(query)}`,
+        viewOnMapPath: `/?search=${encodeURIComponent(query)}`,
+        viewAnalyticsPath: `/?search=${encodeURIComponent(query)}`,
+        askDrishtiPrompt: `Analyze search results for "${query}". Highlight key project and fund observations.`,
+      },
       totalMatches: allItems.length,
       counts: {
         all: allItems.length,

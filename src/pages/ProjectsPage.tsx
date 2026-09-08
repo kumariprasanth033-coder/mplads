@@ -14,9 +14,12 @@ import {
   CheckCircle2,
   Clock,
   AlertTriangle,
+  X,
 } from 'lucide-react';
 import { api, ProjectSearchParams } from '../services/api';
 import { ProjectRecord } from '../types';
+import { ALL_INDIAN_STATES, ALL_INDIA_JURISDICTIONS } from '../data/indiaStates';
+import { OFFICIAL_INDIAN_DISTRICTS } from '../../server/data/indiaDistrictsData';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -27,21 +30,61 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Filter states
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('');
   const [sector, setSector] = useState('');
   const [state, setState] = useState('');
+  const [district, setDistrict] = useState('');
+  const [risk, setRisk] = useState('');
   const [sortBy, setSortBy] = useState<'latest' | 'amount' | 'progress' | 'risk'>('latest');
   const [page, setPage] = useState(1);
+
+  // Sync with URL query params on mount or URL change
+  useEffect(() => {
+    const parseUrlParams = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlStatus = urlParams.get('status');
+        const urlState = urlParams.get('state');
+        const urlDistrict = urlParams.get('district');
+        const urlSector = urlParams.get('sector') || urlParams.get('category');
+        const urlRisk = urlParams.get('risk') || urlParams.get('riskLevel');
+        const urlQuery = urlParams.get('q') || urlParams.get('query');
+
+        if (urlStatus && urlStatus !== 'All') setStatus(urlStatus);
+        if (urlState) setState(urlState);
+        if (urlDistrict) setDistrict(urlDistrict);
+        if (urlSector && urlSector !== 'All') setSector(urlSector);
+        if (urlRisk && urlRisk !== 'All') setRisk(urlRisk);
+        if (urlQuery) setQuery(urlQuery);
+      } catch (err) {
+        console.error('URL parse error:', err);
+      }
+    };
+
+    parseUrlParams();
+    window.addEventListener('popstate', parseUrlParams);
+    return () => window.removeEventListener('popstate', parseUrlParams);
+  }, []);
+
+  const availableDistricts = React.useMemo(() => {
+    if (!state) return [];
+    return OFFICIAL_INDIAN_DISTRICTS.filter(
+      d => d.stateName.toLowerCase() === state.toLowerCase()
+    ).map(d => d.districtName);
+  }, [state]);
 
   const loadProjects = async () => {
     setIsLoading(true);
     try {
       const res = await api.getProjects({
         query,
-        status,
-        sector,
+        status: status === 'All' ? '' : status,
+        sector: sector === 'All' ? '' : sector,
         state,
+        district,
+        risk: risk === 'All' ? '' : risk,
         sortBy,
         page,
         limit: 12,
@@ -57,7 +100,7 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
 
   useEffect(() => {
     loadProjects();
-  }, [status, sector, state, sortBy, page]);
+  }, [status, sector, state, district, risk, sortBy, page]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +157,41 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 text-xs">
+              {/* State Dropdown */}
+              <select
+                id="filter-state-select"
+                value={state}
+                onChange={e => {
+                  setState(e.target.value);
+                  setDistrict('');
+                  setPage(1);
+                }}
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden text-slate-700 font-medium max-w-[140px]"
+              >
+                <option value="">All States</option>
+                {ALL_INDIA_JURISDICTIONS.map(s => (
+                  <option key={s.name} value={s.name}>{s.name}</option>
+                ))}
+              </select>
+
+              {/* District Dropdown */}
+              <select
+                id="filter-district-select"
+                value={district}
+                onChange={e => {
+                  setDistrict(e.target.value);
+                  setPage(1);
+                }}
+                disabled={!state}
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden text-slate-700 font-medium disabled:bg-slate-100 disabled:text-slate-400 max-w-[140px]"
+              >
+                <option value="">{state ? 'All Districts' : 'District (Pick State)'}</option>
+                {availableDistricts.map(d => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+
+              {/* Sector Dropdown */}
               <select
                 value={sector}
                 onChange={e => {
@@ -132,6 +210,7 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
                 <option value="Community Hall">Community Hall</option>
               </select>
 
+              {/* Status Dropdown */}
               <select
                 value={status}
                 onChange={e => {
@@ -148,6 +227,22 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
                 <option value="Proposed">Proposed</option>
               </select>
 
+              {/* Risk Level Dropdown */}
+              <select
+                value={risk}
+                onChange={e => {
+                  setRisk(e.target.value);
+                  setPage(1);
+                }}
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden text-slate-700 font-medium"
+              >
+                <option value="">All Risk Levels</option>
+                <option value="HIGH">High Risk</option>
+                <option value="MEDIUM">Medium Risk</option>
+                <option value="LOW">Low Risk</option>
+              </select>
+
+              {/* Sort Dropdown */}
               <select
                 value={sortBy}
                 onChange={e => {
@@ -169,7 +264,7 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
                 Apply
               </button>
 
-              {(query || sector || status || state) && (
+              {(query || sector || status || state || district || risk) && (
                 <button
                   type="button"
                   onClick={() => {
@@ -177,6 +272,8 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
                     setSector('');
                     setStatus('');
                     setState('');
+                    setDistrict('');
+                    setRisk('');
                     setPage(1);
                   }}
                   className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold transition-colors cursor-pointer text-xs"
@@ -186,6 +283,61 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
               )}
             </div>
           </form>
+
+          {/* Active Filter Chips Banner */}
+          {(state || district || status || sector || risk || query) && (
+            <div className="mt-3 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-slate-400 font-semibold">Active Criteria:</span>
+              {state && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
+                  <span>State: {state}</span>
+                  <button type="button" onClick={() => { setState(''); setDistrict(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {district && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-purple-50 text-purple-800 border border-purple-200 font-semibold">
+                  <span>District: {district}</span>
+                  <button type="button" onClick={() => { setDistrict(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {status && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
+                  <span>Status: {status}</span>
+                  <button type="button" onClick={() => { setStatus(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {sector && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold">
+                  <span>Sector: {sector}</span>
+                  <button type="button" onClick={() => { setSector(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {risk && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-semibold">
+                  <span>Risk: {risk}</span>
+                  <button type="button" onClick={() => { setRisk(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {query && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-100 text-slate-800 border border-slate-200 font-semibold">
+                  <span>Query: &ldquo;{query}&rdquo;</span>
+                  <button type="button" onClick={() => { setQuery(''); setPage(1); }} className="hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Projects Grid */}

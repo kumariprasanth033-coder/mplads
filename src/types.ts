@@ -76,6 +76,50 @@ export interface MPCivicInfo {
   apiKeyConfigured?: boolean;
 }
 
+export interface MPProfile {
+  id: string;
+  source: string;
+  sourceMemberId: string;
+  name: string;
+  normalizedName: string;
+  party: string;
+  house: 'Lok Sabha' | 'Rajya Sabha';
+  constituency: string;
+  constituencyCode?: string;
+  state: string;
+  stateCode?: string;
+  district?: string;
+  membershipStatus: 'Sitting' | 'Former';
+  lokSabhaTerms?: string;
+  officialProfileUrl: string;
+
+  photoUrl?: string;
+  officialPhotoUrl?: string;
+  wikimediaUrl?: string;
+  photoSource?: string;
+  photoVerified?: boolean;
+  photoConfidence?: number;
+
+  wikidataId?: string;
+  wikipediaUrl?: string;
+  wikimediaMediaUrl?: string;
+
+  syncedAt?: string;
+  lastVerifiedAt?: string;
+  dataStatus?: 'LIVE' | 'CACHED' | 'DEMO' | 'UNAVAILABLE';
+
+  worksCount?: number;
+  sanctionedCr?: number;
+  utilizedCr?: number;
+  utilizationPercentage?: number;
+  hasFinancialData?: boolean;
+  isFinancialDemo?: boolean;
+
+  email?: string;
+  phone?: string;
+  contactOffice?: string;
+}
+
 export interface MPRecord {
   id: string;
   name: string;
@@ -92,6 +136,7 @@ export interface MPRecord {
   photo?: string;
   photoUrl?: string;
   officialPhotoUrl?: string;
+  wikimediaUrl?: string;
   officialProfileUrl: string;
   photoSource?: string;
   photoVerified?: boolean;
@@ -107,6 +152,17 @@ export interface MPRecord {
   wikidataId?: string;
   wikidata?: MPWikidataInfo;
   civicInfo?: MPCivicInfo;
+
+  // Convenience and compatibility fields for UI
+  sanctionedAmountCr?: number;
+  utilizedAmountCr?: number;
+  totalWorks?: number;
+  completedWorks?: number;
+  inProgressWorks?: number;
+  delayedWorks?: number;
+  utilizationRate?: number;
+  hasFinancialData?: boolean;
+
   stats?: {
     totalProjects: number;
     sanctionedAmountLakhs: number;
@@ -355,3 +411,47 @@ export interface ActionQueueItem {
   aiPrecheckStatus?: PrecheckRecommendation;
   flagReason?: string;
 }
+
+export interface MPLADSSearchIntent {
+  query: string;
+  intent: 'project_search' | 'mp_search' | 'location_search' | 'risk_search' | 'financial_search' | 'general_search';
+  entityType?: 'project' | 'mp' | 'state' | 'district' | 'city' | 'constituency' | 'implementing_agency' | 'grievance' | 'report' | 'financial_data' | 'alert' | 'risk_case' | 'all';
+  state?: string;
+  district?: string;
+  city?: string;
+  constituency?: string;
+  mpId?: string;
+  mpName?: string;
+  house?: 'Lok Sabha' | 'Rajya Sabha' | 'All';
+  party?: string;
+  projectStatus?: 'Delayed' | 'Completed' | 'In Progress' | 'Sanctioned' | 'Proposed' | 'All';
+  workType?: string;
+  riskLevel?: 'HIGH' | 'MEDIUM' | 'LOW' | 'ALL';
+  financialYear?: string;
+  utilizationRange?: { min?: number; max?: number };
+  progressRange?: { min?: number; max?: number };
+  dateRange?: { start?: string; end?: string };
+  sortBy?: 'latest' | 'amount' | 'progress' | 'risk' | 'utilization';
+  understoodQuery?: string;
+  detectedFilters?: Record<string, string>;
+  explanation?: string;
+}
+
+export interface DashboardGlobalFilters {
+  stateId?: string;
+  state: string;
+  districtId?: string;
+  district: string;
+  constituencyId?: string;
+  constituency: string;
+  house: 'All' | 'Lok Sabha' | 'Rajya Sabha';
+  mpId: string;
+  projectStatus: string;
+  workType: string;
+  riskLevel: 'ALL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  financialYear: string;
+  dateRange?: { start?: string; end?: string };
+  searchQuery: string;
+  visualization?: string;
+}
+

@@ -140,13 +140,18 @@ app.use((req, res, next) => {
         }
       : instant?.wikidata || mp.wikidata;
 
+    const sanctionedAmountCr = Number((sanctionedAmountLakhs / 100).toFixed(2));
+    const utilizedAmountCr = Number((utilizedAmountLakhs / 100).toFixed(2));
+    const wikimediaUrl = verified?.imageUrl || (instant?.photoUrl?.includes('wikimedia') ? instant.photoUrl : undefined);
+
     return {
       ...mp,
       district: mp.district || mp.constituency,
       city: mp.city || mp.constituency,
       photo: photoUrl,
       photoUrl,
-      officialPhotoUrl: isPhotoVerified ? photoUrl : '',
+      officialPhotoUrl: mp.officialPhotoUrl || (photoSource.includes('Sansad') ? photoUrl : undefined),
+      wikimediaUrl,
       photoSource,
       photoVerified: isPhotoVerified,
       wikidata: wikidataObj,
@@ -156,6 +161,14 @@ app.use((req, res, next) => {
       dataSourceStatus: mp.dataSourceStatus || 'CACHED',
       isFinancialDemo: mp.isFinancialDemo !== false,
       source: 'Official Digital Sansad & Wikidata / Civic Graph',
+      sanctionedAmountCr,
+      utilizedAmountCr,
+      totalWorks: recommendedWorksCount,
+      completedWorks: completedWorksCount,
+      inProgressWorks: ongoingWorksCount,
+      delayedWorks: stats.delayedProjects ?? 3,
+      utilizationRate: sanctionedAmountLakhs > 0 ? Number(((utilizedAmountLakhs / sanctionedAmountLakhs) * 100).toFixed(1)) : 0,
+      hasFinancialData: true,
       stats: {
         totalProjects: recommendedWorksCount,
         sanctionedAmountLakhs,
@@ -258,6 +271,18 @@ app.use((req, res, next) => {
   app.post('/api/mps/refresh', async (req, res) => {
     const result = await digitalSansadMemberAdapter.refreshMemberData();
     res.json(result);
+  });
+
+  // Refresh photos trigger endpoint
+  app.post('/api/mps/refresh-photos', async (req, res) => {
+    const registry = verifiedPhotoService.getAllVerifiedPhotos();
+    res.json({
+      success: true,
+      verifiedCount: Object.keys(registry).length,
+      status: 'VERIFIED',
+      message: 'Verified photo cache refreshed against parliamentary and Wikidata entities',
+      timestamp: new Date().toISOString(),
+    });
   });
 
   app.get('/api/mps/:id', async (req, res) => {

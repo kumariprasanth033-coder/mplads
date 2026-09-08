@@ -51,7 +51,7 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
   const navLinks = [
     { label: 'Home', path: '/' },
     { label: 'Projects', path: '/projects' },
-    { label: 'Find MP', path: '/mps' },
+    { label: 'Explore MPs', path: '/explore-mps' },
     { label: 'Constituency Map', path: '/map' },
     { label: 'AI Pre-Check', path: '/ai/precheck', highlight: true },
     { label: 'Grievances', path: '/complaints' },

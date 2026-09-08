@@ -65,20 +65,61 @@ export class ProjectDataAdapterService {
 
     if (filters.query) {
       const q = filters.query.toLowerCase().trim();
-      list = list.filter(p =>
-        p.title.toLowerCase().includes(q) ||
-        p.code.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.district.toLowerCase().includes(q) ||
-        (p.village && p.village.toLowerCase().includes(q)) ||
-        (p.block && p.block.toLowerCase().includes(q)) ||
-        p.constituency.toLowerCase().includes(q) ||
-        p.state.toLowerCase().includes(q) ||
-        p.mpName.toLowerCase().includes(q) ||
-        p.category.toLowerCase().includes(q) ||
-        (p.department && p.department.toLowerCase().includes(q)) ||
-        p.status.toLowerCase().includes(q)
-      );
+      const isDelayedQuery = q.includes('delayed') || q.includes('late') || q.includes('stalled') || q.includes('behind schedule');
+      const isCompletedQuery = q.includes('completed') || q.includes('finished') || q.includes('handed over');
+      const isInProgressQuery = q.includes('unfinished') || q.includes('in progress') || q.includes('ongoing');
+      const isSanctionedQuery = q.includes('sanctioned') || q.includes('approved');
+      const isHighRiskQuery = q.includes('high risk') || q.includes('risky') || q.includes('overrun') || q.includes('attention') || q.includes('anomaly');
+      const isWaterQuery = q.includes('water') || q.includes('drinking water') || q.includes('ro plant');
+      const isRoadQuery = q.includes('road') || q.includes('highway') || q.includes('bridge');
+
+      // Significant words excluding common filler words
+      const stopWords = new Set(['show', 'projects', 'project', 'works', 'work', 'that', 'are', 'is', 'in', 'with', 'the', 'of', 'and', 'for', 'all', 'to', 'near']);
+      const tokens = q.split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+
+      list = list.filter(p => {
+        // Direct string inclusion
+        const titleMatch = p.title.toLowerCase().includes(q) ||
+          p.code.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.district.toLowerCase().includes(q) ||
+          (p.village && p.village.toLowerCase().includes(q)) ||
+          (p.block && p.block.toLowerCase().includes(q)) ||
+          p.constituency.toLowerCase().includes(q) ||
+          p.state.toLowerCase().includes(q) ||
+          p.mpName.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          (p.department && p.department.toLowerCase().includes(q)) ||
+          p.status.toLowerCase().includes(q);
+
+        if (titleMatch) return true;
+
+        // Semantic status matching
+        if (isDelayedQuery && (p.status === 'Delayed' || p.status.toLowerCase().includes('delayed'))) return true;
+        if (isCompletedQuery && p.status === 'Completed') return true;
+        if (isInProgressQuery && (p.status === 'In Progress' || p.status === 'Near Completion')) return true;
+        if (isSanctionedQuery && (p.status === 'Sanctioned' || p.status === 'Proposed')) return true;
+        if (isHighRiskQuery && (p.riskScore >= 50 || p.riskCategory === 'HIGH' || p.status === 'Delayed')) return true;
+
+        // Semantic sector matching
+        if (isWaterQuery && p.category.toLowerCase().includes('water')) return true;
+        if (isRoadQuery && p.category.toLowerCase().includes('road')) return true;
+
+        // Token match: if multiple tokens, check if state or district or category matches
+        if (tokens.length > 0) {
+          const matchedAnyToken = tokens.some(tok =>
+            p.state.toLowerCase().includes(tok) ||
+            p.district.toLowerCase().includes(tok) ||
+            p.constituency.toLowerCase().includes(tok) ||
+            p.category.toLowerCase().includes(tok) ||
+            p.mpName.toLowerCase().includes(tok) ||
+            p.title.toLowerCase().includes(tok)
+          );
+          if (matchedAnyToken) return true;
+        }
+
+        return false;
+      });
     }
 
     if (filters.state) {

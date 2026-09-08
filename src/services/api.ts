@@ -18,6 +18,8 @@ import {
   initialUsers,
   initialMps,
 } from '../../server/mockData';
+import { searchIntentEngine } from './searchIntentEngine';
+
 
 export interface ProjectSearchParams {
   query?: string;
@@ -28,6 +30,7 @@ export interface ProjectSearchParams {
   sector?: string;
   year?: string;
   mpId?: string;
+  risk?: string;
   sortBy?: 'latest' | 'amount' | 'progress' | 'risk' | 'completion';
   page?: number;
   limit?: number;
@@ -179,6 +182,14 @@ export const api = {
     }
     if (params.mpId) {
       filtered = filtered.filter(p => p.mpId === params.mpId);
+    }
+    if (params.risk) {
+      const r = params.risk.toUpperCase();
+      if (r === 'HIGH') {
+        filtered = filtered.filter(p => p.riskCategory === 'HIGH' || p.riskScore >= 50 || p.status === 'Delayed');
+      } else {
+        filtered = filtered.filter(p => p.riskCategory === r);
+      }
     }
 
     // Sorting
@@ -473,61 +484,15 @@ export const api = {
   },
 
   async search(query: string) {
+    // 1. Try server semantic search first
     const serverData = await tryFetchJson<any>(`/api/search?q=${encodeURIComponent(query)}`);
-    if (serverData && serverData.results) {
+    if (serverData && serverData.results && (serverData.totalMatches > 0 || (serverData.counts && serverData.counts.all > 0))) {
       return serverData;
     }
 
-    const q = query.toLowerCase().trim();
-    const matchedMps = initialMps
-      .filter(
-        m =>
-          m.name.toLowerCase().includes(q) ||
-          m.constituency.toLowerCase().includes(q) ||
-          m.state.toLowerCase().includes(q) ||
-          m.party.toLowerCase().includes(q)
-      )
-      .slice(0, 8);
-
-    const matchedProjects = clientProjects
-      .filter(
-        p =>
-          p.title.toLowerCase().includes(q) ||
-          p.code.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.district.toLowerCase().includes(q) ||
-          p.state.toLowerCase().includes(q)
-      )
-      .slice(0, 8);
-
-    const all = [
-      ...matchedMps.map(m => ({ ...m, resultType: 'mp' })),
-      ...matchedProjects.map(p => ({ ...p, resultType: 'project' })),
-    ];
-
-    return {
-      query,
-      totalMatches: all.length,
-      counts: {
-        all: all.length,
-        mps: matchedMps.length,
-        constituencies: matchedMps.length,
-        projects: matchedProjects.length,
-        locations: matchedMps.length,
-      },
-      results: {
-        all,
-        mps: matchedMps,
-        constituencies: matchedMps,
-        projects: matchedProjects,
-        locations: [],
-      },
-      freshness: {
-        status: 'LIVE' as const,
-        lastUpdated: new Date().toISOString(),
-        source: 'MPLADS Verified Catalog (Client Resilient)',
-      },
-    };
+    // 2. Client-side semantic & NLU query engine (fallback/offline guarantee)
+    const semanticResponse = await searchIntentEngine.executeSearch(query);
+    return semanticResponse;
   },
 
   async getDataFreshness() {

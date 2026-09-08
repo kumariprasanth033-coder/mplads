@@ -19,7 +19,10 @@ import {
 } from 'lucide-react';
 import { api } from '../services/api';
 import { ProjectIntelligenceCoreVisual } from '../components/ProjectIntelligenceCoreVisual';
+import { MasterIntelligenceDashboard } from '../components/dashboard/MasterIntelligenceDashboard';
 import { ProjectRecord } from '../types';
+import { searchIntentEngine } from '../services/searchIntentEngine';
+
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -53,7 +56,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
     loadData();
   }, []);
 
-  // Live autocomplete search
+  // Live semantic autocomplete & intent suggestion
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSuggestions([]);
@@ -64,24 +67,45 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
     const timer = setTimeout(async () => {
       setIsSearching(true);
       try {
+        const smartIntents = searchIntentEngine.getSmartSuggestions(searchQuery.trim());
         const data = await api.search(searchQuery.trim());
-        setSuggestions(data.results.all.slice(0, 6));
+        const directItems = (data?.results?.all || []).slice(0, 4);
+
+        // Merge smart intent suggestions with direct records
+        const combined = [
+          ...smartIntents.map(si => ({
+            id: `intent-${si.text}`,
+            name: si.text,
+            type: si.type || 'Intent',
+            category: si.category,
+            status: 'Semantic Query',
+            isIntentQuery: true,
+            navPath: `/search?q=${encodeURIComponent(si.text)}`,
+          })),
+          ...directItems.map((item: any) => ({
+            ...item,
+            isIntentQuery: false,
+          })),
+        ];
+
+        setSuggestions(combined.slice(0, 7));
         setShowDropdown(true);
       } catch (err) {
         console.error('Autocomplete error:', err);
       } finally {
         setIsSearching(false);
       }
-    }, 180);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const handleSearchSubmit = (e?: React.FormEvent) => {
+  const handleSearchSubmit = (e?: React.FormEvent, customQuery?: string) => {
     if (e) e.preventDefault();
-    if (!searchQuery.trim()) return;
+    const term = (customQuery || searchQuery).trim();
+    if (!term) return;
     setShowDropdown(false);
-    onNavigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    onNavigate(`/search?q=${encodeURIComponent(term)}`);
   };
 
   return (
@@ -296,6 +320,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
               <div className="text-[10px] text-amber-300 mt-0.5">Geotagged Handover</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Central Development Intelligence Layer (SIH Master Dashboard) */}
+      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-slate-100/70 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto">
+          <MasterIntelligenceDashboard onNavigate={onNavigate} />
         </div>
       </section>
 

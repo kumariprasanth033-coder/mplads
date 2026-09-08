@@ -278,6 +278,93 @@ const HIGH_CONFIDENCE_VERIFIED_REGISTRY: Record<
     birthPlace: 'Pune, Maharashtra',
     twitter: 'supriya_sule',
   },
+  'shankar lalwani': {
+    wikidataId: 'Q64009772',
+    commonsFileName: 'Shankar Lalwani 2023.jpg',
+    label: 'Shankar Lalwani',
+    description: 'Member of 18th Lok Sabha from Indore, Madhya Pradesh',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Shankar_Lalwani',
+    birthDate: '1961-10-16',
+    birthPlace: 'Indore, Madhya Pradesh',
+    twitter: 'iShankarLalwani',
+  },
+  'tejasvi surya': {
+    wikidataId: 'Q62451372',
+    commonsFileName: 'Tejasvi Surya.jpg',
+    label: 'Tejasvi Surya',
+    description: 'Member of 18th Lok Sabha from Bangalore South, Karnataka',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Tejasvi_Surya',
+    birthDate: '1990-11-16',
+    birthPlace: 'Bengaluru, Karnataka',
+    twitter: 'Tejasvi_Surya',
+  },
+  'senthilkumar': {
+    wikidataId: 'Q64009232',
+    commonsFileName: 'Dr. S. Senthilkumar in 2024.jpg',
+    label: 'Dr. A. Senthilkumar',
+    description: 'Member of 18th Lok Sabha from Dharmapuri, Tamil Nadu, DMK',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/S._Senthilkumar',
+    birthDate: '1977-06-27',
+    birthPlace: 'Dharmapuri, Tamil Nadu',
+    twitter: 'DrSenthil_MDRD',
+  },
+  'a. senthilkumar': {
+    wikidataId: 'Q64009232',
+    commonsFileName: 'Dr. S. Senthilkumar in 2024.jpg',
+    label: 'Dr. A. Senthilkumar',
+    description: 'Member of 18th Lok Sabha from Dharmapuri, Tamil Nadu, DMK',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/S._Senthilkumar',
+    birthDate: '1977-06-27',
+    birthPlace: 'Dharmapuri, Tamil Nadu',
+    twitter: 'DrSenthil_MDRD',
+  },
+  'dr. a. senthilkumar': {
+    wikidataId: 'Q64009232',
+    commonsFileName: 'Dr. S. Senthilkumar in 2024.jpg',
+    label: 'Dr. A. Senthilkumar',
+    description: 'Member of 18th Lok Sabha from Dharmapuri, Tamil Nadu, DMK',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/S._Senthilkumar',
+    birthDate: '1977-06-27',
+    birthPlace: 'Dharmapuri, Tamil Nadu',
+    twitter: 'DrSenthil_MDRD',
+  },
+  'mallikarjun kharge': {
+    wikidataId: 'Q6744158',
+    commonsFileName: 'Mallikarjun Kharge 2023.jpg',
+    label: 'Mallikarjun Kharge',
+    description: 'Leader of Opposition in Rajya Sabha, Member of Parliament from Karnataka',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Mallikarjun_Kharge',
+    birthDate: '1942-07-21',
+    birthPlace: 'Bidar, Karnataka',
+    twitter: 'kharge',
+  },
+  'thambidurai': {
+    wikidataId: 'Q6713175',
+    commonsFileName: 'Dr. M. Thambidurai.jpg',
+    label: 'Dr. M. Thambidurai',
+    description: 'Member of Rajya Sabha from Tamil Nadu, AIADMK leader and former Deputy Speaker of Lok Sabha',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/M._Thambidurai',
+    birthDate: '1947-03-15',
+    birthPlace: 'Karur, Tamil Nadu',
+  },
+  'm. thambidurai': {
+    wikidataId: 'Q6713175',
+    commonsFileName: 'Dr. M. Thambidurai.jpg',
+    label: 'Dr. M. Thambidurai',
+    description: 'Member of Rajya Sabha from Tamil Nadu, AIADMK leader and former Deputy Speaker of Lok Sabha',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/M._Thambidurai',
+    birthDate: '1947-03-15',
+    birthPlace: 'Karur, Tamil Nadu',
+  },
+  'dr. m. thambidurai': {
+    wikidataId: 'Q6713175',
+    commonsFileName: 'Dr. M. Thambidurai.jpg',
+    label: 'Dr. M. Thambidurai',
+    description: 'Member of Rajya Sabha from Tamil Nadu, AIADMK leader and former Deputy Speaker of Lok Sabha',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/M._Thambidurai',
+    birthDate: '1947-03-15',
+    birthPlace: 'Karur, Tamil Nadu',
+  },
   'asaduddin owaisi': {
     wikidataId: 'Q4803276',
     commonsFileName: 'Asaduddin Owaisi.jpg',
@@ -725,6 +812,13 @@ export class VerifiedPhotoService {
       unavailable,
       failedVerification,
     };
+  }
+
+  /**
+   * Get all registered high-confidence verified photo records
+   */
+  public getAllVerifiedPhotos(): Record<string, any> {
+    return HIGH_CONFIDENCE_VERIFIED_REGISTRY;
   }
 
   /**

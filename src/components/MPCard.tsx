@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   MapPin,
   Building2,
-  ExternalLink,
   ChevronRight,
   ShieldCheck,
-  UserX,
-  Layers,
   Award,
+  ExternalLink,
 } from 'lucide-react';
 import { MPRecord } from '../types';
+import { MPAvatar } from './MPAvatar';
 
 interface MPCardProps {
   mp: MPRecord;
@@ -17,11 +16,6 @@ interface MPCardProps {
 }
 
 export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
-  const [photoError, setPhotoError] = useState(false);
-
-  const photoUrl = mp.officialPhotoUrl || mp.photoUrl || mp.photo;
-  const isVerifiedPhoto = mp.photoVerified && !photoError && Boolean(photoUrl);
-
   const fund = mp.fundUtilization || {
     allocatedAmountLakhs: mp.stats?.entitlementLakhs ?? 500,
     sanctionedAmountLakhs: mp.stats?.sanctionedAmountLakhs ?? 480,
@@ -69,45 +63,15 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
             )}
             <span className="text-[10px] font-mono font-medium text-blue-900 bg-blue-50/70 border border-blue-100/80 px-2 py-0.5 rounded-md flex items-center gap-1">
               <ShieldCheck className="w-3 h-3 text-blue-700" />
-              <span>{mp.photoSource?.includes('Wikidata') ? 'Wikidata Verified' : mp.photoSource?.includes('Civic') ? 'Civic Info' : 'Digital Sansad'}</span>
+              <span>Verified Directory</span>
             </span>
           </div>
         </div>
 
         {/* Member Profile Row */}
         <div className="flex items-start gap-3.5">
-          {/* Photo or Verified Placeholder */}
-          <div className="shrink-0 relative">
-            {isVerifiedPhoto ? (
-              <div className="relative">
-                <img
-                  src={photoUrl}
-                  alt={mp.name}
-                  referrerPolicy="no-referrer"
-                  onError={() => setPhotoError(true)}
-                  className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-200 group-hover:scale-105 transition-transform bg-slate-100 shadow-xs"
-                />
-                {mp.photoSource?.includes('Wikidata') && (
-                  <span
-                    title="Verified image from Wikidata / Wikimedia Commons"
-                    className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 text-[8px] font-bold ring-2 ring-white"
-                  >
-                    <ShieldCheck className="w-3 h-3" />
-                  </span>
-                )}
-              </div>
-            ) : (
-              <div
-                title="Official photo unavailable"
-                className="w-16 h-16 rounded-2xl bg-slate-100 border-2 border-slate-200 flex flex-col items-center justify-center text-center p-1 group-hover:bg-slate-200/70 transition-colors"
-              >
-                <Building2 className="w-5 h-5 text-slate-400 mb-0.5" />
-                <span className="text-[8px] font-medium text-slate-500 leading-tight">
-                  Official photo unavailable
-                </span>
-              </div>
-            )}
-          </div>
+          {/* Resilient Identity-Validated Avatar */}
+          <MPAvatar mp={mp} size="md" />
 
           {/* Member Name and Constituency */}
           <div className="min-w-0 flex-1">
