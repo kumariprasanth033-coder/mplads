@@ -1,0 +1,6 @@
+{
+  "name": "MPLADS Smart & AI Powered Portal",
+  "description": "Transparent, Intelligent, Accountable and Citizen-Centric AI-assisted governance layer for the MPLADS workflow.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
