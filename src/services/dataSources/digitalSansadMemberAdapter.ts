@@ -1,4 +1,5 @@
 import { MPRecord } from '../../types';
+import { initialMps, initialProjects } from '../../../server/mockData';
 
 export interface MemberSearchFilters {
   state?: string;
@@ -46,24 +47,69 @@ export const digitalSansadMemberAdapter = {
       if (filters.limit) params.append('limit', String(filters.limit));
 
       const res = await fetch(`/api/mps?${params.toString()}`);
-      if (!res.ok) {
-        throw new Error(`Digital Sansad member endpoint failed with status ${res.status}`);
+      if (res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.json();
+          if (data && Array.isArray(data.mps)) {
+            return {
+              mps: data.mps || [],
+              total: data.total ?? (data.mps ? data.mps.length : 0),
+              freshness: data.freshness || {
+                status: 'CACHED',
+                lastUpdated: new Date().toISOString(),
+                source: 'Digital Sansad Parliamentary Records',
+                totalMembers: data.count || 0,
+              },
+            };
+          }
+        }
       }
-      const data = await res.json();
-      return {
-        mps: data.mps || [],
-        total: data.total ?? (data.mps ? data.mps.length : 0),
-        freshness: data.freshness || {
-          status: 'CACHED',
-          lastUpdated: new Date().toISOString(),
-          source: 'Digital Sansad Parliamentary Records',
-          totalMembers: data.count || 0,
-        },
-      };
     } catch (err) {
-      console.warn('digitalSansadMemberAdapter searchMembers failed:', err);
-      throw err;
+      console.warn('digitalSansadMemberAdapter searchMembers API unreachable, switching to bundled dataset:', err);
     }
+
+    // High-fidelity client-side fallback
+    let list = [...initialMps];
+    if (query.trim()) {
+      const q = query.toLowerCase().trim();
+      list = list.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        m.constituency.toLowerCase().includes(q) ||
+        m.state.toLowerCase().includes(q) ||
+        m.party.toLowerCase().includes(q)
+      );
+    }
+    if (filters.state) {
+      list = list.filter(m => m.state.toLowerCase() === filters.state!.toLowerCase());
+    }
+    if (filters.district) {
+      list = list.filter(m => (m.district || '').toLowerCase() === filters.district!.toLowerCase());
+    }
+    if (filters.party) {
+      list = list.filter(m => m.party.toLowerCase() === filters.party!.toLowerCase());
+    }
+    if (filters.house) {
+      list = list.filter(m => m.house.toLowerCase() === filters.house!.toLowerCase());
+    }
+    if (filters.constituency) {
+      list = list.filter(m => m.constituency.toLowerCase() === filters.constituency!.toLowerCase());
+    }
+
+    const page = filters.page || 1;
+    const limit = filters.limit || 50;
+    const paginated = list.slice((page - 1) * limit, page * limit);
+
+    return {
+      mps: paginated,
+      total: list.length,
+      freshness: {
+        status: 'CACHED',
+        lastUpdated: new Date().toISOString(),
+        source: 'Digital Sansad Parliamentary Records (Bundled Fallback)',
+        totalMembers: list.length,
+      },
+    };
   },
 
   /**
@@ -117,12 +163,23 @@ export const digitalSansadMemberAdapter = {
   async getMemberById(id: string): Promise<{ mp: MPRecord; projects: any[] } | null> {
     try {
       const res = await fetch(`/api/mps/${encodeURIComponent(id)}`);
-      if (!res.ok) return null;
-      return await res.json();
+      if (res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.json();
+          if (data && data.mp) return data;
+        }
+      }
     } catch (err) {
-      console.error('digitalSansadMemberAdapter getMemberById failed:', err);
-      return null;
+      console.warn('digitalSansadMemberAdapter getMemberById failed, checking local data:', err);
     }
+
+    const localMp = initialMps.find(m => m.id === id || m.id.includes(id) || (m.wikidataId && m.wikidataId.toLowerCase() === id.toLowerCase()));
+    if (localMp) {
+      const localProjects = initialProjects.filter(p => p.mpId === localMp.id || p.constituency.toLowerCase() === localMp.constituency.toLowerCase());
+      return { mp: localMp, projects: localProjects };
+    }
+    return null;
   },
 
   /**

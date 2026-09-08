@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserProfile, Role } from '../../types';
+import { api } from '../../services/api';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -30,9 +31,8 @@ export const AdminUsersPage: React.FC<Props> = ({ onNavigate }) => {
   const loadUsers = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/auth/users');
-      if (res.ok) {
-        const data = await res.json();
+      const data = await api.getUsers();
+      if (Array.isArray(data)) {
         setUsers(data);
       }
     } catch (e) {

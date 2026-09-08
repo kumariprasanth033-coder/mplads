@@ -1,4 +1,5 @@
 import { ALL_INDIAN_STATES, ALL_UNION_TERRITORIES } from '../data/indiaStates';
+import { OFFICIAL_INDIAN_DISTRICTS } from '../../server/data/indiaDistrictsData';
 
 export interface LocationStateItem {
   stateId: string;
@@ -82,19 +83,25 @@ class ClientLocationService {
     try {
       const res = await fetch('/api/locations/states');
       if (res.ok) {
-        return await res.json();
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          return await res.json();
+        }
       }
     } catch {
       // Fallback to offline list
     }
-    return ALL_INDIAN_STATES.map((name, i) => ({
-      stateId: `state-${i + 1}`,
-      stateName: name,
-      isoCode: '',
-      type: 'State',
-      districtCount: 0,
-      cityCount: 0
-    }));
+    return ALL_INDIAN_STATES.map((name, i) => {
+      const count = OFFICIAL_INDIAN_DISTRICTS.filter(d => d.stateName.toLowerCase() === name.toLowerCase()).length;
+      return {
+        stateId: `state-${i + 1}`,
+        stateName: name,
+        isoCode: '',
+        type: 'State' as const,
+        districtCount: count,
+        cityCount: 0
+      };
+    });
   }
 
   /**
@@ -104,19 +111,25 @@ class ClientLocationService {
     try {
       const res = await fetch('/api/locations/union-territories');
       if (res.ok) {
-        return await res.json();
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          return await res.json();
+        }
       }
     } catch {
       // Fallback
     }
-    return ALL_UNION_TERRITORIES.map((name, i) => ({
-      stateId: `ut-${i + 1}`,
-      stateName: name,
-      isoCode: '',
-      type: 'Union Territory',
-      districtCount: 0,
-      cityCount: 0
-    }));
+    return ALL_UNION_TERRITORIES.map((name, i) => {
+      const count = OFFICIAL_INDIAN_DISTRICTS.filter(d => d.stateName.toLowerCase() === name.toLowerCase()).length;
+      return {
+        stateId: `ut-${i + 1}`,
+        stateName: name,
+        isoCode: '',
+        type: 'Union Territory' as const,
+        districtCount: count,
+        cityCount: 0
+      };
+    });
   }
 
   /**
@@ -177,15 +190,36 @@ class ClientLocationService {
       if (stateName) params.append('state', stateName);
       const res = await fetch(`/api/locations/districts?${params.toString()}`);
       if (res.ok) {
-        const data: LocationDistrictItem[] = await res.json();
-        districtCache.set(norm, data);
-        return data;
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data: LocationDistrictItem[] = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            districtCache.set(norm, data);
+            return data;
+          }
+        }
       }
     } catch (err) {
-      console.warn('[ClientLocationService] Error fetching districts:', err);
+      console.warn('[ClientLocationService] Error fetching districts from API, using authoritative offline data:', err);
     }
 
-    return [];
+    const localDistricts: LocationDistrictItem[] = OFFICIAL_INDIAN_DISTRICTS.filter(d => 
+      !stateName || d.stateName.toLowerCase() === norm || d.stateId.toLowerCase() === norm
+    ).map(d => ({
+      districtId: d.districtId,
+      districtName: d.districtName,
+      stateId: d.stateId,
+      stateName: d.stateName,
+      headquarters: d.headquarters,
+      source: d.source,
+      lastUpdated: d.lastUpdated,
+      type: 'district' as const,
+    }));
+
+    if (localDistricts.length > 0) {
+      districtCache.set(norm, localDistricts);
+    }
+    return localDistricts;
   }
 
   /**

@@ -36,7 +36,15 @@ import { AdminSchemesPage } from './pages/admin/AdminSchemesPage';
 import { AdminAuditPage } from './pages/admin/AdminAuditPage';
 
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<string>('/');
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) return hash;
+      const pathname = window.location.pathname;
+      if (pathname && pathname !== '/') return pathname;
+    }
+    return '/';
+  });
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
   // Sync with browser history and popstate
@@ -64,7 +72,7 @@ export default function App() {
   const renderCurrentView = () => {
     // Exact routes
     if (currentPath === '/' || currentPath === '') {
-      return <HomePage onNavigate={navigate} />;
+      return <HomePage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />;
     }
 
     if (currentPath === '/login') {

@@ -23,7 +23,7 @@ import { ProjectRecord } from '../types';
 
 interface Props {
   onNavigate: (path: string) => void;
-  onOpenSearch: () => void;
+  onOpenSearch?: () => void;
 }
 
 export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
