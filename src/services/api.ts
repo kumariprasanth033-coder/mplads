@@ -19,6 +19,7 @@ import {
   initialMps,
 } from '../../server/mockData';
 import { searchIntentEngine } from './searchIntentEngine';
+import { COMPREHENSIVE_PAN_INDIA_PROJECTS } from '../data/panIndiaProjects';
 
 
 export interface ProjectSearchParams {
@@ -37,7 +38,7 @@ export interface ProjectSearchParams {
 }
 
 // Resilient in-memory client store (ensures 100% functionality on Vercel preview, static deploys, or network drops)
-let clientProjects: ProjectRecord[] = [...initialProjects];
+let clientProjects: ProjectRecord[] = [...COMPREHENSIVE_PAN_INDIA_PROJECTS];
 let clientComplaints: ComplaintRecord[] = [...initialComplaints];
 let clientAuditRisks: AuditRiskItem[] = [...initialAuditRisks];
 let clientActionQueue: ActionQueueItem[] = [...initialActionQueue];

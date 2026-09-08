@@ -367,7 +367,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
   }, [telemetry.lastUpdated]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20">
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-20">
       {/* Header Banner */}
       <div className="bg-gradient-to-b from-blue-950 via-slate-900 to-slate-900 text-white pt-10 pb-14 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="max-w-7xl mx-auto">

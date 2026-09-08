@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { DashboardFilterProvider } from './context/DashboardFilterContext';
 import { Navbar } from './components/Navbar';
@@ -72,98 +73,94 @@ export default function App() {
 
   // Render correct page based on currentPath
   const renderCurrentView = () => {
-    // Exact routes
-    if (currentPath === '/' || currentPath === '') {
+    const [pathBase, rawQueryString] = currentPath.split('?');
+    const queryParams = new URLSearchParams(rawQueryString || '');
+
+    // Exact and query-parameterized routes
+    if (pathBase === '/' || pathBase === '') {
       return <HomePage onNavigate={navigate} onOpenSearch={() => setIsSearchOpen(true)} />;
     }
 
-    if (currentPath === '/login') {
+    if (pathBase === '/login') {
       return <LoginPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/about') {
+    if (pathBase === '/about') {
       return <AboutPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/complaints') {
+    if (pathBase === '/complaints' || pathBase === '/grievance' || pathBase === '/grievances') {
       return <ComplaintsPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/feedback') {
+    if (pathBase === '/feedback') {
       return <FeedbackPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/notifications') {
+    if (pathBase === '/notifications') {
       return <NotificationsPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/profile') {
+    if (pathBase === '/profile') {
       return <ProfilePage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/settings') {
+    if (pathBase === '/settings') {
       return <SettingsPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/ai/precheck') {
+    if (pathBase === '/ai/precheck') {
       return <AiPrecheckPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/projects') {
-      return <ProjectsPage onNavigate={navigate} />;
+    if (pathBase === '/projects') {
+      return <ProjectsPage onNavigate={navigate} currentPath={currentPath} />;
     }
 
-    if (currentPath.startsWith('/projects/')) {
-      const id = currentPath.replace('/projects/', '');
+    if (pathBase.startsWith('/projects/')) {
+      const id = pathBase.replace('/projects/', '');
       return <ProjectDetailPage projectId={id} onNavigate={navigate} />;
     }
 
-    if (
-      currentPath === '/mps' ||
-      currentPath.startsWith('/mps?') ||
-      currentPath === '/explore-mps' ||
-      currentPath.startsWith('/explore-mps?')
-    ) {
-      const q = currentPath.includes('?')
-        ? new URLSearchParams(currentPath.split('?')[1]).get('q') ||
-          new URLSearchParams(currentPath.split('?')[1]).get('query') ||
-          new URLSearchParams(currentPath.split('?')[1]).get('search') ||
-          ''
-        : '';
+    if (pathBase === '/mps' || pathBase === '/explore-mps') {
+      const q =
+        queryParams.get('q') ||
+        queryParams.get('query') ||
+        queryParams.get('search') ||
+        '';
       return <ExploreMpsPage initialQuery={q} onNavigate={navigate} />;
     }
 
-    if (currentPath.startsWith('/search')) {
-      const q = currentPath.includes('?')
-        ? new URLSearchParams(currentPath.split('?')[1]).get('q') ||
-          new URLSearchParams(currentPath.split('?')[1]).get('query') ||
-          new URLSearchParams(currentPath.split('?')[1]).get('search') ||
-          ''
-        : '';
+    if (pathBase === '/search' || pathBase.startsWith('/search')) {
+      const q =
+        queryParams.get('q') ||
+        queryParams.get('query') ||
+        queryParams.get('search') ||
+        '';
       return <SearchResultsPage initialQuery={q} onNavigate={navigate} />;
     }
 
-    if (currentPath.startsWith('/mp/')) {
-      const id = currentPath.replace('/mp/', '').split('?')[0];
+    if (pathBase.startsWith('/mp/')) {
+      const id = pathBase.replace('/mp/', '');
       return <MpDetailPage mpId={id} onNavigate={navigate} />;
     }
 
-    if (currentPath === '/map') {
+    if (pathBase === '/map') {
       return <ConstituencyMapPage onNavigate={navigate} />;
     }
 
-    if (currentPath === '/reports') {
+    if (pathBase === '/reports') {
       return <ReportsPage onNavigate={navigate} />;
     }
 
-    if (currentPath.startsWith('/verify')) {
-      const parts = currentPath.split('/verify');
+    if (pathBase.startsWith('/verify')) {
+      const parts = pathBase.split('/verify');
       const code = parts[1]?.replace('/', '') || 'MPLADS-2024-TN-0481';
       return <QrVerificationPage initialCode={code} onNavigate={navigate} />;
     }
 
     // Role-specific dashboards with RoleGuard protection
-    if (currentPath === '/dashboard/citizen') {
+    if (pathBase === '/dashboard/citizen') {
       return (
         <RoleGuard allowedRoles={['CITIZEN']} onNavigate={navigate} pageTitle="Citizen & Social Audit Workspace">
           <CitizenDashboard onNavigate={navigate} />
@@ -171,7 +168,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/dashboard/mp') {
+    if (pathBase === '/dashboard/mp') {
       return (
         <RoleGuard allowedRoles={['MP']} onNavigate={navigate} pageTitle="Member of Parliament Workspace">
           <MpDashboard onNavigate={navigate} />
@@ -179,7 +176,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/dashboard/district' || currentPath === '/dashboard/collector') {
+    if (pathBase === '/dashboard/district' || pathBase === '/dashboard/collector') {
       return (
         <RoleGuard allowedRoles={['DISTRICT_OFFICER']} onNavigate={navigate} pageTitle="District Collectorate Workspace">
           <DistrictDashboard onNavigate={navigate} />
@@ -187,7 +184,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/dashboard/agency') {
+    if (pathBase === '/dashboard/agency') {
       return (
         <RoleGuard allowedRoles={['IMPLEMENTING_AGENCY']} onNavigate={navigate} pageTitle="Implementing Agency Workspace">
           <AgencyDashboard onNavigate={navigate} />
@@ -195,7 +192,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/dashboard/auditor') {
+    if (pathBase === '/dashboard/auditor') {
       return (
         <RoleGuard allowedRoles={['AUDITOR']} onNavigate={navigate} pageTitle="CAG Auditor Workspace">
           <AuditorDashboard onNavigate={navigate} />
@@ -203,7 +200,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/dashboard/admin') {
+    if (pathBase === '/dashboard/admin') {
       return (
         <RoleGuard allowedRoles={['ADMIN']} onNavigate={navigate} pageTitle="MoSPI National Admin Console">
           <AdminDashboard onNavigate={navigate} />
@@ -212,7 +209,7 @@ export default function App() {
     }
 
     // Admin management sub-pages
-    if (currentPath === '/admin/users') {
+    if (pathBase === '/admin/users') {
       return (
         <RoleGuard allowedRoles={['ADMIN']} onNavigate={navigate} pageTitle="User Directory & Role Management">
           <AdminUsersPage onNavigate={navigate} />
@@ -220,7 +217,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/admin/projects') {
+    if (pathBase === '/admin/projects') {
       return (
         <RoleGuard allowedRoles={['ADMIN']} onNavigate={navigate} pageTitle="National Project Repository">
           <AdminProjectsPage onNavigate={navigate} />
@@ -228,7 +225,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/admin/schemes') {
+    if (pathBase === '/admin/schemes') {
       return (
         <RoleGuard allowedRoles={['ADMIN']} onNavigate={navigate} pageTitle="Scheme Guidelines & Convergence">
           <AdminSchemesPage onNavigate={navigate} />
@@ -236,7 +233,7 @@ export default function App() {
       );
     }
 
-    if (currentPath === '/admin/audit') {
+    if (pathBase === '/admin/audit') {
       return (
         <RoleGuard allowedRoles={['ADMIN']} onNavigate={navigate} pageTitle="Statutory System Audit Log">
           <AdminAuditPage onNavigate={navigate} />
@@ -249,35 +246,37 @@ export default function App() {
   };
 
   return (
-    <AuthProvider>
-      <DashboardFilterProvider>
-        <div className="min-h-screen flex flex-col bg-slate-50 font-sans selection:bg-amber-200 selection:text-slate-900">
-          {/* Navigation Bar */}
-          <Navbar
-            currentPath={currentPath}
-            onNavigate={navigate}
-            onOpenSearch={() => setIsSearchOpen(true)}
-          />
+    <ThemeProvider>
+      <AuthProvider>
+        <DashboardFilterProvider>
+          <div className="min-h-screen flex flex-col bg-slate-900 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
+            {/* Navigation Bar */}
+            <Navbar
+              currentPath={currentPath}
+              onNavigate={navigate}
+              onOpenSearch={() => setIsSearchOpen(true)}
+            />
 
-          {/* Active Page View */}
-          <main className="flex-1">
-            {renderCurrentView()}
-          </main>
+            {/* Active Page View */}
+            <main className="flex-1 bg-slate-900 text-slate-100">
+              {renderCurrentView()}
+            </main>
 
-          {/* Global Footer */}
-          <Footer onNavigate={navigate} />
+            {/* Global Footer */}
+            <Footer onNavigate={navigate} />
 
-          {/* Role Copilot AI Floating Assistant */}
-          <RoleCopilotWidget onNavigate={navigate} />
+            {/* Role Copilot AI Floating Assistant */}
+            <RoleCopilotWidget onNavigate={navigate} />
 
-          {/* Global Search Dialog Modal */}
-          <GlobalSearchModal
-            isOpen={isSearchOpen}
-            onClose={() => setIsSearchOpen(false)}
-            onNavigate={navigate}
-          />
-        </div>
-      </DashboardFilterProvider>
-    </AuthProvider>
+            {/* Global Search Dialog Modal */}
+            <GlobalSearchModal
+              isOpen={isSearchOpen}
+              onClose={() => setIsSearchOpen(false)}
+              onNavigate={navigate}
+            />
+          </div>
+        </DashboardFilterProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

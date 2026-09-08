@@ -58,7 +58,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
   const maxLng = 78.5;
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
       {/* Top Controls Bar */}
       <div className="bg-slate-900 text-white px-4 sm:px-6 py-4 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

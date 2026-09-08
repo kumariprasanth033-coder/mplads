@@ -39,25 +39,43 @@ import { DashboardReportModal } from './DashboardReportModal';
 import { DashboardAiAssistant } from './DashboardAiAssistant';
 import { MPAvatar } from '../MPAvatar';
 import { MPRecord, ProjectRecord } from '../../types';
+import { useDashboardFilter } from '../../context/DashboardFilterContext';
 
 interface Props {
   onNavigate: (path: string) => void;
 }
 
 export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => {
+  const { filters: globalFilters, updateFilter: updateGlobalFilter } = useDashboardFilter();
+
   // Centralized Cascading Filter State
   const [filters, setFilters] = useState<DashboardFilterState>({
-    state: '',
-    district: '',
-    house: 'All',
-    constituency: '',
-    mpId: '',
-    category: 'All',
-    status: 'All',
-    year: '2024-25',
+    state: globalFilters.state || '',
+    district: globalFilters.district || '',
+    house: (globalFilters.house as any) || 'All',
+    constituency: globalFilters.constituency || '',
+    mpId: globalFilters.mpId || '',
+    category: globalFilters.workType || 'All',
+    status: (globalFilters.projectStatus as any) || 'All',
+    year: globalFilters.financialYear || '2024-25',
     visualization: 'all',
-    searchQuery: '',
+    searchQuery: globalFilters.searchQuery || '',
   });
+
+  // Keep local filters in sync if globalFilters changes externally
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      state: globalFilters.state || '',
+      district: globalFilters.district || '',
+      constituency: globalFilters.constituency || '',
+      house: (globalFilters.house as any) || prev.house,
+      category: globalFilters.workType || prev.category,
+      status: (globalFilters.projectStatus as any) || prev.status,
+      searchQuery: globalFilters.searchQuery || prev.searchQuery,
+      mpId: globalFilters.mpId || prev.mpId,
+    }));
+  }, [globalFilters]);
 
   // Modal states
   const [inspectingProject, setInspectingProject] = useState<ProjectRecord | null>(null);
@@ -112,6 +130,24 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
       }
       return next;
     });
+
+    // Synchronize to shared DashboardFilterContext
+    updateGlobalFilter({
+      ...(patch.state !== undefined && {
+        state: patch.state,
+        ...(patch.state === '' && { district: '', constituency: '', mpId: '' }),
+      }),
+      ...(patch.district !== undefined && {
+        district: patch.district,
+        ...(patch.district === '' && { mpId: '' }),
+      }),
+      ...(patch.constituency !== undefined && { constituency: patch.constituency }),
+      ...(patch.status !== undefined && { projectStatus: patch.status as any }),
+      ...(patch.category !== undefined && { workType: patch.category }),
+      ...(patch.house !== undefined && { house: patch.house as any }),
+      ...(patch.searchQuery !== undefined && { searchQuery: patch.searchQuery }),
+      ...(patch.mpId !== undefined && { mpId: patch.mpId }),
+    });
   };
 
   // Reset all filters to India Overview
@@ -128,6 +164,17 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
       visualization: 'all',
       searchQuery: '',
     });
+    updateGlobalFilter({
+      state: '',
+      district: '',
+      constituency: '',
+      house: 'All',
+      workType: 'All',
+      projectStatus: 'All',
+      searchQuery: '',
+      mpId: '',
+      riskLevel: 'ALL',
+    });
   };
 
   // Helper to deep-link to filtered view while preserving cascading state and district
@@ -141,6 +188,21 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
 
     Object.entries(extraParams).forEach(([k, v]) => {
       if (v) params.set(k, v);
+    });
+
+    // Update DashboardFilterContext BEFORE navigation occurs so target view has exact active filters
+    const nextStatus = (extraParams.status as any) || (filters.status !== 'All' ? filters.status : 'All');
+    const nextRisk = (extraParams.risk as any) || 'ALL';
+    const nextCategory = extraParams.sector || extraParams.category || (filters.category !== 'All' ? filters.category : 'All');
+
+    updateGlobalFilter({
+      state: filters.state || '',
+      district: filters.district || '',
+      constituency: filters.constituency || '',
+      projectStatus: nextStatus,
+      workType: nextCategory,
+      riskLevel: nextRisk,
+      house: filters.house as any,
     });
 
     const queryStr = params.toString();

@@ -92,7 +92,7 @@ export const FeedbackPage: React.FC<Props> = ({ onNavigate }) => {
   const avgRating = (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-20">
       {/* Header */}
       <div className="bg-slate-900 text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-slate-800 text-center">
         <div className="max-w-2xl mx-auto">

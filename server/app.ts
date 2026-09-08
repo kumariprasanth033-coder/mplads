@@ -1,5 +1,6 @@
 import express from 'express';
 import { initialUsers, initialMps, initialProjects, initialAuditRisks, initialComplaints, initialActionQueue } from './mockData.js';
+import { COMPREHENSIVE_PAN_INDIA_PROJECTS } from '../src/data/panIndiaProjects.js';
 import { runProjectPrecheck, parseCitizenComplaint, runRoleCopilot } from './gemini.js';
 import { ProjectRecord, ComplaintRecord, AuditRiskItem, ActionQueueItem, UserProfile } from '../src/types.js';
 import { digitalSansadMemberAdapter } from './digitalSansadAdapter.js';
@@ -32,7 +33,7 @@ let mps = [
     return true;
   }),
 ];
-let projects: ProjectRecord[] = [...initialProjects];
+let projects: ProjectRecord[] = [...COMPREHENSIVE_PAN_INDIA_PROJECTS];
 let auditRisks: AuditRiskItem[] = [...initialAuditRisks];
 let complaints: ComplaintRecord[] = [...initialComplaints];
 let actionQueue: ActionQueueItem[] = [...initialActionQueue];
@@ -548,6 +549,7 @@ app.use((req, res, next) => {
       sector,
       year,
       mpId,
+      risk,
       sortBy = 'latest',
       page = '1',
       limit = '12',
@@ -569,26 +571,34 @@ app.use((req, res, next) => {
           p.category.toLowerCase().includes(q)
       );
     }
-    if (state && typeof state === 'string') {
+    if (state && typeof state === 'string' && state !== 'All') {
       filtered = filtered.filter(p => p.state.toLowerCase() === state.toLowerCase());
     }
-    if (district && typeof district === 'string') {
+    if (district && typeof district === 'string' && district !== 'All') {
       filtered = filtered.filter(p => p.district.toLowerCase() === district.toLowerCase());
     }
-    if (constituency && typeof constituency === 'string') {
+    if (constituency && typeof constituency === 'string' && constituency !== 'All') {
       filtered = filtered.filter(p => p.constituency.toLowerCase() === constituency.toLowerCase());
     }
-    if (status && typeof status === 'string') {
+    if (status && typeof status === 'string' && status.toLowerCase() !== 'all') {
       filtered = filtered.filter(p => p.status.toLowerCase() === status.toLowerCase());
     }
-    if (sector && typeof sector === 'string') {
+    if (sector && typeof sector === 'string' && sector.toLowerCase() !== 'all') {
       filtered = filtered.filter(p => p.category.toLowerCase() === sector.toLowerCase());
     }
-    if (year && typeof year === 'string') {
+    if (year && typeof year === 'string' && year !== 'All') {
       filtered = filtered.filter(p => p.year === year);
     }
     if (mpId && typeof mpId === 'string') {
       filtered = filtered.filter(p => p.mpId === mpId);
+    }
+    if (risk && typeof risk === 'string' && risk.toUpperCase() !== 'ALL') {
+      const r = risk.toUpperCase();
+      if (r === 'HIGH') {
+        filtered = filtered.filter(p => p.riskCategory === 'HIGH' || p.riskScore >= 50 || p.status === 'Delayed');
+      } else {
+        filtered = filtered.filter(p => p.riskCategory === r);
+      }
     }
 
     // Sort

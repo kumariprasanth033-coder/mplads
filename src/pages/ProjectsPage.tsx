@@ -20,12 +20,15 @@ import { api, ProjectSearchParams } from '../services/api';
 import { ProjectRecord } from '../types';
 import { ALL_INDIAN_STATES, ALL_INDIA_JURISDICTIONS } from '../data/indiaStates';
 import { OFFICIAL_INDIAN_DISTRICTS } from '../../server/data/indiaDistrictsData';
+import { useDashboardFilter } from '../context/DashboardFilterContext';
 
 interface Props {
   onNavigate: (path: string) => void;
+  currentPath?: string;
 }
 
-export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
+export const ProjectsPage: React.FC<Props> = ({ onNavigate, currentPath }) => {
+  const { filters: globalFilters, updateFilter } = useDashboardFilter();
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,11 +43,20 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
   const [sortBy, setSortBy] = useState<'latest' | 'amount' | 'progress' | 'risk'>('latest');
   const [page, setPage] = useState(1);
 
-  // Sync with URL query params on mount or URL change
+  // Sync with URL query params and global filter context
   useEffect(() => {
-    const parseUrlParams = () => {
+    const parseAllParams = () => {
       try {
-        const urlParams = new URLSearchParams(window.location.search);
+        let queryString = '';
+        if (currentPath && currentPath.includes('?')) {
+          queryString = currentPath.split('?')[1];
+        } else if (window.location.hash && window.location.hash.includes('?')) {
+          queryString = window.location.hash.split('?')[1];
+        } else if (window.location.search) {
+          queryString = window.location.search.replace(/^\?/, '');
+        }
+
+        const urlParams = new URLSearchParams(queryString);
         const urlStatus = urlParams.get('status');
         const urlState = urlParams.get('state');
         const urlDistrict = urlParams.get('district');
@@ -52,21 +64,41 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
         const urlRisk = urlParams.get('risk') || urlParams.get('riskLevel');
         const urlQuery = urlParams.get('q') || urlParams.get('query');
 
-        if (urlStatus && urlStatus !== 'All') setStatus(urlStatus);
-        if (urlState) setState(urlState);
-        if (urlDistrict) setDistrict(urlDistrict);
-        if (urlSector && urlSector !== 'All') setSector(urlSector);
-        if (urlRisk && urlRisk !== 'All') setRisk(urlRisk);
-        if (urlQuery) setQuery(urlQuery);
+        const effectiveStatus = (urlStatus && urlStatus !== 'All')
+          ? urlStatus
+          : (globalFilters.projectStatus && globalFilters.projectStatus !== 'All')
+            ? globalFilters.projectStatus
+            : '';
+
+        const effectiveState = urlState || globalFilters.state || '';
+        const effectiveDistrict = urlDistrict || globalFilters.district || '';
+        const effectiveSector = (urlSector && urlSector !== 'All')
+          ? urlSector
+          : (globalFilters.workType && globalFilters.workType !== 'All')
+            ? globalFilters.workType
+            : '';
+        const effectiveRisk = (urlRisk && urlRisk !== 'All')
+          ? urlRisk
+          : (globalFilters.riskLevel && globalFilters.riskLevel !== 'ALL')
+            ? globalFilters.riskLevel
+            : '';
+        const effectiveQuery = urlQuery || globalFilters.searchQuery || '';
+
+        if (effectiveStatus !== status) setStatus(effectiveStatus);
+        if (effectiveState !== state) setState(effectiveState);
+        if (effectiveDistrict !== district) setDistrict(effectiveDistrict);
+        if (effectiveSector !== sector) setSector(effectiveSector);
+        if (effectiveRisk !== risk) setRisk(effectiveRisk);
+        if (effectiveQuery !== query) setQuery(effectiveQuery);
       } catch (err) {
         console.error('URL parse error:', err);
       }
     };
 
-    parseUrlParams();
-    window.addEventListener('popstate', parseUrlParams);
-    return () => window.removeEventListener('popstate', parseUrlParams);
-  }, []);
+    parseAllParams();
+    window.addEventListener('popstate', parseAllParams);
+    return () => window.removeEventListener('popstate', parseAllParams);
+  }, [currentPath, globalFilters]);
 
   const availableDistricts = React.useMemo(() => {
     if (!state) return [];
@@ -109,7 +141,7 @@ export const ProjectsPage: React.FC<Props> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-20">
       {/* Page Header */}
       <div className="bg-slate-900 text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">

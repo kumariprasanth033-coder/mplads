@@ -26,6 +26,7 @@ import { useAuth } from '../context/AuthContext';
 import { MPAvatar } from '../components/MPAvatar';
 import { searchIntentEngine } from '../services/searchIntentEngine';
 import { MPLADSSearchIntent } from '../types';
+import { useDashboardFilter } from '../context/DashboardFilterContext';
 
 interface Props {
   initialQuery?: string;
@@ -39,6 +40,7 @@ export const SearchResultsPage: React.FC<Props> = ({
   onOpenCopilotWithPrompt,
 }) => {
   const { role } = useAuth();
+  const { filters: globalFilters, updateFilter } = useDashboardFilter();
   const [query, setQuery] = useState(initialQuery);
   const [activeTab, setActiveTab] = useState<'all' | 'projects' | 'mps' | 'districts' | 'riskAlerts'>('all');
   const [isLoading, setIsLoading] = useState(false);
@@ -322,7 +324,18 @@ export const SearchResultsPage: React.FC<Props> = ({
           <div className="mt-4 pt-3 border-t border-slate-800 flex items-center gap-2 flex-wrap">
             <button
               id="action-view-all"
-              onClick={() => onNavigate(searchData.actions?.viewAllPath || '/projects')}
+              onClick={() => {
+                const detected = (searchData.filtersDetected || {}) as Record<string, string>;
+                updateFilter({
+                  state: detected.state || activeIntent?.state || '',
+                  district: detected.district || activeIntent?.district || '',
+                  constituency: detected.constituency || activeIntent?.constituency || '',
+                  projectStatus: ((detected.status || activeIntent?.projectStatus || 'All') as any),
+                  workType: detected.workType || activeIntent?.workType || 'All',
+                  riskLevel: ((detected.risk || activeIntent?.riskLevel || 'ALL') as any),
+                });
+                onNavigate(searchData.actions?.viewAllPath || '/projects');
+              }}
               className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
             >
               <FolderGit2 className="w-3.5 h-3.5 text-blue-400" />
@@ -331,7 +344,17 @@ export const SearchResultsPage: React.FC<Props> = ({
 
             <button
               id="action-view-map"
-              onClick={() => onNavigate(searchData.actions?.viewOnMapPath || '/')}
+              onClick={() => {
+                const detected = (searchData.filtersDetected || {}) as Record<string, string>;
+                updateFilter({
+                  state: detected.state || activeIntent?.state || '',
+                  district: detected.district || activeIntent?.district || '',
+                  constituency: detected.constituency || activeIntent?.constituency || '',
+                  projectStatus: ((detected.status || activeIntent?.projectStatus || 'All') as any),
+                  workType: detected.workType || activeIntent?.workType || 'All',
+                });
+                onNavigate(searchData.actions?.viewOnMapPath || '/');
+              }}
               className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
             >
               <MapIcon className="w-3.5 h-3.5 text-emerald-400" />
@@ -340,7 +363,16 @@ export const SearchResultsPage: React.FC<Props> = ({
 
             <button
               id="action-view-analytics"
-              onClick={() => onNavigate(searchData.actions?.viewAnalyticsPath || '/')}
+              onClick={() => {
+                const detected = (searchData.filtersDetected || {}) as Record<string, string>;
+                updateFilter({
+                  state: detected.state || activeIntent?.state || '',
+                  district: detected.district || activeIntent?.district || '',
+                  constituency: detected.constituency || activeIntent?.constituency || '',
+                  projectStatus: ((detected.status || activeIntent?.projectStatus || 'All') as any),
+                });
+                onNavigate(searchData.actions?.viewAnalyticsPath || '/');
+              }}
               className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer border border-slate-700"
             >
               <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
@@ -446,7 +478,33 @@ export const SearchResultsPage: React.FC<Props> = ({
             <div
               key={item.id}
               id={`result-card-${item.id}`}
-              onClick={() => onNavigate(item.navPath)}
+              onClick={() => {
+                if (item.type === 'Project') {
+                  updateFilter({
+                    state: item.state || '',
+                    district: item.district || '',
+                    constituency: item.constituency || '',
+                    projectStatus: (item.status === 'Delayed' || item.status === 'Completed' || item.status === 'In Progress' || item.status === 'Sanctioned') ? item.status : 'All',
+                  });
+                } else if (item.type === 'MP') {
+                  updateFilter({
+                    state: item.state || '',
+                    constituency: item.constituency || '',
+                    mpId: item.id || '',
+                  });
+                } else if (item.type === 'District') {
+                  updateFilter({
+                    state: item.state || '',
+                    district: item.district || item.name || '',
+                  });
+                } else if (item.type === 'Constituency') {
+                  updateFilter({
+                    state: item.state || '',
+                    constituency: item.constituency || item.name || '',
+                  });
+                }
+                onNavigate(item.navPath);
+              }}
               className="bg-white rounded-2xl border border-slate-200 hover:border-blue-500 shadow-xs hover:shadow-md transition-all p-5 flex flex-col justify-between cursor-pointer group"
             >
               <div>

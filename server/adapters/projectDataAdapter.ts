@@ -1,5 +1,6 @@
 import { ProjectRecord } from '../../src/types.js';
 import { initialProjects } from '../mockData.js';
+import { COMPREHENSIVE_PAN_INDIA_PROJECTS } from '../../src/data/panIndiaProjects.js';
 
 export interface ProjectSearchFilters {
   query?: string;
@@ -17,7 +18,7 @@ export interface ProjectSearchFilters {
 }
 
 export class ProjectDataAdapterService {
-  private projects: ProjectRecord[] = [...initialProjects];
+  private projects: ProjectRecord[] = [...COMPREHENSIVE_PAN_INDIA_PROJECTS];
   private lastUpdated: string = new Date().toISOString();
 
   public getAllProjects(): ProjectRecord[] {

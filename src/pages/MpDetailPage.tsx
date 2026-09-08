@@ -150,10 +150,10 @@ export const MpDetailPage: React.FC<Props> = ({ mpId, onNavigate }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center p-6">
         <div className="text-center">
-          <div className="w-9 h-9 border-3 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <span className="text-xs text-slate-600 font-medium">
+          <div className="w-9 h-9 border-3 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <span className="text-xs text-slate-400 font-medium">
             Fetching verified parliamentary records from Digital Sansad...
           </span>
         </div>
@@ -163,17 +163,17 @@ export const MpDetailPage: React.FC<Props> = ({ mpId, onNavigate }) => {
 
   if (!data || !data.mp) {
     return (
-      <div className="min-h-screen bg-slate-50 p-8 flex flex-col items-center justify-center text-center">
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 max-w-md shadow-xs">
+      <div className="min-h-screen bg-slate-900 text-slate-100 p-8 flex flex-col items-center justify-center text-center">
+        <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8 max-w-md shadow-xs">
           <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-3" />
-          <h2 className="text-xl font-bold text-slate-800">Member of Parliament Not Found</h2>
-          <p className="text-xs text-slate-500 mt-2 mb-6">
+          <h2 className="text-xl font-bold text-slate-200">Member of Parliament Not Found</h2>
+          <p className="text-xs text-slate-400 mt-2 mb-6">
             The requested MP profile identifier could not be verified in the active parliamentary directory.
           </p>
           <button
             type="button"
             onClick={() => onNavigate('/mps')}
-            className="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-xs font-bold cursor-pointer transition-colors"
+            className="w-full py-2.5 bg-blue-700 hover:bg-blue-600 text-white rounded-xl text-xs font-bold cursor-pointer transition-colors"
           >
             Return to MP Directory
           </button>
@@ -202,7 +202,7 @@ export const MpDetailPage: React.FC<Props> = ({ mpId, onNavigate }) => {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-24">
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-24">
       {/* Header Profile Section */}
       <div className="bg-slate-900 text-white py-10 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="max-w-7xl mx-auto">

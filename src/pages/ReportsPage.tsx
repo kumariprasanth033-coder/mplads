@@ -39,17 +39,17 @@ export const ReportsPage: React.FC<Props> = ({ onNavigate }) => {
 
   if (isLoading || !stats) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-3 border-blue-900 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          <span className="text-xs text-slate-500 font-medium">Computing parliamentary analytics...</span>
+          <div className="w-8 h-8 border-3 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <span className="text-xs text-slate-400 font-medium">Computing parliamentary analytics...</span>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-900 text-slate-100 pb-20">
       {/* Header */}
       <div className="bg-slate-900 text-white py-8 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">

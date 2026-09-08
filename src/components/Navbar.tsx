@@ -64,7 +64,7 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
       {/* Tricolor Ribbon on top for Indian Governance Identity */}
       <div className="h-1 w-full flex">
         <div className="h-full w-1/3 bg-[#FF9933]" />
-        <div className="h-full w-1/3 bg-white" />
+        <div className="h-full w-1/3 bg-white preserve-white" />
         <div className="h-full w-1/3 bg-[#138808]" />
       </div>
 

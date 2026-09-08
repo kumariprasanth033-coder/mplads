@@ -1,1 +1,160 @@
 @import "tailwindcss";
+
+/* =========================================================================
+   MPLADS SMART & AI POWERED PORTAL - GLOBAL THEME SYSTEM
+   Standard: Modern Dark Slate Architecture (Ashoka National Portal Palette)
+   Consistent Before Login, During Login, and Across Every Authenticated Route
+   ========================================================================= */
+
+:root,
+html.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+html.dark,
+[data-theme="dark"] {
+  background-color: #0f172a; /* slate-900 */
+  color: #f1f5f9; /* slate-100 */
+}
+
+html.dark body,
+[data-theme="dark"] body {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+/* Ensure national tricolor ribbon white stripe remains pure white */
+.preserve-white,
+[data-preserve-white="true"] {
+  background-color: #ffffff !important;
+}
+
+/* Page containers and background wrappers in dark mode */
+html.dark .bg-slate-50,
+html.dark .bg-slate-100,
+html.dark [data-theme="dark"] .bg-slate-50,
+html.dark [data-theme="dark"] .bg-slate-100 {
+  background-color: #0f172a !important;
+}
+
+/* Card surfaces, panels, tables, and dialogs */
+html.dark .bg-white:not(.preserve-white):not([data-preserve-white="true"]) {
+  background-color: #1e293b !important; /* slate-800 */
+}
+
+/* Subtle surfaces and tinted backgrounds */
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/80 {
+  background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+/* Borders and dividers */
+html.dark .border-slate-200,
+html.dark .border-slate-100,
+html.dark .border-slate-300 {
+  border-color: #334155 !important; /* slate-700 */
+}
+
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #334155 !important;
+}
+
+/* Text primary & headings */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f8fafc !important; /* slate-50 */
+}
+
+/* Text secondary & labels */
+html.dark .text-slate-700,
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important; /* slate-300 */
+}
+
+/* Text muted */
+html.dark .text-slate-500 {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+/* Form controls (inputs, selects, textareas) */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not(.preserve-input),
+html.dark select:not(.preserve-input),
+html.dark textarea:not(.preserve-input) {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important; /* slate-500 */
+}
+
+/* Table and list item hover states */
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-slate-100:hover,
+html.dark .hover\:bg-slate-50\/50:hover {
+  background-color: #334155 !important; /* slate-700 */
+}
+
+/* Subtle badge / alert boxes in dark mode */
+html.dark .bg-rose-50 {
+  background-color: rgba(136, 19, 55, 0.25) !important;
+  border-color: rgba(225, 29, 72, 0.4) !important;
+}
+html.dark .text-rose-950,
+html.dark .text-rose-900 {
+  color: #fecdd3 !important;
+}
+html.dark .text-rose-800 {
+  color: #fda4af !important;
+}
+
+html.dark .bg-emerald-50 {
+  background-color: rgba(6, 78, 59, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+html.dark .text-emerald-950,
+html.dark .text-emerald-900 {
+  color: #a7f3d0 !important;
+}
+html.dark .text-emerald-800 {
+  color: #6ee7b7 !important;
+}
+
+html.dark .bg-blue-50 {
+  background-color: rgba(30, 58, 138, 0.25) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+html.dark .text-blue-950,
+html.dark .text-blue-900 {
+  color: #bfdbfe !important;
+}
+html.dark .text-blue-800,
+html.dark .text-blue-700 {
+  color: #93c5fd !important;
+}
+
+html.dark .bg-amber-50 {
+  background-color: rgba(120, 53, 15, 0.25) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+html.dark .text-amber-950,
+html.dark .text-amber-900 {
+  color: #fde68a !important;
+}
+html.dark .text-amber-800,
+html.dark .text-amber-700 {
+  color: #fcd34d !important;
+}
+
+/* In dark mode, ensure white card shadows look clean and subtle */
+html.dark .shadow-xs,
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+}

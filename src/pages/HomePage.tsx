@@ -109,7 +109,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
       {/* Hero Section */}
       <section className="relative bg-linear-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-14 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         {/* Subtle geometric backdrop */}

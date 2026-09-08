@@ -15,6 +15,7 @@
 import { ALL_INDIAN_STATES, ALL_UNION_TERRITORIES, ALL_INDIA_JURISDICTIONS } from '../data/indiaStates';
 import { OFFICIAL_INDIAN_DISTRICTS } from '../../server/data/indiaDistrictsData';
 import { initialMps, initialProjects } from '../../server/mockData';
+import { COMPREHENSIVE_PAN_INDIA_PROJECTS } from '../data/panIndiaProjects';
 import { MPRecord, ProjectRecord, ProjectSector } from '../types';
 
 export interface DashboardFilterState {
@@ -133,9 +134,9 @@ class DashboardIntelligenceEngine {
   }
 
   private initializeData() {
-    // Merge server mock data with comprehensive coverage
+    // Merge server mock data with comprehensive pan-India coverage
     this.allMps = [...initialMps];
-    this.allProjects = [...initialProjects];
+    this.allProjects = [...COMPREHENSIVE_PAN_INDIA_PROJECTS];
 
     // Build rich coverage across all 28 States and 8 Union Territories
     this.ensurePanIndiaCoverage();
@@ -200,84 +201,87 @@ class DashboardIntelligenceEngine {
 
         this.allMps.push(syntheticMp);
 
-        // Add 3-5 high-impact projects for this jurisdiction
-        const sectors: ProjectSector[] = [
-          'Drinking Water',
-          'Road Construction',
-          'Community Hall',
-          'School Building',
-          'Health & Family Welfare',
-        ];
+        // Add fallback high-impact projects only if this jurisdiction does not yet have projects
+        const existingStateProjs = this.allProjects.filter(p => p.state.toLowerCase() === stateName.toLowerCase());
+        if (existingStateProjs.length === 0) {
+          const sectors: ProjectSector[] = [
+            'Drinking Water',
+            'Road Construction',
+            'Community Hall',
+            'School Building',
+            'Health & Family Welfare',
+          ];
 
-        for (let i = 0; i < 3; i++) {
-          const cat = sectors[(h + i) % sectors.length];
-          const projId = `proj-${stateName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-0${i + 1}`;
-          const isCompleted = i === 0;
-          const isDelayed = i === 2 && h % 3 === 0;
-          const status = isCompleted ? 'Completed' : isDelayed ? 'Delayed' : 'In Progress';
-          const progress = isCompleted ? 100 : isDelayed ? 45 : 65 + (i * 10);
-          const sanctioned = 15 + ((h + i * 7) % 35);
-          const utilized = isCompleted ? sanctioned : Math.round((sanctioned * progress) / 100);
+          for (let i = 0; i < 3; i++) {
+            const cat = sectors[(h + i) % sectors.length];
+            const projId = `proj-${stateName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-0${i + 1}`;
+            const isCompleted = i === 0;
+            const isDelayed = i === 2 && h % 3 === 0;
+            const status = isCompleted ? 'Completed' : isDelayed ? 'Delayed' : 'In Progress';
+            const progress = isCompleted ? 100 : isDelayed ? 45 : 65 + (i * 10);
+            const sanctioned = 15 + ((h + i * 7) % 35);
+            const utilized = isCompleted ? sanctioned : Math.round((sanctioned * progress) / 100);
 
-          this.allProjects.push({
-            id: projId,
-            code: `MPLADS/2024-25/${stateName.slice(0, 3).toUpperCase()}/${100 + i}`,
-            title: `${cat} Project at ${primaryDistrict}`,
-            description: `Priority infrastructure under MPLADS for community welfare in ${primaryDistrict}, ${stateName}.`,
-            category: cat,
-            mpId: repMpId,
-            mpName: syntheticMp.name,
-            state: stateName,
-            district: primaryDistrict,
-            constituency: constituencyName,
-            department: 'Rural Development & Engineering Wing',
-            implementingAgency: 'District Development Agency (DRDA)',
-            coordinates: { lat: 20.5937 + ((h % 100) - 50) / 10, lng: 78.9629 + ((h % 120) - 60) / 10 },
-            financial: {
-              recommendedAmountLakhs: sanctioned,
-              sanctionedAmountLakhs: sanctioned,
-              releasedAmountLakhs: sanctioned,
-              expenditureLakhs: utilized,
-              balanceLakhs: Math.max(0, sanctioned - utilized),
-            },
-            status,
-            progressPercentage: progress,
-            timeline: [
-              { status: 'Proposed', date: '2024-06-15', note: 'Recommended by MP', updatedBy: 'MP Office' },
-              { status: 'Sanctioned', date: '2024-07-20', note: 'AS issued by District Collector', updatedBy: 'District Collector' },
-              { status: status as any, date: '2024-11-01', note: 'Active site supervision', updatedBy: 'DRDA AE' },
-            ],
-            evidence: [
-              {
-                id: `ev-${projId}-1`,
-                stage: 'Before',
-                url: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
-                description: 'Pre-construction inspection showing site requirements.',
-                date: '2024-06-25',
-                uploadedBy: 'Assistant Engineer',
+            this.allProjects.push({
+              id: projId,
+              code: `MPLADS/2024-25/${stateName.slice(0, 3).toUpperCase()}/${100 + i}`,
+              title: `${cat} Project at ${primaryDistrict}`,
+              description: `Priority infrastructure under MPLADS for community welfare in ${primaryDistrict}, ${stateName}.`,
+              category: cat,
+              mpId: repMpId,
+              mpName: syntheticMp.name,
+              state: stateName,
+              district: primaryDistrict,
+              constituency: constituencyName,
+              department: 'Rural Development & Engineering Wing',
+              implementingAgency: 'District Development Agency (DRDA)',
+              coordinates: { lat: 20.5937 + ((h % 100) - 50) / 10, lng: 78.9629 + ((h % 120) - 60) / 10 },
+              financial: {
+                recommendedAmountLakhs: sanctioned,
+                sanctionedAmountLakhs: sanctioned,
+                releasedAmountLakhs: sanctioned,
+                expenditureLakhs: utilized,
+                balanceLakhs: Math.max(0, sanctioned - utilized),
               },
-              {
-                id: `ev-${projId}-2`,
-                stage: isCompleted ? 'Current / After' : 'During',
-                url: isCompleted
-                  ? 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?w=600&auto=format&fit=crop&q=80'
-                  : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
-                description: isCompleted ? 'Commissioned community asset' : 'Foundation execution in progress',
-                date: '2024-10-15',
-                uploadedBy: 'Site Supervisor',
-              },
-            ],
-            documents: [
-              { id: `doc-${projId}-1`, name: 'Administrative Sanction Order.pdf', type: 'Sanction Order', status: 'Available', uploadDate: '2024-07-22' },
-              { id: `doc-${projId}-2`, name: 'Work Order & Agreement.pdf', type: 'Work Order', status: 'Available', uploadDate: '2024-08-01' },
-            ],
-            transparencyScore: 94,
-            riskScore: isDelayed ? 58 : 14,
-            riskCategory: isDelayed ? 'MEDIUM' : 'LOW',
-            year: '2024-25',
-            lastUpdated: '2025-01-20T00:00:00Z',
-            source: 'SIH DEMO DATA',
-          });
+              status,
+              progressPercentage: progress,
+              timeline: [
+                { status: 'Proposed', date: '2024-06-15', note: 'Recommended by MP', updatedBy: 'MP Office' },
+                { status: 'Sanctioned', date: '2024-07-20', note: 'AS issued by District Collector', updatedBy: 'District Collector' },
+                { status: status as any, date: '2024-11-01', note: 'Active site supervision', updatedBy: 'DRDA AE' },
+              ],
+              evidence: [
+                {
+                  id: `ev-${projId}-1`,
+                  stage: 'Before',
+                  url: 'https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=600&auto=format&fit=crop&q=80',
+                  description: 'Pre-construction inspection showing site requirements.',
+                  date: '2024-06-25',
+                  uploadedBy: 'Assistant Engineer',
+                },
+                {
+                  id: `ev-${projId}-2`,
+                  stage: isCompleted ? 'Current / After' : 'During',
+                  url: isCompleted
+                    ? 'https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?w=600&auto=format&fit=crop&q=80'
+                    : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80',
+                  description: isCompleted ? 'Commissioned community asset' : 'Foundation execution in progress',
+                  date: '2024-10-15',
+                  uploadedBy: 'Site Supervisor',
+                },
+              ],
+              documents: [
+                { id: `doc-${projId}-1`, name: 'Administrative Sanction Order.pdf', type: 'Sanction Order', status: 'Available', uploadDate: '2024-07-22' },
+                { id: `doc-${projId}-2`, name: 'Work Order & Agreement.pdf', type: 'Work Order', status: 'Available', uploadDate: '2024-08-01' },
+              ],
+              transparencyScore: 94,
+              riskScore: isDelayed ? 58 : 14,
+              riskCategory: isDelayed ? 'MEDIUM' : 'LOW',
+              year: '2024-25',
+              lastUpdated: '2025-01-20T00:00:00Z',
+              source: 'SIH DEMO DATA',
+            });
+          }
         }
       }
     });

@@ -179,7 +179,7 @@ export const LoginPage: React.FC<Props> = ({ onNavigate }) => {
       {/* Tricolor Ribbon */}
       <div className="h-1.5 w-full flex">
         <div className="h-full w-1/3 bg-[#FF9933]" />
-        <div className="h-full w-1/3 bg-white" />
+        <div className="h-full w-1/3 bg-white preserve-white" />
         <div className="h-full w-1/3 bg-[#138808]" />
       </div>
 
