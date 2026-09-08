@@ -1051,3 +1051,10 @@ export const initialActionQueue: ActionQueueItem[] = [
     flagReason: 'Work delayed by >60 days; contractor contract re-tender notice pending.',
   },
 ];
+
+export const actionQueue = initialActionQueue;
+export const auditRisks = initialAuditRisks;
+export const complaints = initialComplaints;
+export const mps = initialMps;
+export const projects = initialProjects;
+export const users = initialUsers;

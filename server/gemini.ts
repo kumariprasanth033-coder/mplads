@@ -712,14 +712,14 @@ export function executeCopilotTool(
       return {
         title: p.title,
         code: p.code,
-        status: p.status,
+        projectStatus: p.status,
         category: p.category,
         location: `${p.village ? p.village + ', ' : ''}${p.district}, ${p.state}`,
         constituency: p.constituency,
         sanctionedAmountLakhs: p.financial.sanctionedAmountLakhs,
         expenditureLakhs: p.financial.expenditureLakhs,
         progressPercentage: p.progressPercentage,
-        contractor: p.contractor,
+        contractor: p.implementingAgency,
         department: p.department,
         source: p.source || 'Official MPLADS Portal',
         status: 'LIVE',
@@ -732,7 +732,7 @@ export function executeCopilotTool(
         constituency: targetConstituency,
         totalWorks: list.length,
         completed: list.filter(p => p.status === 'Completed').length,
-        ongoing: list.filter(p => p.status === 'Ongoing').length,
+        ongoing: list.filter(p => p.status === 'In Progress' || p.status === 'Near Completion').length,
         delayed: list.filter(p => p.status === 'Delayed').length,
         sampleProjects: list.slice(0, 4).map(p => ({
           title: p.title,
@@ -813,14 +813,14 @@ export function executeCopilotTool(
         };
       }
       const district = userContext.district || 'Dharmapuri';
-      const items = actionQueue.filter(a => !a.district || a.district.toLowerCase() === district.toLowerCase());
+      const items = actionQueue.filter(a => !a.constituency || a.constituency.toLowerCase() === district.toLowerCase() || (a as any).district?.toLowerCase() === district.toLowerCase());
       return {
         district,
         queueCount: items.length,
         actions: items.map(a => ({
           id: a.id,
           title: a.title,
-          actionType: a.actionType,
+          actionType: a.type,
           priority: a.priority,
           amountLakhs: a.amountLakhs,
           flagReason: a.flagReason,
@@ -842,8 +842,8 @@ export function executeCopilotTool(
           id: r.id,
           projectTitle: r.projectTitle,
           riskScore: r.riskScore,
-          category: r.category,
-          primaryIssue: r.primaryIssue,
+          category: r.level,
+          primaryIssue: r.reason || r.factors.join(', '),
           status: 'Pending Field Verification',
         })),
         source: 'CAG Social Audit & Risk Intelligence Matrix',
