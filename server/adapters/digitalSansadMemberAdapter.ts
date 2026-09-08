@@ -11,8 +11,19 @@ export class DigitalSansadMemberAdapterService {
     return baseAdapter.getAllMembers();
   }
 
-  public searchMembers(query: string): DigitalSansadMemberRecord[] {
-    return baseAdapter.searchMembers(query);
+  public searchMembers(
+    query?: string,
+    filters?: {
+      state?: string;
+      party?: string;
+      house?: string;
+      status?: string;
+      constituency?: string;
+      district?: string;
+      city?: string;
+    }
+  ): DigitalSansadMemberRecord[] {
+    return baseAdapter.searchMembers(query, filters);
   }
 
   public getMembersByState(state: string): DigitalSansadMemberRecord[] {

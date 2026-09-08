@@ -45,6 +45,37 @@ export interface UserProfile {
   isDemo?: boolean;
 }
 
+export interface MPWikidataInfo {
+  id?: string;
+  label?: string;
+  description?: string;
+  wikipediaUrl?: string;
+  wikidataUrl?: string;
+  imageFileName?: string;
+  photoUrl?: string;
+  birthDate?: string;
+  birthPlace?: string;
+  education?: string;
+  website?: string;
+  twitter?: string;
+  instagram?: string;
+  facebook?: string;
+  positionHeld?: string[];
+  lastEnriched?: string;
+}
+
+export interface MPCivicInfo {
+  source: string;
+  office?: string;
+  phones?: string[];
+  urls?: string[];
+  emails?: string[];
+  channels?: Array<{ type: string; id: string }>;
+  photoUrl?: string;
+  status: 'ACTIVE' | 'NOT_CONFIGURED' | 'FALLBACK_WIKIDATA';
+  apiKeyConfigured?: boolean;
+}
+
 export interface MPRecord {
   id: string;
   name: string;
@@ -52,6 +83,8 @@ export interface MPRecord {
   party: string;
   constituency: string;
   state: string;
+  district?: string;
+  city?: string;
   house: 'Lok Sabha' | 'Rajya Sabha';
   membershipStatus: 'Sitting' | 'Former';
   term: string;
@@ -71,6 +104,9 @@ export interface MPRecord {
   contactOffice?: string;
   email?: string;
   phone?: string;
+  wikidataId?: string;
+  wikidata?: MPWikidataInfo;
+  civicInfo?: MPCivicInfo;
   stats?: {
     totalProjects: number;
     sanctionedAmountLakhs: number;

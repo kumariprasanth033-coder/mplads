@@ -7,16 +7,32 @@ import { ProjectRecord, ComplaintRecord, AuditRiskItem, ActionQueueItem, UserPro
 import { digitalSansadMemberAdapter } from './server/digitalSansadAdapter.js';
 import { unifiedSearchService } from './server/adapters/unifiedSearchAdapter.js';
 import { mpladsDataAdapter } from './server/adapters/mpladsDataAdapter.js';
+import { politicianDataService } from './server/services/politicianDataService.js';
+import { locationService } from './server/services/locationService.js';
+import { verifiedPhotoService } from './server/services/verifiedPhotoService.js';
 
 // In-memory persistent database for the application session
 let users: UserProfile[] = [...initialUsers];
 
 // Merge verified Digital Sansad members with initial MPs (ensuring no duplicates)
 const verifiedMembers = digitalSansadMemberAdapter.getAllMembers();
+const existingConstituencyState = new Set(
+  verifiedMembers.map(m => `${(m.constituency || '').toLowerCase().trim()}_${(m.state || '').toLowerCase().trim()}`)
+);
+const existingCleanNames = new Set(
+  verifiedMembers.map(m => (m.name || '').toLowerCase().replace(/^(shri|smt|dr\.|prof\.)\s+/i, '').trim())
+);
 const existingIds = new Set(verifiedMembers.map(m => m.id));
+
 let mps = [
   ...verifiedMembers,
-  ...initialMps.filter(m => !existingIds.has(m.id)),
+  ...initialMps.filter(m => {
+    if (existingIds.has(m.id)) return false;
+    const key = `${(m.constituency || '').toLowerCase().trim()}_${(m.state || '').toLowerCase().trim()}`;
+    const cleanName = (m.name || '').toLowerCase().replace(/^(shri|smt|dr\.|prof\.)\s+/i, '').trim();
+    if (existingConstituencyState.has(key) || existingCleanNames.has(cleanName)) return false;
+    return true;
+  }),
 ];
 let projects: ProjectRecord[] = [...initialProjects];
 let auditRisks: AuditRiskItem[] = [...initialAuditRisks];
@@ -78,21 +94,61 @@ async function startServer() {
     const completedWorksCount = mp.fundUtilization?.completedWorksCount ?? stats.completedProjects ?? 32;
     const ongoingWorksCount = mp.fundUtilization?.ongoingWorksCount ?? stats.inProgressProjects ?? 10;
 
-    const photoUrl = mp.photoUrl || mp.officialPhotoUrl || mp.photo || '';
-    const isPhotoVerified = Boolean(mp.photoVerified && photoUrl);
+    const instant = politicianDataService.getInstantEnrichmentSync(mp.name);
+    const verified = verifiedPhotoService.getCachedVerifiedPhoto(mp.name, mp.id);
+
+    let photoUrl = '';
+    let photoSource = 'Digital Sansad';
+    let isPhotoVerified = false;
+
+    if (verified?.imageUrl && verified.verified) {
+      photoUrl = verified.imageUrl;
+      photoSource = verified.imageSource || 'Wikidata (Wikimedia Commons)';
+      isPhotoVerified = true;
+    } else if (mp.photoVerified && (mp.photoUrl || mp.officialPhotoUrl || mp.photo)) {
+      photoUrl = mp.photoUrl || mp.officialPhotoUrl || mp.photo;
+      photoSource = mp.photoSource || 'Digital Sansad';
+      isPhotoVerified = true;
+    } else if (instant?.photoUrl && instant.photoVerified) {
+      photoUrl = instant.photoUrl;
+      photoSource = instant.photoSource || 'Wikidata (Wikimedia Commons)';
+      isPhotoVerified = true;
+    }
+
+    const wikidataObj = verified
+      ? {
+          id: verified.wikidataId,
+          label: verified.mpName,
+          description: verified.biography?.description || 'Member of Parliament, Lok Sabha, India',
+          wikipediaUrl: verified.biography?.wikipediaUrl,
+          wikidataUrl: `https://www.wikidata.org/wiki/${verified.wikidataId}`,
+          birthDate: verified.biography?.birthDate,
+          birthPlace: verified.biography?.birthPlace,
+          education: verified.biography?.education,
+          website: verified.biography?.website,
+          twitter: verified.biography?.twitter,
+          photoUrl: verified.imageUrl,
+          verified: true,
+          verifiedAt: verified.verifiedAt,
+        }
+      : instant?.wikidata || mp.wikidata;
 
     return {
       ...mp,
+      district: mp.district || mp.constituency,
+      city: mp.city || mp.constituency,
       photo: photoUrl,
       photoUrl,
       officialPhotoUrl: isPhotoVerified ? photoUrl : '',
-      photoSource: isPhotoVerified ? 'Official Digital Sansad' : 'Official photo unavailable',
+      photoSource,
       photoVerified: isPhotoVerified,
+      wikidata: wikidataObj,
+      civicInfo: instant?.civicInfo || mp.civicInfo,
       lokSabhaTerms: mp.lokSabhaTerms || mp.term || '18th Lok Sabha',
       term: mp.term || '18th Lok Sabha (2024 - Present)',
       dataSourceStatus: mp.dataSourceStatus || 'CACHED',
       isFinancialDemo: mp.isFinancialDemo !== false,
-      source: 'Official Digital Sansad',
+      source: 'Official Digital Sansad & Wikidata / Civic Graph',
       stats: {
         totalProjects: recommendedWorksCount,
         sanctionedAmountLakhs,
@@ -118,10 +174,10 @@ async function startServer() {
 
   // MP Routes
   app.get('/api/mps', (req, res) => {
-    const { query, state, party, house, status, constituency, page = '1', limit = '100' } = req.query;
+    const { query, state, party, house, status, constituency, district, city, page = '1', limit = '100' } = req.query;
     let filtered = [...mps];
 
-    if (query && typeof query === 'string') {
+    if (query && typeof query === 'string' && query.trim()) {
       const q = query.toLowerCase().trim();
       filtered = filtered.filter(
         mp =>
@@ -129,27 +185,49 @@ async function startServer() {
           (mp.displayName && mp.displayName.toLowerCase().includes(q)) ||
           mp.constituency.toLowerCase().includes(q) ||
           mp.party.toLowerCase().includes(q) ||
-          mp.state.toLowerCase().includes(q)
+          mp.state.toLowerCase().includes(q) ||
+          (mp.district && mp.district.toLowerCase().includes(q)) ||
+          (mp.city && mp.city.toLowerCase().includes(q)) ||
+          (mp.membershipStatus && mp.membershipStatus.toLowerCase().includes(q)) ||
+          (mp.house && mp.house.toLowerCase().includes(q))
       );
     }
-    if (state && typeof state === 'string') {
+    if (state && typeof state === 'string' && state !== 'All India' && state !== 'all') {
       filtered = filtered.filter(mp => mp.state.toLowerCase() === state.toLowerCase().trim());
     }
-    if (party && typeof party === 'string') {
+    if (district && typeof district === 'string' && district !== 'all' && district.trim()) {
+      const d = district.toLowerCase().trim();
+      filtered = filtered.filter(
+        mp =>
+          (mp.district && (mp.district.toLowerCase() === d || mp.district.toLowerCase().includes(d) || d.includes(mp.district.toLowerCase()))) ||
+          (mp.city && (mp.city.toLowerCase() === d || mp.city.toLowerCase().includes(d) || d.includes(mp.city.toLowerCase()))) ||
+          (mp.constituency && (mp.constituency.toLowerCase() === d || mp.constituency.toLowerCase().includes(d) || d.includes(mp.constituency.toLowerCase())))
+      );
+    }
+    if (city && typeof city === 'string' && city !== 'all' && city.trim()) {
+      const c = city.toLowerCase().trim();
+      filtered = filtered.filter(
+        mp =>
+          (mp.city && (mp.city.toLowerCase() === c || mp.city.toLowerCase().includes(c) || c.includes(mp.city.toLowerCase()))) ||
+          (mp.district && (mp.district.toLowerCase() === c || mp.district.toLowerCase().includes(c) || c.includes(mp.district.toLowerCase()))) ||
+          (mp.constituency && (mp.constituency.toLowerCase() === c || mp.constituency.toLowerCase().includes(c) || c.includes(mp.constituency.toLowerCase())))
+      );
+    }
+    if (party && typeof party === 'string' && party !== 'all') {
       filtered = filtered.filter(mp => mp.party.toLowerCase() === party.toLowerCase().trim());
     }
-    if (house && typeof house === 'string') {
+    if (house && typeof house === 'string' && house !== 'all') {
       filtered = filtered.filter(mp => mp.house.toLowerCase() === house.toLowerCase().trim());
     }
-    if (status && typeof status === 'string') {
+    if (status && typeof status === 'string' && status !== 'all') {
       filtered = filtered.filter(mp => mp.membershipStatus.toLowerCase() === status.toLowerCase().trim());
     }
-    if (constituency && typeof constituency === 'string') {
+    if (constituency && typeof constituency === 'string' && constituency !== 'all') {
       filtered = filtered.filter(mp => mp.constituency.toLowerCase() === constituency.toLowerCase().trim());
     }
 
     const pageNum = Math.max(1, parseInt(page as string) || 1);
-    const limitNum = Math.min(200, Math.max(1, parseInt(limit as string) || 100));
+    const limitNum = Math.min(500, Math.max(1, parseInt(limit as string) || 100));
     const startIndex = (pageNum - 1) * limitNum;
     const paginated = filtered.slice(startIndex, startIndex + limitNum);
 
@@ -175,12 +253,38 @@ async function startServer() {
     res.json(result);
   });
 
-  app.get('/api/mps/:id', (req, res) => {
+  app.get('/api/mps/:id', async (req, res) => {
     const rawMp = mps.find(m => m.id === req.params.id) || digitalSansadMemberAdapter.getMemberById(req.params.id);
     if (!rawMp) {
       return res.status(404).json({ error: 'Member of Parliament not found' });
     }
+
+    // Enrich with live Wikidata & Google Civic Information
+    let enrichment = null;
+    try {
+      enrichment = await politicianDataService.getPoliticianEnrichment(
+        rawMp.name,
+        rawMp.constituency,
+        rawMp.state,
+        rawMp.photoUrl || rawMp.photo
+      );
+    } catch (e) {
+      console.warn('Live enrichment warning:', e);
+    }
+
     const mp = formatMpRecord(rawMp);
+    if (enrichment) {
+      if (enrichment.photoUrl) {
+        mp.photo = enrichment.photoUrl;
+        mp.photoUrl = enrichment.photoUrl;
+        mp.officialPhotoUrl = enrichment.photoUrl;
+        mp.photoSource = enrichment.photoSource;
+        mp.photoVerified = enrichment.photoVerified;
+      }
+      if (enrichment.wikidata) mp.wikidata = enrichment.wikidata;
+      if (enrichment.civicInfo) mp.civicInfo = enrichment.civicInfo;
+    }
+
     let mpProjects = projects.filter(p => p.mpId === mp.id);
 
     // If MP has no custom projects in prototype, link representative projects from the same state
@@ -203,10 +307,202 @@ async function startServer() {
     res.json({
       mp,
       projects: mpProjects,
-      source: mp.source || 'Official Digital Sansad',
+      source: mp.source || 'Official Digital Sansad & Wikidata / Civic Graph',
       lastUpdated: mp.lastUpdated || new Date().toISOString(),
       freshness: digitalSansadMemberAdapter.getFreshnessTelemetry(),
     });
+  });
+
+  // Dedicated Civic & Wikidata info endpoint
+  app.get('/api/mps/:id/civic-info', async (req, res) => {
+    const rawMp = mps.find(m => m.id === req.params.id) || digitalSansadMemberAdapter.getMemberById(req.params.id);
+    if (!rawMp) {
+      return res.status(404).json({ error: 'Member of Parliament not found' });
+    }
+    try {
+      const enrichment = await politicianDataService.getPoliticianEnrichment(
+        rawMp.name,
+        rawMp.constituency,
+        rawMp.state,
+        rawMp.photoUrl || rawMp.photo
+      );
+      res.json({
+        mpId: rawMp.id,
+        name: rawMp.name,
+        constituency: rawMp.constituency,
+        state: rawMp.state,
+        enrichment,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err?.message || 'Failed to fetch civic & Wikidata info' });
+    }
+  });
+
+  // Step-by-step verified official photo synchronization pipeline
+  app.post('/api/mps/:id/sync-photo', async (req, res) => {
+    const rawMp = mps.find(m => m.id === req.params.id) || digitalSansadMemberAdapter.getMemberById(req.params.id);
+    if (!rawMp) {
+      return res.status(404).json({
+        success: false,
+        phase: 'Official photo unavailable',
+        steps: [{ title: 'Finding official identity...', status: 'failed' }],
+        error: 'Member of Parliament not found in official directory',
+      });
+    }
+
+    try {
+      const syncResult = await verifiedPhotoService.syncMemberPhoto(
+        rawMp.id,
+        rawMp.name,
+        rawMp.constituency,
+        rawMp.state,
+        rawMp.officialProfileUrl
+      );
+
+      if (syncResult.success && syncResult.photoRecord?.imageUrl) {
+        rawMp.photoUrl = syncResult.photoRecord.imageUrl;
+        rawMp.officialPhotoUrl = syncResult.photoRecord.imageUrl;
+        rawMp.photoSource = syncResult.photoRecord.imageSource;
+        rawMp.photoVerified = true;
+        rawMp.wikidataId = syncResult.photoRecord.wikidataId;
+      } else {
+        // Strict safety rule: If identity matching fails, photoUrl = null, show "Official photo unavailable"
+        rawMp.photoUrl = '';
+        rawMp.officialPhotoUrl = '';
+        rawMp.photoVerified = false;
+      }
+
+      res.json({
+        ...syncResult,
+        mp: formatMpRecord(rawMp),
+      });
+    } catch (err: any) {
+      res.status(500).json({
+        success: false,
+        phase: 'Official photo unavailable',
+        steps: [],
+        error: err?.message || 'Verification workflow encountered an error',
+      });
+    }
+  });
+
+  // Force re-enrichment from live Wikidata & Google Civic API
+  app.post('/api/mps/:id/civic-enrich', async (req, res) => {
+    const rawMp = mps.find(m => m.id === req.params.id) || digitalSansadMemberAdapter.getMemberById(req.params.id);
+    if (!rawMp) {
+      return res.status(404).json({ error: 'Member of Parliament not found' });
+    }
+    try {
+      // 1. Run verified photo sync first
+      const photoResult = await verifiedPhotoService.syncMemberPhoto(
+        rawMp.id,
+        rawMp.name,
+        rawMp.constituency,
+        rawMp.state,
+        rawMp.officialProfileUrl
+      );
+
+      if (photoResult.success && photoResult.photoRecord?.imageUrl) {
+        rawMp.photoUrl = photoResult.photoRecord.imageUrl;
+        rawMp.officialPhotoUrl = photoResult.photoRecord.imageUrl;
+        rawMp.photoSource = photoResult.photoRecord.imageSource;
+        rawMp.photoVerified = true;
+        rawMp.wikidataId = photoResult.photoRecord.wikidataId;
+      }
+
+      const cleanName = politicianDataService.cleanPoliticianName(rawMp.name);
+      const entityId = rawMp.wikidataId || (await politicianDataService.searchWikidataEntity(cleanName));
+      let liveWikidata = null;
+      if (entityId) {
+        liveWikidata = await politicianDataService.fetchWikidataDetails(entityId);
+      }
+      const civicAddress = `${rawMp.constituency}, ${rawMp.state}, India`;
+      const liveCivic = await politicianDataService.queryGoogleCivicInfo(civicAddress, rawMp.name);
+
+      if (liveWikidata?.photoUrl) {
+        rawMp.photoUrl = liveWikidata.photoUrl;
+        rawMp.officialPhotoUrl = liveWikidata.photoUrl;
+        rawMp.photoSource = 'Wikidata (Wikimedia Commons)';
+        rawMp.photoVerified = true;
+      } else if (liveCivic?.photoUrl) {
+        rawMp.photoUrl = liveCivic.photoUrl;
+        rawMp.officialPhotoUrl = liveCivic.photoUrl;
+        rawMp.photoSource = 'Google Civic Information API';
+        rawMp.photoVerified = true;
+      }
+
+      const formatted = formatMpRecord(rawMp);
+      res.json({
+        success: true,
+        mpId: rawMp.id,
+        name: rawMp.name,
+        mp: formatted,
+        data: {
+          photoUrl: rawMp.photoUrl,
+          photoSource: rawMp.photoSource,
+          wikidata: liveWikidata,
+          civicInfo: liveCivic,
+        },
+        wikidata: liveWikidata,
+        civicInfo: liveCivic,
+        refreshedAt: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err?.message || 'Failed to re-enrich MP record' });
+    }
+  });
+
+  // Admin Batch Photo Sync (Requirement 20)
+  app.post('/api/admin/sync-missing-photos', async (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 40;
+    const candidates = mps.map(m => ({
+      id: m.id,
+      name: m.name,
+      constituency: m.constituency,
+      state: m.state,
+      officialProfileUrl: m.officialProfileUrl,
+    }));
+    const stats = await verifiedPhotoService.syncMissingPhotosBatch(candidates, limit);
+    res.json({
+      success: true,
+      message: `${stats.totalChecked} MPs checked, ${stats.photosVerified} new verified photos synced.`,
+      stats,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  // Admin Photo Resolution Error Logs (Requirement 21)
+  app.get('/api/admin/photo-sync-logs', (req, res) => {
+    const logs = verifiedPhotoService.getErrorLogs();
+    res.json({
+      totalErrors: logs.length,
+      logs,
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+
+  // Generic Civic & Wikidata search for any politician name
+  app.get('/api/politicians/civic-search', async (req, res) => {
+    const { query, state = '', constituency = '' } = req.query;
+    if (!query || typeof query !== 'string') {
+      return res.status(400).json({ error: 'Search query parameter is required' });
+    }
+    try {
+      const enrichment = await politicianDataService.getPoliticianEnrichment(
+        query,
+        constituency as string,
+        state as string
+      );
+      res.json({
+        query,
+        enrichment,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      res.status(500).json({ error: err?.message || 'Failed to query politician data' });
+    }
   });
 
   // Project Routes
@@ -493,9 +789,82 @@ async function startServer() {
 
   // Unified Search API Endpoint
   app.get('/api/search', (req, res) => {
-    const q = (req.query.q as string) || '';
+    const q = (req.query.q as string) || (req.query.query as string) || (req.query.search as string) || '';
     const results = unifiedSearchService.search(q);
     res.json(results);
+  });
+
+  // Location System API Endpoints (Official GoI 28 States + 8 UTs + 786 Districts + Cities)
+  app.get('/api/locations/summary', (req, res) => {
+    res.json(locationService.getLocationSummary());
+  });
+
+  app.get('/api/locations/states', (req, res) => {
+    res.json(locationService.getAllStates());
+  });
+
+  app.get('/api/locations/union-territories', (req, res) => {
+    res.json(locationService.getAllUnionTerritories());
+  });
+
+  app.get('/api/locations/all', (req, res) => {
+    res.json(locationService.getAllJurisdictions());
+  });
+
+  app.get('/api/locations/districts', (req, res) => {
+    const state = (req.query.state as string) || '';
+    res.json(locationService.getDistrictsByState(state));
+  });
+
+  app.get('/api/locations/cities', (req, res) => {
+    const state = (req.query.state as string) || '';
+    const district = (req.query.district as string) || '';
+    if (district) {
+      res.json(locationService.getCitiesByDistrict(district, state));
+    } else {
+      res.json(locationService.getCitiesByState(state));
+    }
+  });
+
+  app.get('/api/locations/combined', (req, res) => {
+    const state = (req.query.state as string) || '';
+    const q = (req.query.q as string) || '';
+    res.json(locationService.getCombinedLocations(state, q));
+  });
+
+  app.get('/api/locations/search', (req, res) => {
+    const q = (req.query.q as string) || '';
+    const state = (req.query.state as string) || '';
+    const type = (req.query.type as string) || 'all';
+
+    if (type === 'districts') {
+      res.json(locationService.searchDistricts(q, state));
+    } else if (type === 'cities') {
+      res.json(locationService.searchCities(q, state));
+    } else {
+      const districts = locationService.searchDistricts(q, state);
+      const cities = locationService.searchCities(q, state);
+      res.json({ districts, cities });
+    }
+  });
+
+  app.get('/api/locations/constituency-mapping', (req, res) => {
+    const state = (req.query.state as string) || '';
+    const location = (req.query.location as string) || '';
+    // Collect all official constituencies for this state from MP dataset
+    const stateMps = mps.filter(m => !state || m.state.toLowerCase() === state.toLowerCase().trim());
+    const officialConstituencies = Array.from(new Set(stateMps.map(m => m.constituency).filter(Boolean)));
+    const mapping = locationService.getConstituencyMapping(state, location, officialConstituencies);
+    res.json(mapping);
+  });
+
+  app.get('/api/locations/freshness', (req, res) => {
+    res.json(locationService.getFreshness());
+  });
+
+  app.post('/api/locations/refresh', (req, res) => {
+    const summary = locationService.refreshLocationData();
+    res.json({ success: true, summary });
   });
 
   // Real-Time Data Status Telemetry Endpoint

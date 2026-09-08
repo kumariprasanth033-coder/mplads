@@ -1,4 +1,8 @@
 import { MPRecord } from '../src/types.js';
+import { TAMIL_NADU_MPS } from './data/membersTamilNadu.js';
+import { KERALA_MPS } from './data/membersKerala.js';
+import { DELHI_MPS } from './data/membersDelhi.js';
+import { OTHER_STATES_MPS } from './data/membersOtherStates.js';
 
 /**
  * Digital Sansad Member Data Adapter (Server-Side)
@@ -1739,13 +1743,34 @@ const VERIFIED_DIGITAL_SANSAD_MEMBERS: DigitalSansadMemberRecord[] = [
   },
 ];
 
+// Combine all verified members across States and UTs ensuring zero loss and rich district/city mapping
+const ENRICHED_NEW_MEMBERS: DigitalSansadMemberRecord[] = [
+  ...TAMIL_NADU_MPS,
+  ...KERALA_MPS,
+  ...DELHI_MPS,
+  ...OTHER_STATES_MPS,
+];
+const enrichedKeySet = new Set(
+  ENRICHED_NEW_MEMBERS.map(m => `${m.state.toLowerCase()}:::${m.constituency.toLowerCase()}`)
+);
+const COMBINED_MASTER_MEMBERS: DigitalSansadMemberRecord[] = [
+  ...ENRICHED_NEW_MEMBERS,
+  ...VERIFIED_DIGITAL_SANSAD_MEMBERS.filter(
+    m => !enrichedKeySet.has(`${m.state.toLowerCase()}:::${m.constituency.toLowerCase()}`)
+  ).map(m => ({
+    ...m,
+    district: m.district || m.constituency,
+    city: m.city || m.constituency,
+  })),
+];
+
 class DigitalSansadMemberAdapter {
-  private cache: DigitalSansadMemberRecord[] = [...VERIFIED_DIGITAL_SANSAD_MEMBERS];
+  private cache: DigitalSansadMemberRecord[] = [...COMBINED_MASTER_MEMBERS];
   private lastRefreshTimestamp: string = new Date().toISOString();
   private dataSourceStatus: 'LIVE' | 'CACHED' | 'DEMO' = 'CACHED';
 
   /**
-   * Search members across all fields: name, constituency, state, party
+   * Search members across all fields: name, constituency, state, party, district, city
    */
   public searchMembers(
     query?: string,
@@ -1755,6 +1780,8 @@ class DigitalSansadMemberAdapter {
       house?: string;
       status?: string;
       constituency?: string;
+      district?: string;
+      city?: string;
     }
   ): DigitalSansadMemberRecord[] {
     let results = [...this.cache];
@@ -1767,31 +1794,53 @@ class DigitalSansadMemberAdapter {
           (m.displayName && m.displayName.toLowerCase().includes(q)) ||
           m.constituency.toLowerCase().includes(q) ||
           m.state.toLowerCase().includes(q) ||
-          m.party.toLowerCase().includes(q)
+          m.party.toLowerCase().includes(q) ||
+          (m.district && m.district.toLowerCase().includes(q)) ||
+          (m.city && m.city.toLowerCase().includes(q))
       );
     }
 
-    if (filters?.state && filters.state.trim()) {
+    if (filters?.state && filters.state.trim() && filters.state.toLowerCase() !== 'all india' && filters.state.toLowerCase() !== 'all') {
       const s = filters.state.toLowerCase().trim();
       results = results.filter(m => m.state.toLowerCase() === s);
     }
 
-    if (filters?.party && filters.party.trim()) {
+    if (filters?.party && filters.party.trim() && filters.party.toLowerCase() !== 'all') {
       const p = filters.party.toLowerCase().trim();
       results = results.filter(m => m.party.toLowerCase() === p);
     }
 
-    if (filters?.house && filters.house.trim()) {
+    if (filters?.house && filters.house.trim() && filters.house.toLowerCase() !== 'all') {
       const h = filters.house.toLowerCase().trim();
       results = results.filter(m => m.house.toLowerCase() === h);
     }
 
-    if (filters?.status && filters.status.trim()) {
+    if (filters?.status && filters.status.trim() && filters.status.toLowerCase() !== 'all') {
       const st = filters.status.toLowerCase().trim();
       results = results.filter(m => m.membershipStatus.toLowerCase() === st);
     }
 
-    if (filters?.constituency && filters.constituency.trim()) {
+    if (filters?.district && filters.district.trim() && filters.district.toLowerCase() !== 'all') {
+      const d = filters.district.toLowerCase().trim();
+      results = results.filter(
+        m =>
+          (m.district && m.district.toLowerCase() === d) ||
+          (m.city && m.city.toLowerCase() === d) ||
+          m.constituency.toLowerCase() === d
+      );
+    }
+
+    if (filters?.city && filters.city.trim() && filters.city.toLowerCase() !== 'all') {
+      const c = filters.city.toLowerCase().trim();
+      results = results.filter(
+        m =>
+          (m.city && m.city.toLowerCase() === c) ||
+          (m.district && m.district.toLowerCase() === c) ||
+          m.constituency.toLowerCase() === c
+      );
+    }
+
+    if (filters?.constituency && filters.constituency.trim() && filters.constituency.toLowerCase() !== 'all') {
       const c = filters.constituency.toLowerCase().trim();
       results = results.filter(m => m.constituency.toLowerCase() === c);
     }

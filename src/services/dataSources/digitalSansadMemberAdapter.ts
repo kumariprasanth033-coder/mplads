@@ -2,6 +2,8 @@ import { MPRecord } from '../../types';
 
 export interface MemberSearchFilters {
   state?: string;
+  district?: string;
+  city?: string;
   party?: string;
   house?: 'Lok Sabha' | 'Rajya Sabha';
   status?: 'Sitting' | 'Former';
@@ -34,6 +36,8 @@ export const digitalSansadMemberAdapter = {
       const params = new URLSearchParams();
       if (query.trim()) params.append('query', query.trim());
       if (filters.state) params.append('state', filters.state);
+      if (filters.district) params.append('district', filters.district);
+      if (filters.city) params.append('city', filters.city);
       if (filters.party) params.append('party', filters.party);
       if (filters.house) params.append('house', filters.house);
       if (filters.status) params.append('status', filters.status);
@@ -58,16 +62,7 @@ export const digitalSansadMemberAdapter = {
       };
     } catch (err) {
       console.warn('digitalSansadMemberAdapter searchMembers failed:', err);
-      return {
-        mps: [],
-        total: 0,
-        freshness: {
-          status: 'DEMO',
-          lastUpdated: new Date().toISOString(),
-          source: 'Fallback Cached Data',
-          totalMembers: 0,
-        },
-      };
+      throw err;
     }
   },
 
@@ -192,4 +187,84 @@ export const digitalSansadMemberAdapter = {
       };
     }
   },
+
+  /**
+   * Fetch politician information & imagery from Wikidata API & Google Civic Information API
+   */
+  async getCivicInfo(mpId: string): Promise<any> {
+    try {
+      const res = await fetch(`/api/mps/${encodeURIComponent(mpId)}/civic-info`);
+      if (!res.ok) throw new Error('Civic info endpoint returned non-200');
+      return await res.json();
+    } catch (err) {
+      console.warn('getCivicInfo error:', err);
+      return null;
+    }
+  },
+
+  /**
+   * Force live re-enrichment from Wikidata API & Google Civic Information API
+   */
+  async enrichWithCivicData(mpId: string): Promise<any> {
+    try {
+      const res = await fetch(`/api/mps/${encodeURIComponent(mpId)}/civic-enrich`, {
+        method: 'POST',
+      });
+      if (!res.ok) throw new Error('Civic enrich endpoint returned non-200');
+      return await res.json();
+    } catch (err) {
+      console.warn('enrichWithCivicData error:', err);
+      return null;
+    }
+  },
+
+  /**
+   * Sync official photo via verified identity pipeline (Digital Sansad -> Wikidata P18 -> Wikimedia Commons)
+   * Adheres strictly to the requirement:
+   * Real progress steps: Finding official identity -> Resolving Wikidata -> Finding verified image -> Verifying image -> Saving image -> Completed
+   */
+  async syncOfficialPhoto(mpId: string): Promise<{
+    success: boolean;
+    phase: string;
+    steps: { title: string; status: 'completed' | 'pending' | 'failed' | 'skipped' }[];
+    mp?: MPRecord;
+    photoRecord?: any;
+    error?: string;
+  }> {
+    try {
+      const res = await fetch(`/api/mps/${encodeURIComponent(mpId)}/sync-photo`, {
+        method: 'POST',
+      });
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        return {
+          success: false,
+          phase: 'Official photo unavailable',
+          steps: errJson.steps || [],
+          error: errJson.error || 'Failed to sync official photo',
+        };
+      }
+      return await res.json();
+    } catch (err: any) {
+      return {
+        success: false,
+        phase: 'Official photo unavailable',
+        steps: [],
+        error: err?.message || 'Network error syncing photo',
+      };
+    }
+  },
+
+  /**
+   * Refresh Members (alias required by Requirement 14)
+   */
+  async refreshMembers() {
+    return this.refreshMemberData();
+  },
 };
+
+/**
+ * Standard alias matching Requirement 14
+ */
+export const digitalSansadAdapter = digitalSansadMemberAdapter;
+

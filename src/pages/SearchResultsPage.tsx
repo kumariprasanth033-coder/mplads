@@ -62,12 +62,13 @@ export const SearchResultsPage: React.FC<Props> = ({
     if (!searchTerm.trim()) return;
     setIsLoading(true);
     setError(null);
+    setSearchData(null); // Clear previous results immediately
     try {
       const data = await api.search(searchTerm.trim());
       setSearchData(data);
     } catch (err: any) {
       console.error('Search error:', err);
-      setError('Official data adapters temporarily unavailable. Showing cached records.');
+      setError('Unable to retrieve MP data. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +121,7 @@ export const SearchResultsPage: React.FC<Props> = ({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Searching...</span>
+                <span>Searching official data...</span>
               </>
             ) : (
               <>
@@ -322,9 +323,9 @@ export const SearchResultsPage: React.FC<Props> = ({
                         className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex flex-col items-center justify-center text-[8px] text-center border border-slate-200 shrink-0 p-1">
+                      <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-400 flex flex-col items-center justify-center text-[7px] text-center border border-slate-200 shrink-0 p-1 leading-tight">
                         <User className="w-4 h-4 mb-0.5 text-slate-300" />
-                        <span>No Photo</span>
+                        <span>Official photo unavailable</span>
                       </div>
                     )
                   )}
@@ -381,9 +382,9 @@ export const SearchResultsPage: React.FC<Props> = ({
           <div className="w-14 h-14 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-4">
             <Search className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-slate-800">No matching records found</h3>
+          <h3 className="text-lg font-bold text-slate-800">No matching MP found.</h3>
           <p className="text-sm text-slate-500 max-w-md mx-auto mt-1">
-            We couldn't find any MP, project, constituency, or location matching "{query}".
+            Try searching by MP name, constituency, state or party.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             <span className="text-xs text-slate-400">Try searching:</span>

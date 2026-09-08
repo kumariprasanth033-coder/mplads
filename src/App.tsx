@@ -20,6 +20,7 @@ import { ProjectsPage } from './pages/ProjectsPage';
 import { ProjectDetailPage } from './pages/ProjectDetailPage';
 import { MpsPage } from './pages/MpsPage';
 import { MpDetailPage } from './pages/MpDetailPage';
+import { SearchResultsPage } from './pages/SearchResultsPage';
 import { ConstituencyMapPage } from './pages/ConstituencyMapPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { QrVerificationPage } from './pages/QrVerificationPage';
@@ -107,12 +108,28 @@ export default function App() {
       return <ProjectDetailPage projectId={id} onNavigate={navigate} />;
     }
 
-    if (currentPath === '/mps') {
-      return <MpsPage onNavigate={navigate} />;
+    if (currentPath === '/mps' || currentPath.startsWith('/mps?')) {
+      const q = currentPath.includes('?')
+        ? new URLSearchParams(currentPath.split('?')[1]).get('q') ||
+          new URLSearchParams(currentPath.split('?')[1]).get('query') ||
+          new URLSearchParams(currentPath.split('?')[1]).get('search') ||
+          ''
+        : '';
+      return <MpsPage initialQuery={q} onNavigate={navigate} />;
+    }
+
+    if (currentPath.startsWith('/search')) {
+      const q = currentPath.includes('?')
+        ? new URLSearchParams(currentPath.split('?')[1]).get('q') ||
+          new URLSearchParams(currentPath.split('?')[1]).get('query') ||
+          new URLSearchParams(currentPath.split('?')[1]).get('search') ||
+          ''
+        : '';
+      return <SearchResultsPage initialQuery={q} onNavigate={navigate} />;
     }
 
     if (currentPath.startsWith('/mp/')) {
-      const id = currentPath.replace('/mp/', '');
+      const id = currentPath.replace('/mp/', '').split('?')[0];
       return <MpDetailPage mpId={id} onNavigate={navigate} />;
     }
 
