@@ -40,6 +40,7 @@ import { DashboardAiAssistant } from './DashboardAiAssistant';
 import { MPAvatar } from '../MPAvatar';
 import { MPRecord, ProjectRecord } from '../../types';
 import { useDashboardFilter } from '../../context/DashboardFilterContext';
+import { formatCleanNumber } from '../../utils/safeCalculation';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -490,25 +491,31 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
         </div>
 
         {/* Indicator Cards Grid - Clickable & Preserves State/District Filters */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-3.5 w-full">
           {/* Card 1: Total Works */}
           <button
             id="kpi-card-total-works"
             type="button"
             onClick={() => navigateWithPreservedFilters('/projects', { status: 'All' })}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group relative focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             title="Click to view all works under current filter"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 block uppercase tracking-wider truncate flex-1">
                 {filters.state ? 'State Works' : 'Pan-India Works'}
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-slate-100 block mt-1">
-              {filters.state ? activeStateMetric?.totalWorks : nationalMetrics.totalProjects.toLocaleString()}
+            <span
+              className="text-xl sm:text-2xl font-black text-slate-100 block mt-1.5 truncate tracking-tight w-full"
+              title={String(filters.state ? activeStateMetric?.totalWorks : nationalMetrics.totalProjects)}
+            >
+              {filters.state ? formatCleanNumber(activeStateMetric?.totalWorks) : formatCleanNumber(nationalMetrics.totalProjects)}
             </span>
-            <span className="text-[10px] text-slate-500 mt-1 block group-hover:text-blue-600 font-medium transition-colors">
+            <span
+              className="text-[10px] sm:text-[11px] text-slate-500 mt-1.5 block group-hover:text-blue-600 font-medium transition-colors truncate w-full"
+              title={filters.state ? `${activeStateMetric?.districtsCount} Districts • View All →` : 'Across 787+ Districts • View All →'}
+            >
               {filters.state ? `${activeStateMetric?.districtsCount} Districts • View All →` : 'Across 787+ Districts • View All →'}
             </span>
           </button>
@@ -518,19 +525,25 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
             id="kpi-card-sanctioned-funds"
             type="button"
             onClick={() => navigateWithPreservedFilters('/projects', { status: 'Sanctioned' })}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group relative focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-blue-500"
             title="Click to view sanctioned works"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 block uppercase tracking-wider truncate flex-1">
                 Sanctioned Funds
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-blue-700 block mt-1">
+            <span
+              className="text-xl sm:text-2xl font-black text-blue-400 block mt-1.5 truncate tracking-tight w-full"
+              title={`₹${filters.state ? activeStateMetric?.totalSanctionedCr : nationalMetrics.totalSanctionedCr.toLocaleString()} Cr`}
+            >
               ₹{filters.state ? activeStateMetric?.totalSanctionedCr : nationalMetrics.totalSanctionedCr.toLocaleString()} Cr
             </span>
-            <span className="text-[10px] text-blue-600 mt-1 block group-hover:underline font-medium">
+            <span
+              className="text-[10px] sm:text-[11px] text-blue-400/90 mt-1.5 block group-hover:underline font-medium truncate w-full"
+              title="Administrative Sanctions →"
+            >
               Administrative Sanctions →
             </span>
           </button>
@@ -540,19 +553,25 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
             id="kpi-card-utilized-funds"
             type="button"
             onClick={() => navigateWithPreservedFilters('/projects', { status: 'In Progress' })}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer group relative focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 hover:border-emerald-500 hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
             title="Click to view expended / active works"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 block uppercase tracking-wider truncate flex-1">
                 Expended / Utilized
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-emerald-700 block mt-1">
+            <span
+              className="text-xl sm:text-2xl font-black text-emerald-400 block mt-1.5 truncate tracking-tight w-full"
+              title={`₹${filters.state ? activeStateMetric?.totalUtilizedCr : nationalMetrics.totalUtilizedCr.toLocaleString()} Cr`}
+            >
               ₹{filters.state ? activeStateMetric?.totalUtilizedCr : nationalMetrics.totalUtilizedCr.toLocaleString()} Cr
             </span>
-            <span className="text-[10px] text-emerald-600 mt-1 block group-hover:underline font-medium">
+            <span
+              className="text-[10px] sm:text-[11px] text-emerald-400/90 mt-1.5 block group-hover:underline font-medium truncate w-full"
+              title={filters.state ? `${activeStateMetric?.utilizationRate}% Rate • View →` : `${nationalMetrics.avgUtilizationRate}% Rate • View →`}
+            >
               {filters.state ? `${activeStateMetric?.utilizationRate}% Rate • View →` : `${nationalMetrics.avgUtilizationRate}% Rate • View →`}
             </span>
           </button>
@@ -562,19 +581,25 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
             id="kpi-card-completion-rate"
             type="button"
             onClick={() => navigateWithPreservedFilters('/projects', { status: 'Completed' })}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-teal-500 hover:shadow-md transition-all cursor-pointer group relative focus:outline-hidden focus:ring-2 focus:ring-teal-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 hover:border-teal-500 hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-teal-500"
             title="Click to view completed works"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 block uppercase tracking-wider truncate flex-1">
                 Asset Completion
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-teal-700 block mt-1">
+            <span
+              className="text-xl sm:text-2xl font-black text-teal-400 block mt-1.5 truncate tracking-tight w-full"
+              title={filters.state ? `${activeStateMetric?.completionRate}%` : `${nationalMetrics.avgCompletionRate}%`}
+            >
               {filters.state ? `${activeStateMetric?.completionRate}%` : `${nationalMetrics.avgCompletionRate}%`}
             </span>
-            <span className="text-[10px] text-teal-600 mt-1 block group-hover:underline font-medium">
+            <span
+              className="text-[10px] sm:text-[11px] text-teal-400/90 mt-1.5 block group-hover:underline font-medium truncate w-full"
+              title="Completed Works →"
+            >
               Completed Works →
             </span>
           </button>
@@ -584,19 +609,25 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
             id="kpi-card-grievances"
             type="button"
             onClick={() => navigateWithPreservedFilters('/grievance', {})}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer group relative focus:outline-hidden focus:ring-2 focus:ring-amber-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 hover:border-amber-500 hover:shadow-md transition-all cursor-pointer group relative flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-amber-500"
             title="Click to view public grievances and complaints"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 block uppercase tracking-wider truncate flex-1">
                 Public Grievances
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-slate-300 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-amber-700 block mt-1">
-              {filters.state ? Math.round((activeStateMetric?.totalWorks || 100) * 0.12) : nationalMetrics.totalGrievances.toLocaleString()}
+            <span
+              className="text-xl sm:text-2xl font-black text-amber-400 block mt-1.5 truncate tracking-tight w-full"
+              title={String(filters.state ? Math.round((activeStateMetric?.totalWorks || 100) * 0.12) : nationalMetrics.totalGrievances)}
+            >
+              {filters.state ? formatCleanNumber(Math.round((activeStateMetric?.totalWorks || 100) * 0.12)) : formatCleanNumber(nationalMetrics.totalGrievances)}
             </span>
-            <span className="text-[10px] text-amber-600 mt-1 block group-hover:underline font-medium">
+            <span
+              className="text-[10px] sm:text-[11px] text-amber-400/90 mt-1.5 block group-hover:underline font-medium truncate w-full"
+              title="Resolution Velocity →"
+            >
               Resolution Velocity →
             </span>
           </button>
@@ -606,19 +637,25 @@ export const MasterIntelligenceDashboard: React.FC<Props> = ({ onNavigate }) => 
             id="kpi-card-attention-signals"
             type="button"
             onClick={() => navigateWithPreservedFilters('/projects', { status: 'Delayed', risk: 'HIGH' })}
-            className="text-left bg-slate-800 p-4 rounded-xl border border-rose-200 hover:border-rose-500 hover:shadow-md transition-all cursor-pointer group relative bg-rose-50/20 focus:outline-hidden focus:ring-2 focus:ring-rose-500"
+            className="min-w-0 text-left bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-rose-500/40 hover:border-rose-500 hover:shadow-md transition-all cursor-pointer group relative bg-rose-950/20 flex flex-col justify-between overflow-hidden focus:outline-hidden focus:ring-2 focus:ring-rose-500"
             title="Click to view delayed and high risk works"
           >
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-rose-500 block uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-1.5 min-w-0 w-full">
+              <span className="text-[10px] sm:text-[11px] font-bold text-rose-400 block uppercase tracking-wider truncate flex-1">
                 Delayed / Attention
               </span>
-              <ArrowRight className="w-3 h-3 text-rose-300 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3 h-3 text-rose-300 group-hover:text-rose-400 group-hover:translate-x-0.5 transition-all shrink-0" />
             </div>
-            <span className="text-2xl font-black text-rose-600 block mt-1">
-              {filters.state ? activeStateMetric?.delayedWorks : nationalMetrics.aiAttentionCount}
+            <span
+              className="text-xl sm:text-2xl font-black text-rose-400 block mt-1.5 truncate tracking-tight w-full"
+              title={String(filters.state ? activeStateMetric?.delayedWorks : nationalMetrics.aiAttentionCount)}
+            >
+              {filters.state ? formatCleanNumber(activeStateMetric?.delayedWorks) : formatCleanNumber(nationalMetrics.aiAttentionCount)}
             </span>
-            <span className="text-[10px] text-rose-600 mt-1 block group-hover:underline font-bold">
+            <span
+              className="text-[10px] sm:text-[11px] text-rose-400 mt-1.5 block group-hover:underline font-bold truncate w-full"
+              title="View Delayed Records →"
+            >
               View Delayed Records →
             </span>
           </button>

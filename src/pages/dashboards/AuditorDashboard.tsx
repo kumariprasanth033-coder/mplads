@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { AuditRiskItem } from '../../types';
+import { formatLakhsAmount } from '../../utils/safeCalculation';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -86,13 +87,13 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Flagged Risks Table (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5">
-              <h3 className="font-bold text-base text-slate-900 pb-3 border-b border-slate-100 flex items-center gap-2">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-5">
+              <h3 className="font-bold text-base text-slate-100 pb-3 border-b border-slate-800 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
                 <span>Flagged Projects &amp; Anomaly Triage ({risks.length})</span>
               </h3>
 
-              <div className="divide-y divide-slate-100 mt-2">
+              <div className="divide-y divide-slate-800 mt-2">
                 {risks.map(r => (
                   <div
                     key={r.id}
@@ -100,7 +101,7 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
                     className={`p-3.5 rounded-xl transition-all cursor-pointer ${
                       selectedRisk?.id === r.id
                         ? 'bg-rose-50/80 border-2 border-rose-500'
-                        : 'hover:bg-slate-50 border border-transparent'
+                        : 'hover:bg-slate-900 border border-transparent'
                     }`}
                   >
                     <div className="flex items-center justify-between text-xs">
@@ -112,7 +113,7 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
                       <span className="text-[10px] font-mono text-slate-400">{r.status}</span>
                     </div>
 
-                    <h4 className="font-bold text-sm text-slate-900 mt-2">
+                    <h4 className="font-bold text-sm text-slate-100 mt-2">
                       {r.projectTitle}
                     </h4>
 
@@ -120,9 +121,9 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
                       {r.description}
                     </p>
 
-                    <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-1 border-t border-slate-100">
-                      <span>{r.district}</span>
-                      <strong className="text-slate-800">₹{r.amountLakhs} Lakhs</strong>
+                    <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-1 border-t border-slate-800 min-w-0 gap-2">
+                      <span className="truncate">{r.district}</span>
+                      <strong className="text-slate-200 shrink-0">{formatLakhsAmount(r.amountLakhs)}</strong>
                     </div>
                   </div>
                 ))}
@@ -132,8 +133,8 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
 
           {/* Right Column: Risk Deep Dive & Field Inspection Dispatch (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-              <h3 className="font-bold text-base text-slate-900 pb-3 border-b border-slate-100">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6">
+              <h3 className="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">
                 Auditor Assessment &amp; Physical Inspection Order
               </h3>
 
@@ -141,27 +142,27 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
                 <div className="mt-4 space-y-4 text-xs">
                   <div>
                     <span className="text-[10px] font-mono text-slate-400">PROJECT UNDER REVIEW</span>
-                    <h4 className="font-bold text-base text-slate-900 mt-0.5">
+                    <h4 className="font-bold text-base text-slate-100 mt-0.5">
                       {selectedRisk.projectTitle}
                     </h4>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <div>
+                  <div className="grid grid-cols-2 gap-3 p-3 bg-slate-900 rounded-xl border border-slate-700">
+                    <div className="min-w-0">
                       <span className="text-slate-400 block text-[10px]">Calculated Anomaly Score</span>
-                      <strong className="text-rose-700 text-base">{selectedRisk.riskScore} / 100</strong>
+                      <strong className="text-rose-400 text-base block truncate">{selectedRisk.riskScore} / 100</strong>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-slate-400 block text-[10px]">Sanctioned Value</span>
-                      <strong className="text-slate-900 text-base">₹{selectedRisk.amountLakhs} Lakhs</strong>
+                      <strong className="text-slate-100 text-base block truncate">{formatLakhsAmount(selectedRisk.amountLakhs)}</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">District</span>
-                      <strong className="text-slate-900">{selectedRisk.district}</strong>
+                      <strong className="text-slate-100">{selectedRisk.district}</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Flag Category</span>
-                      <strong className="text-slate-900">{selectedRisk.category}</strong>
+                      <strong className="text-slate-100">{selectedRisk.category}</strong>
                     </div>
                   </div>
 
@@ -172,12 +173,12 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
 
                   {/* Actions for Auditor */}
                   <div className="space-y-2 pt-2">
-                    <span className="text-slate-700 font-bold block">Adjudicate Audit Step:</span>
+                    <span className="text-slate-300 font-bold block">Adjudicate Audit Step:</span>
                     <div className="grid grid-cols-3 gap-2">
                       <button
                         type="button"
                         onClick={() => handleUpdateStatus('Under Review')}
-                        className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg cursor-pointer"
+                        className="py-2.5 px-3 bg-slate-800/80 hover:bg-slate-200 text-slate-200 font-bold rounded-lg cursor-pointer"
                       >
                         Keep Under Review
                       </button>
@@ -201,7 +202,7 @@ export const AuditorDashboard: React.FC<Props> = ({ onNavigate }) => {
                   <div className="pt-2">
                     <button
                       onClick={() => onNavigate(`/projects/${selectedRisk.projectId}`)}
-                      className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2 bg-slate-800/80 hover:bg-slate-200 text-slate-300 font-semibold rounded-lg flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                       <span>Open Full Project Milestone History</span>
                       <ExternalLink className="w-3.5 h-3.5" />

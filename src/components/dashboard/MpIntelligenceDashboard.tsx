@@ -252,41 +252,53 @@ export const MpIntelligenceDashboard: React.FC<Props> = ({
             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
               Constituency Entitlement &amp; Expenditure Breakdown
             </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Annual Entitlement</span>
-                <span className="text-lg font-extrabold text-slate-100 mt-0.5 block">₹{entitlementCr.toFixed(2)} Cr</span>
-                <span className="text-[10px] text-slate-500">Statutory MPLADS Quota</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 w-full">
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Annual Entitlement</span>
+                <span className="text-base sm:text-lg font-extrabold text-slate-100 mt-0.5 block truncate tracking-tight" title={`₹${entitlementCr.toFixed(2)} Cr`}>
+                  ₹{entitlementCr.toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-slate-500 truncate block">Statutory MPLADS Quota</span>
               </div>
 
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Recommended</span>
-                <span className="text-lg font-extrabold text-indigo-700 mt-0.5 block">₹{(sanctionedCr * 1.05).toFixed(2)} Cr</span>
-                <span className="text-[10px] text-indigo-600">MP Proposals Submitted</span>
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Recommended</span>
+                <span className="text-base sm:text-lg font-extrabold text-indigo-400 mt-0.5 block truncate tracking-tight" title={`₹${(sanctionedCr * 1.05).toFixed(2)} Cr`}>
+                  ₹{(sanctionedCr * 1.05).toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-indigo-400/80 truncate block">MP Proposals Submitted</span>
               </div>
 
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Sanctioned</span>
-                <span className="text-lg font-extrabold text-blue-700 mt-0.5 block">₹{sanctionedCr.toFixed(2)} Cr</span>
-                <span className="text-[10px] text-blue-600">Collector AS Approved</span>
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Sanctioned</span>
+                <span className="text-base sm:text-lg font-extrabold text-blue-400 mt-0.5 block truncate tracking-tight" title={`₹${sanctionedCr.toFixed(2)} Cr`}>
+                  ₹{sanctionedCr.toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-blue-400/80 truncate block">Collector AS Approved</span>
               </div>
 
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Funds Released</span>
-                <span className="text-lg font-extrabold text-slate-100 mt-0.5 block">₹{entitlementCr.toFixed(2)} Cr</span>
-                <span className="text-[10px] text-slate-500">Credited to District</span>
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Funds Released</span>
+                <span className="text-base sm:text-lg font-extrabold text-slate-100 mt-0.5 block truncate tracking-tight" title={`₹${entitlementCr.toFixed(2)} Cr`}>
+                  ₹{entitlementCr.toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-slate-500 truncate block">Credited to District</span>
               </div>
 
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Expended / Utilized</span>
-                <span className="text-lg font-extrabold text-emerald-700 mt-0.5 block">₹{utilizedCr.toFixed(2)} Cr</span>
-                <span className="text-[10px] text-emerald-600">Verified by UC Invoices</span>
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Expended / Utilized</span>
+                <span className="text-base sm:text-lg font-extrabold text-emerald-400 mt-0.5 block truncate tracking-tight" title={`₹${utilizedCr.toFixed(2)} Cr`}>
+                  ₹{utilizedCr.toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-emerald-400/80 truncate block">Verified by UC Invoices</span>
               </div>
 
-              <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-700">
-                <span className="text-[10px] font-bold text-slate-400 block uppercase">Available Balance</span>
-                <span className="text-lg font-extrabold text-amber-700 mt-0.5 block">₹{remainingCr.toFixed(2)} Cr</span>
-                <span className="text-[10px] text-amber-600">Committed for Works</span>
+              <div className="min-w-0 bg-slate-900 p-3.5 rounded-xl border border-slate-700 flex flex-col justify-between overflow-hidden shadow-xs">
+                <span className="text-[10px] font-bold text-slate-400 block uppercase truncate">Available Balance</span>
+                <span className="text-base sm:text-lg font-extrabold text-amber-400 mt-0.5 block truncate tracking-tight" title={`₹${remainingCr.toFixed(2)} Cr`}>
+                  ₹{remainingCr.toFixed(2)} Cr
+                </span>
+                <span className="text-[10px] text-amber-400/80 truncate block">Committed for Works</span>
               </div>
             </div>
           </div>
@@ -296,43 +308,43 @@ export const MpIntelligenceDashboard: React.FC<Props> = ({
             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
               Physical Works Status Distribution
             </h4>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-slate-100">{totalWorks}</div>
-                  <div className="text-xs text-slate-500 font-medium mt-0.5">Total Works Initiated</div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
+              <div className="min-w-0 bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between gap-2 overflow-hidden">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xl sm:text-2xl font-bold text-slate-100 truncate">{totalWorks}</div>
+                  <div className="text-xs text-slate-400 font-medium mt-0.5 truncate">Total Works Initiated</div>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center font-bold shrink-0">
                   <FolderGit2 className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-emerald-600">{completedWorks}</div>
-                  <div className="text-xs text-slate-500 font-medium mt-0.5">Completed &amp; Handed Over</div>
+              <div className="min-w-0 bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between gap-2 overflow-hidden">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xl sm:text-2xl font-bold text-emerald-400 truncate">{completedWorks}</div>
+                  <div className="text-xs text-slate-400 font-medium mt-0.5 truncate">Completed &amp; Handed Over</div>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center font-bold shrink-0">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-sky-600">{inProgressWorks}</div>
-                  <div className="text-xs text-slate-500 font-medium mt-0.5">Under Active Execution</div>
+              <div className="min-w-0 bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between gap-2 overflow-hidden">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xl sm:text-2xl font-bold text-sky-400 truncate">{inProgressWorks}</div>
+                  <div className="text-xs text-slate-400 font-medium mt-0.5 truncate">Under Active Execution</div>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-800 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-800 flex items-center justify-center font-bold shrink-0">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between">
-                <div>
-                  <div className="text-2xl font-bold text-rose-600">{delayedWorks}</div>
-                  <div className="text-xs text-slate-500 font-medium mt-0.5">Delayed / Attention Flag</div>
+              <div className="min-w-0 bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-2xs flex items-center justify-between gap-2 overflow-hidden">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xl sm:text-2xl font-bold text-rose-400 truncate">{delayedWorks}</div>
+                  <div className="text-xs text-slate-400 font-medium mt-0.5 truncate">Delayed / Attention Flag</div>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-800 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-800 flex items-center justify-center font-bold shrink-0">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
               </div>

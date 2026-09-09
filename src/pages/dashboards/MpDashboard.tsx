@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { ProjectRecord } from '../../types';
+import { formatLakhsAmount } from '../../utils/safeCalculation';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -89,31 +90,46 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         {/* Entitlement Metrics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-xs">
-            <span className="text-slate-400 block font-medium">Annual Quota Entitlement</span>
-            <div className="text-2xl font-extrabold text-slate-900 mt-1">₹500.0 L</div>
-            <span className="text-[10px] text-slate-500 mt-0.5 block">Statutory MPLADS Cap</span>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-xs">
-            <span className="text-slate-400 block font-medium">Sanctioned Outlay (AS)</span>
-            <div className="text-2xl font-extrabold text-blue-900 mt-1">₹{totalSanctioned} L</div>
-            <span className="text-[10px] text-blue-600 mt-0.5 block">Approved by Collector</span>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-xs">
-            <span className="text-slate-400 block font-medium">Disbursed Expenditure</span>
-            <div className="text-2xl font-extrabold text-emerald-700 mt-1">₹{totalExpended} L</div>
-            <span className="text-[10px] text-emerald-600 mt-0.5 block">Against certified works</span>
-          </div>
-
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs text-xs">
-            <span className="text-slate-400 block font-medium">Unsanctioned Balance</span>
-            <div className="text-2xl font-extrabold text-amber-600 mt-1">
-              ₹{Math.max(0, Math.round((500 - totalSanctioned) * 10) / 10)} L
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 w-full">
+          <div className="min-w-0 bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-700 shadow-xs text-xs flex flex-col justify-between overflow-hidden">
+            <span className="text-slate-400 block font-medium truncate">Annual Quota Entitlement</span>
+            <div className="text-xl sm:text-2xl font-extrabold text-slate-100 mt-1 truncate tracking-tight w-full" title="₹500.00 L">
+              ₹500.00 L
             </div>
-            <span className="text-[10px] text-amber-700 mt-0.5 block">Available for fresh works</span>
+            <span className="text-[10px] text-slate-500 mt-0.5 block truncate">Statutory MPLADS Cap</span>
+          </div>
+
+          <div className="min-w-0 bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-700 shadow-xs text-xs flex flex-col justify-between overflow-hidden">
+            <span className="text-slate-400 block font-medium truncate">Sanctioned Outlay (AS)</span>
+            <div
+              className="text-xl sm:text-2xl font-extrabold text-blue-400 mt-1 truncate tracking-tight w-full"
+              title={formatLakhsAmount(totalSanctioned)}
+            >
+              {formatLakhsAmount(totalSanctioned)}
+            </div>
+            <span className="text-[10px] text-blue-400/80 mt-0.5 block truncate">Approved by Collector</span>
+          </div>
+
+          <div className="min-w-0 bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-700 shadow-xs text-xs flex flex-col justify-between overflow-hidden">
+            <span className="text-slate-400 block font-medium truncate">Disbursed Expenditure</span>
+            <div
+              className="text-xl sm:text-2xl font-extrabold text-emerald-400 mt-1 truncate tracking-tight w-full"
+              title={formatLakhsAmount(totalExpended)}
+            >
+              {formatLakhsAmount(totalExpended)}
+            </div>
+            <span className="text-[10px] text-emerald-400/80 mt-0.5 block truncate">Against certified works</span>
+          </div>
+
+          <div className="min-w-0 bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-700 shadow-xs text-xs flex flex-col justify-between overflow-hidden">
+            <span className="text-slate-400 block font-medium truncate">Unsanctioned Balance</span>
+            <div
+              className="text-xl sm:text-2xl font-extrabold text-amber-400 mt-1 truncate tracking-tight w-full"
+              title={formatLakhsAmount(Math.max(0, 500 - totalSanctioned))}
+            >
+              {formatLakhsAmount(Math.max(0, 500 - totalSanctioned))}
+            </div>
+            <span className="text-[10px] text-amber-400/80 mt-0.5 block truncate">Available for fresh works</span>
           </div>
         </div>
 
@@ -141,10 +157,10 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
         )}
 
         {/* Constituency Works Portfolio */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+        <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
             <div>
-              <h3 className="font-bold text-lg text-slate-900">
+              <h3 className="font-bold text-lg text-slate-100">
                 Recommended Works Portfolio ({filtered.length})
               </h3>
               <p className="text-xs text-slate-500">
@@ -160,7 +176,7 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
                   className={`px-3 py-1 rounded-full font-semibold transition-colors cursor-pointer ${
                     filterStatus === status
                       ? 'bg-blue-900 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      : 'bg-slate-800/80 text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   {status === 'ALL' ? 'All Works' : status}
@@ -169,16 +185,16 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="divide-y divide-slate-100 mt-2">
+          <div className="divide-y divide-slate-800 mt-2">
             {filtered.map(proj => (
               <div
                 key={proj.id}
                 onClick={() => onNavigate(`/projects/${proj.id}`)}
-                className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/80 px-2 rounded-xl transition-colors cursor-pointer"
+                className="py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-900/80 px-2 rounded-xl transition-colors cursor-pointer"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800/80 text-slate-300">
                       {proj.code}
                     </span>
                     <span className="text-[10px] font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded">
@@ -197,7 +213,7 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
                     </span>
                   </div>
 
-                  <h4 className="font-bold text-sm text-slate-900 mt-1 truncate">
+                  <h4 className="font-bold text-sm text-slate-100 mt-1 truncate">
                     {proj.title}
                   </h4>
 
@@ -212,12 +228,12 @@ export const MpDashboard: React.FC<Props> = ({ onNavigate }) => {
                 <div className="flex items-center gap-6 shrink-0 text-xs">
                   <div>
                     <span className="text-[10px] text-slate-400 block">Sanctioned</span>
-                    <strong className="text-slate-900">₹{proj.financial.sanctionedAmountLakhs} L</strong>
+                    <strong className="text-slate-100">₹{proj.financial.sanctionedAmountLakhs} L</strong>
                   </div>
 
                   <div className="w-24">
                     <span className="text-[10px] text-slate-400 block">Progress ({proj.progressPercentage}%)</span>
-                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
+                    <div className="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden mt-1">
                       <div
                         className="h-full bg-emerald-600 rounded-full"
                         style={{ width: `${proj.progressPercentage}%` }}

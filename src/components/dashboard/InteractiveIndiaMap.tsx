@@ -700,7 +700,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               <span>Click tile to open State Dashboard</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-[460px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-[520px] overflow-y-auto pr-1">
               {sortedMetrics.map(m => {
                 const val = getMetricValue(m, metricMode);
                 const isSelected = selectedState.toLowerCase() === m.name.toLowerCase();
@@ -709,29 +709,29 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                   <div
                     key={m.name}
                     onClick={() => onSelectState(m.name)}
-                    className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
+                    className={`min-w-0 p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between min-h-[90px] overflow-hidden ${
                       isSelected
                         ? 'bg-blue-900 border-sky-400 shadow-lg'
                         : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 hover:border-slate-500'
                     }`}
                   >
-                    <div>
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900/60 text-slate-300">
+                    <div className="min-w-0">
+                      <div className="flex items-center justify-between gap-1 min-w-0">
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900/60 text-slate-300 shrink-0">
                           {m.type === 'State' ? 'ST' : 'UT'}
                         </span>
-                        <span className="text-xs font-black text-amber-300 font-mono">
+                        <span className="text-xs font-black text-amber-300 font-mono truncate">
                           {formatMetricValue(val, metricMode)}
                         </span>
                       </div>
-                      <h5 className="font-bold text-xs text-white mt-1.5 line-clamp-2">
+                      <h5 className="font-bold text-xs text-white mt-1.5 line-clamp-2 break-words" title={m.name}>
                         {m.name}
                       </h5>
                     </div>
 
-                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-700/50 mt-2">
-                      <span>{m.totalWorks} Works</span>
-                      <ArrowRight className="w-3 h-3 text-sky-400" />
+                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-700/50 mt-2 min-w-0">
+                      <span className="truncate">{m.totalWorks} Works</span>
+                      <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
                     </div>
                   </div>
                 );
