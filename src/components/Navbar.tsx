@@ -150,13 +150,13 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
                 {/* Dropdown Menu */}
                 {isRoleDropdownOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-slate-200 text-slate-900 py-2 z-50 animate-in fade-in duration-100"
+                    className="navbar-role-dropdown absolute right-0 mt-2 w-64 bg-slate-900 rounded-xl shadow-2xl border border-slate-700 text-slate-100 py-2 z-50 animate-in fade-in duration-100"
                     onClick={() => setIsRoleDropdownOpen(false)}
                   >
-                    <div className="px-4 py-2 border-b border-slate-100">
-                      <div className="text-xs font-bold text-slate-900">{user.name}</div>
-                      <div className="text-[11px] text-slate-500">{user.email}</div>
-                      <div className="text-[10px] text-emerald-700 font-mono mt-0.5">
+                    <div className="px-4 py-2 border-b border-slate-800">
+                      <div className="text-xs font-bold text-slate-100">{user.name}</div>
+                      <div className="text-[11px] text-slate-400">{user.email}</div>
+                      <div className="text-[10px] text-emerald-400 font-mono mt-0.5">
                         Active Role: {user.role}
                       </div>
                     </div>
@@ -164,45 +164,45 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
                     <div className="py-1">
                       <button
                         onClick={() => onNavigate(getDashboardPath(user.role))}
-                        className="w-full text-left px-4 py-2 text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-900 flex items-center gap-2 font-medium cursor-pointer"
+                        className="w-full text-left px-4 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2 font-medium cursor-pointer"
                       >
-                        <User className="w-4 h-4 text-blue-600" />
+                        <User className="w-4 h-4 text-blue-400" />
                         Go to My Role Workspace
                       </button>
                       <button
                         onClick={() => onNavigate('/profile')}
-                        className="w-full text-left px-4 py-1.5 text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-900 flex items-center gap-2 font-medium cursor-pointer"
+                        className="w-full text-left px-4 py-1.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2 font-medium cursor-pointer"
                       >
-                        <FileText className="w-4 h-4 text-slate-500" />
+                        <FileText className="w-4 h-4 text-slate-400" />
                         My Official Profile
                       </button>
                       <button
                         onClick={() => onNavigate('/notifications')}
-                        className="w-full text-left px-4 py-1.5 text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-900 flex items-center gap-2 font-medium cursor-pointer"
+                        className="w-full text-left px-4 py-1.5 text-xs text-slate-300 hover:bg-slate-800 hover:text-white flex items-center gap-2 font-medium cursor-pointer"
                       >
-                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        <Sparkles className="w-4 h-4 text-amber-400" />
                         Alerts &amp; Notifications
                       </button>
                       {user.role === 'ADMIN' && (
                         <button
                           onClick={() => onNavigate('/dashboard/admin')}
-                          className="w-full text-left px-4 py-1.5 text-xs text-purple-700 hover:bg-purple-50 font-bold flex items-center gap-2 cursor-pointer"
+                          className="w-full text-left px-4 py-1.5 text-xs text-purple-400 hover:bg-purple-950/40 font-bold flex items-center gap-2 cursor-pointer"
                         >
-                          <Building className="w-4 h-4 text-purple-600" />
+                          <Building className="w-4 h-4 text-purple-400" />
                           National Admin Center
                         </button>
                       )}
                     </div>
 
                     {/* Quick Demo Role Switcher for SIH Jury & Demonstrations */}
-                    <div className="border-t border-slate-100 px-4 py-1.5">
+                    <div className="border-t border-slate-800 px-4 py-1.5">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                           SIH Demo Role Switcher
                         </span>
                         <button
                           onClick={() => onNavigate('/login')}
-                          className="text-[10px] font-bold text-blue-800 hover:underline cursor-pointer"
+                          className="text-[10px] font-bold text-blue-400 hover:underline cursor-pointer"
                         >
                           All Cards →
                         </button>
@@ -217,8 +217,8 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
                             }}
                             className={`text-[10px] px-2 py-1 rounded text-left truncate transition-colors cursor-pointer ${
                               user.role === r
-                                ? 'bg-blue-900 text-white font-bold'
-                                : 'bg-slate-100 text-slate-700 hover:bg-blue-100'
+                                ? 'bg-blue-600 text-white font-bold'
+                                : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
                             }`}
                           >
                             {r.replace('_', ' ')}
@@ -227,15 +227,15 @@ export const Navbar: React.FC<Props> = ({ currentPath, onNavigate, onOpenSearch 
                       </div>
                     </div>
 
-                    <div className="border-t border-slate-100 pt-1">
+                    <div className="border-t border-slate-800 pt-1">
                       <button
                         onClick={() => {
                           logout();
                           onNavigate('/');
                         }}
-                        className="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer font-medium"
+                        className="w-full text-left px-4 py-2 text-xs text-rose-400 hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer font-medium"
                       >
-                        <LogOut className="w-4 h-4" />
+                        <LogOut className="w-4 h-4 text-rose-400" />
                         Log Out
                       </button>
                     </div>

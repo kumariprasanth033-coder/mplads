@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { ProjectRecord } from '../../types';
+import { ProjectImage } from '../ProjectImage';
 
 interface Props {
   project: ProjectRecord | null;
@@ -90,13 +91,13 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
   });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
+        className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150 text-slate-100"
         onClick={e => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="p-4 sm:p-5 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3 min-w-0">
             <span className="text-[10px] font-mono px-2.5 py-1 rounded-md bg-blue-900 text-blue-200 font-bold shrink-0">
               {project.code}
@@ -121,39 +122,39 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
         </div>
 
         {/* Modal Body (Scrollable) */}
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-slate-900 text-xs">
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-6 text-slate-200 text-xs bg-slate-900">
           {/* Key Facts Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950 p-3.5 rounded-xl border border-slate-800">
             <div>
-              <span className="text-[10px] text-slate-500 font-medium block">Sanctioned Amount</span>
-              <span className="text-base font-bold text-slate-900 block mt-0.5">
+              <span className="text-[10px] text-slate-400 font-medium block">Sanctioned Amount</span>
+              <span className="text-base font-bold text-slate-100 block mt-0.5">
                 ₹{project.financial.sanctionedAmountLakhs} Lakhs
               </span>
             </div>
 
             <div>
-              <span className="text-[10px] text-slate-500 font-medium block">Recorded Expenditure</span>
-              <span className="text-base font-bold text-emerald-700 block mt-0.5">
+              <span className="text-[10px] text-slate-400 font-medium block">Recorded Expenditure</span>
+              <span className="text-base font-bold text-emerald-400 block mt-0.5">
                 ₹{project.financial.expenditureLakhs} Lakhs
               </span>
             </div>
 
             <div>
-              <span className="text-[10px] text-slate-500 font-medium block">Physical Progress</span>
-              <span className="text-base font-bold text-blue-700 block mt-0.5">
+              <span className="text-[10px] text-slate-400 font-medium block">Physical Progress</span>
+              <span className="text-base font-bold text-blue-400 block mt-0.5">
                 {project.progressPercentage}%
               </span>
             </div>
 
             <div>
-              <span className="text-[10px] text-slate-500 font-medium block">Execution Status</span>
+              <span className="text-[10px] text-slate-400 font-medium block">Execution Status</span>
               <span
                 className={`inline-block text-[11px] font-bold px-2 py-0.5 rounded-full mt-0.5 ${
                   project.status === 'Completed'
-                    ? 'bg-emerald-100 text-emerald-800'
+                    ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/50'
                     : project.status === 'Delayed'
-                    ? 'bg-rose-100 text-rose-800'
-                    : 'bg-amber-100 text-amber-800'
+                    ? 'bg-rose-900/60 text-rose-300 border border-rose-700/50'
+                    : 'bg-amber-900/60 text-amber-300 border border-amber-700/50'
                 }`}
               >
                 {project.status}
@@ -163,69 +164,69 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
 
           {/* Project Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2 border border-slate-200 p-4 rounded-xl bg-white">
-              <span className="font-bold text-slate-700 uppercase text-[10px] tracking-wider block">
+            <div className="space-y-2 border border-slate-800 p-4 rounded-xl bg-slate-950">
+              <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider block">
                 Administrative Provenance
               </span>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">Recommending MP</span>
-                <span className="font-semibold text-slate-900">{project.mpName}</span>
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">Recommending MP</span>
+                <span className="font-semibold text-slate-100">{project.mpName}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">Constituency / District</span>
-                <span className="font-semibold text-slate-900">{project.constituency} / {project.district}</span>
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">Constituency / District</span>
+                <span className="font-semibold text-slate-100">{project.constituency} / {project.district}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">Implementing Agency</span>
-                <span className="font-semibold text-slate-900">{project.implementingAgency}</span>
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">Implementing Agency</span>
+                <span className="font-semibold text-slate-100">{project.implementingAgency}</span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500">Line Department</span>
-                <span className="font-semibold text-slate-900">{project.department}</span>
+                <span className="text-slate-400">Line Department</span>
+                <span className="font-semibold text-slate-100">{project.department}</span>
               </div>
             </div>
 
-            <div className="space-y-2 border border-slate-200 p-4 rounded-xl bg-white">
-              <span className="font-bold text-slate-700 uppercase text-[10px] tracking-wider block">
+            <div className="space-y-2 border border-slate-800 p-4 rounded-xl bg-slate-950">
+              <span className="font-bold text-slate-400 uppercase text-[10px] tracking-wider block">
                 Location &amp; Coordinates
               </span>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">Block / Village</span>
-                <span className="font-semibold text-slate-900">{project.block || 'Urban Nodal'} / {project.village || 'N/A'}</span>
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">Block / Village</span>
+                <span className="font-semibold text-slate-100">{project.block || 'Urban Nodal'} / {project.village || 'N/A'}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">GPS Geo-Tag</span>
-                <span className="font-mono text-slate-900 font-semibold">
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">GPS Geo-Tag</span>
+                <span className="font-mono text-slate-100 font-semibold">
                   {project.coordinates.lat.toFixed(4)}° N, {project.coordinates.lng.toFixed(4)}° E
                 </span>
               </div>
-              <div className="flex justify-between border-b border-slate-100 py-1.5">
-                <span className="text-slate-500">Convergence Scheme</span>
-                <span className="font-semibold text-slate-900">{project.convergenceScheme || 'Pure MPLADS Standard'}</span>
+              <div className="flex justify-between border-b border-slate-800 py-1.5">
+                <span className="text-slate-400">Convergence Scheme</span>
+                <span className="font-semibold text-slate-100">{project.convergenceScheme || 'Pure MPLADS Standard'}</span>
               </div>
               <div className="flex justify-between py-1.5">
-                <span className="text-slate-500">Financial Year</span>
-                <span className="font-semibold text-slate-900">{project.year}</span>
+                <span className="text-slate-400">Financial Year</span>
+                <span className="font-semibold text-slate-100">{project.year}</span>
               </div>
             </div>
           </div>
 
           {/* Photographic Evidence Stage Viewer */}
-          <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-            <div className="p-3.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <span className="font-bold text-slate-800 uppercase text-[10px] tracking-wider">
+          <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
+            <div className="p-3.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+              <span className="font-bold text-slate-200 uppercase text-[10px] tracking-wider">
                 Geotagged Photographic Audit Trail
               </span>
 
               {/* Stage selector tabs */}
-              <div className="flex bg-slate-200/80 rounded-lg p-0.5 text-xs">
+              <div className="flex bg-slate-800 rounded-lg p-0.5 text-xs border border-slate-700">
                 <button
                   type="button"
                   onClick={() => setActiveEvidenceTab('Before')}
-                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer ${
+                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer transition-colors ${
                     activeEvidenceTab === 'Before'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   Before Site
@@ -233,10 +234,10 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
                 <button
                   type="button"
                   onClick={() => setActiveEvidenceTab('During')}
-                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer ${
+                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer transition-colors ${
                     activeEvidenceTab === 'During'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   During Work
@@ -244,10 +245,10 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
                 <button
                   type="button"
                   onClick={() => setActiveEvidenceTab('After')}
-                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer ${
+                  className={`px-3 py-1 rounded-md font-semibold cursor-pointer transition-colors ${
                     activeEvidenceTab === 'After'
-                      ? 'bg-white text-slate-900 shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   After / Current
@@ -256,36 +257,30 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
             </div>
 
             <div className="p-4 flex flex-col sm:flex-row gap-4 items-center">
-              <div className="w-full sm:w-72 h-44 bg-slate-100 rounded-xl overflow-hidden shrink-0 border border-slate-200">
-                {selectedEvidence?.url ? (
-                  <img
-                    src={selectedEvidence.url}
-                    alt={selectedEvidence.description}
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400">
-                    <Eye className="w-6 h-6 mb-1" />
-                    <span>Evidence Pending</span>
-                  </div>
-                )}
+              <div className="w-full sm:w-72 h-44 bg-slate-900 rounded-xl overflow-hidden shrink-0 border border-slate-800">
+                <ProjectImage
+                  src={selectedEvidence?.url}
+                  alt={selectedEvidence?.description || project.title}
+                  category={project.category}
+                  code={project.code}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
-              <div className="flex-1 text-slate-600 space-y-2">
-                <div className="font-bold text-slate-900 text-sm">
-                  {selectedEvidence ? selectedEvidence.description : `No photo recorded for ${activeEvidenceTab} stage`}
+              <div className="flex-1 text-slate-300 space-y-2">
+                <div className="font-bold text-slate-100 text-sm">
+                  {selectedEvidence ? selectedEvidence.description : `Evidence photo for ${activeEvidenceTab} stage`}
                 </div>
                 {selectedEvidence && (
                   <>
-                    <div className="text-slate-500">
-                      Uploaded by: <strong className="text-slate-800">{selectedEvidence.uploadedBy}</strong>
+                    <div className="text-slate-400">
+                      Uploaded by: <strong className="text-slate-200">{selectedEvidence.uploadedBy}</strong>
                     </div>
-                    <div className="text-slate-500">
-                      Inspection Date: <strong className="text-slate-800">{selectedEvidence.date}</strong>
+                    <div className="text-slate-400">
+                      Inspection Date: <strong className="text-slate-200">{selectedEvidence.date}</strong>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 font-mono text-[10px] font-bold border border-emerald-200">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-950 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-800">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                       <span>Tamper-proof EXIF &amp; Geo-signature Verified</span>
                     </div>
                   </>
@@ -295,13 +290,13 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
           </div>
 
           {/* Autonomous AI Attention & Verification Signals (Requirement #15) */}
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-800 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
-                <ShieldAlert className="w-4 h-4 text-blue-700" />
+              <span className="font-bold text-slate-200 uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                <ShieldAlert className="w-4 h-4 text-blue-400" />
                 <span>Autonomous Diagnostic Review (Explainable Signals)</span>
               </span>
-              <span className="text-[10px] text-slate-500">
+              <span className="text-[10px] text-slate-400">
                 Advisory only • Human administrative review remains final
               </span>
             </div>
@@ -312,20 +307,20 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
                   key={idx}
                   className={`p-3 rounded-lg border text-xs flex items-start gap-2.5 ${
                     sig.level === 'Clear'
-                      ? 'bg-white border-emerald-200/80 text-slate-700'
+                      ? 'bg-slate-900 border-emerald-800/80 text-slate-200'
                       : sig.level === 'Notice'
-                      ? 'bg-amber-50/70 border-amber-200 text-amber-900'
-                      : 'bg-rose-50/70 border-rose-200 text-rose-900'
+                      ? 'bg-amber-950/50 border-amber-800 text-amber-200'
+                      : 'bg-rose-950/50 border-rose-800 text-rose-200'
                   }`}
                 >
                   {sig.level === 'Clear' ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                   ) : (
-                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                   )}
                   <div>
-                    <strong className="font-bold block">{sig.title}</strong>
-                    <span className="text-[11px] leading-relaxed">{sig.message}</span>
+                    <strong className="font-bold block text-slate-100">{sig.title}</strong>
+                    <span className="text-[11px] leading-relaxed text-slate-300">{sig.message}</span>
                   </div>
                 </div>
               ))}
@@ -334,11 +329,11 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+        <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold cursor-pointer"
+            className="px-4 py-2 rounded-xl text-slate-400 hover:text-slate-200 text-xs font-semibold cursor-pointer"
           >
             Close Inspector
           </button>
@@ -349,7 +344,7 @@ export const ProjectInspectionModal: React.FC<Props> = ({ project, onClose, onNa
               onClose();
               onNavigate(`/projects/${project.id}`);
             }}
-            className="px-4 py-2 rounded-xl bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
             <span>Open Full Project Detail Dossier</span>
             <ArrowRight className="w-3.5 h-3.5" />

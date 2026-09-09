@@ -1,160 +1,262 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   MPLADS SMART & AI POWERED PORTAL - GLOBAL THEME SYSTEM
+   MPLADS SMART & AI POWERED PORTAL - GLOBAL UNIFIED THEME SYSTEM
    Standard: Modern Dark Slate Architecture (Ashoka National Portal Palette)
-   Consistent Before Login, During Login, and Across Every Authenticated Route
+   Enforces consistent dark theme before login, after login, and across every route.
+   Eliminates all accidental white backgrounds, text contrast flaws, and layer leaks.
    ========================================================================= */
 
-:root,
-html.dark,
-[data-theme="dark"] {
+:root {
   color-scheme: dark;
+  --bg-main: #0f172a;       /* slate-900 */
+  --bg-card: #1e293b;       /* slate-800 */
+  --bg-card-subtle: #0f172a; /* slate-900 */
+  --border-card: #334155;   /* slate-700 */
+  --text-primary: #f8fafc;  /* slate-50 */
+  --text-secondary: #cbd5e1;/* slate-300 */
+  --text-muted: #94a3b8;    /* slate-400 */
 }
 
-html.dark,
-[data-theme="dark"] {
-  background-color: #0f172a; /* slate-900 */
-  color: #f1f5f9; /* slate-100 */
+/* 1. Universal Root & Background Hierarchy */
+html,
+body,
+#root,
+main {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+  color-scheme: dark;
+  min-height: 100vh;
 }
 
-html.dark body,
-[data-theme="dark"] body {
-  background-color: #0f172a;
-  color: #f1f5f9;
+/* Prevent unwanted horizontal overflow */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
-/* Ensure national tricolor ribbon white stripe remains pure white */
+/* National Tricolor ribbon preserve white stripe */
 .preserve-white,
 [data-preserve-white="true"] {
   background-color: #ffffff !important;
 }
 
-/* Page containers and background wrappers in dark mode */
-html.dark .bg-slate-50,
-html.dark .bg-slate-100,
-html.dark [data-theme="dark"] .bg-slate-50,
-html.dark [data-theme="dark"] .bg-slate-100 {
-  background-color: #0f172a !important;
-}
-
-/* Card surfaces, panels, tables, and dialogs */
-html.dark .bg-white:not(.preserve-white):not([data-preserve-white="true"]) {
+/* 2. Global Card Surfaces: Replace stark white boxes with dark slate cards */
+.bg-white:not(.preserve-white):not([data-preserve-white="true"]),
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/85,
+.bg-white\/80,
+.bg-white\/75,
+.bg-white\/70,
+.bg-white\/60,
+.bg-white\/50 {
   background-color: #1e293b !important; /* slate-800 */
 }
 
-/* Subtle surfaces and tinted backgrounds */
-html.dark .bg-slate-50\/50,
-html.dark .bg-slate-50\/80 {
-  background-color: rgba(30, 41, 59, 0.6) !important;
+/* Subtle card wells, nested containers, tables, and tab strips */
+.bg-slate-50,
+.bg-slate-100,
+.bg-gray-50,
+.bg-gray-100,
+.bg-slate-50\/50,
+.bg-slate-50\/70,
+.bg-slate-50\/80,
+.bg-slate-50\/90 {
+  background-color: #0f172a !important; /* slate-900 inner well */
 }
 
-/* Borders and dividers */
-html.dark .border-slate-200,
-html.dark .border-slate-100,
-html.dark .border-slate-300 {
+/* Badges, pill tags, and secondary action button backgrounds */
+.bg-slate-200,
+.bg-gray-200 {
+  background-color: #334155 !important; /* slate-700 */
+  color: #f1f5f9 !important;
+}
+
+/* 3. Global Borders and Dividers */
+.border-slate-100,
+.border-slate-200,
+.border-slate-300,
+.border-gray-100,
+.border-gray-200,
+.border-gray-300 {
   border-color: #334155 !important; /* slate-700 */
 }
 
-html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
-html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+.divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+.divide-slate-300 > :not([hidden]) ~ :not([hidden]) {
   border-color: #334155 !important;
 }
 
-/* Text primary & headings */
-html.dark .text-slate-900,
-html.dark .text-slate-800 {
-  color: #f8fafc !important; /* slate-50 */
+/* 4. Global Typography & Readability (Passes WCAG AA on Dark Slate) */
+.text-slate-950,
+.text-slate-900,
+.text-slate-800,
+.text-gray-950,
+.text-gray-900,
+.text-gray-800 {
+  color: #f8fafc !important; /* High contrast primary white */
 }
 
-/* Text secondary & labels */
-html.dark .text-slate-700,
-html.dark .text-slate-600 {
-  color: #cbd5e1 !important; /* slate-300 */
+.text-slate-700,
+.text-slate-600,
+.text-gray-700,
+.text-gray-600 {
+  color: #cbd5e1 !important; /* Readable secondary slate-300 */
 }
 
-/* Text muted */
-html.dark .text-slate-500 {
-  color: #94a3b8 !important; /* slate-400 */
+.text-slate-500,
+.text-gray-500 {
+  color: #94a3b8 !important; /* Clean muted slate-400 */
 }
 
-/* Form controls (inputs, selects, textareas) */
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not(.preserve-input),
-html.dark select:not(.preserve-input),
-html.dark textarea:not(.preserve-input) {
+.text-slate-400,
+.text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Ensure blue headline/stat accents are luminous against dark surfaces */
+.text-blue-900,
+.text-blue-800 {
+  color: #60a5fa !important; /* Sky 400 for high readability */
+}
+
+.text-blue-700 {
+  color: #93c5fd !important;
+}
+
+/* 5. Thematic Accent Badges & Status Chips */
+/* Emerald / Success */
+.bg-emerald-50,
+.bg-emerald-100 {
+  background-color: rgba(6, 78, 59, 0.45) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+.text-emerald-950,
+.text-emerald-900,
+.text-emerald-800,
+.text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+
+/* Blue / Info */
+.bg-blue-50,
+.bg-blue-100 {
+  background-color: rgba(30, 58, 138, 0.45) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+.text-blue-950,
+.text-blue-900 {
+  color: #93c5fd !important;
+}
+
+/* Amber / Warning */
+.bg-amber-50,
+.bg-amber-100 {
+  background-color: rgba(120, 53, 15, 0.45) !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+.text-amber-950,
+.text-amber-900,
+.text-amber-800,
+.text-amber-700 {
+  color: #fcd34d !important;
+}
+
+/* Rose / Error / Delayed */
+.bg-rose-50,
+.bg-rose-100 {
+  background-color: rgba(136, 19, 55, 0.45) !important;
+  border-color: rgba(225, 29, 72, 0.4) !important;
+}
+.text-rose-950,
+.text-rose-900,
+.text-rose-800,
+.text-rose-700 {
+  color: #fda4af !important;
+}
+
+/* Purple / Admin */
+.bg-purple-50,
+.bg-purple-100 {
+  background-color: rgba(88, 28, 135, 0.45) !important;
+  border-color: rgba(168, 85, 247, 0.4) !important;
+}
+.text-purple-950,
+.text-purple-900,
+.text-purple-800,
+.text-purple-700 {
+  color: #d8b4fe !important;
+}
+
+/* 6. Form Controls: Input, Select, Textarea */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not(.preserve-input),
+select:not(.preserve-input),
+textarea:not(.preserve-input) {
   background-color: #0f172a !important;
   color: #f8fafc !important;
   border-color: #334155 !important;
 }
 
-html.dark input::placeholder,
-html.dark textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: #64748b !important; /* slate-500 */
 }
 
-/* Table and list item hover states */
-html.dark .hover\:bg-slate-50:hover,
-html.dark .hover\:bg-slate-100:hover,
-html.dark .hover\:bg-slate-50\/50:hover {
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #3b82f6 !important;
+  outline: none !important;
+}
+
+/* 7. Hover States */
+.hover\:bg-slate-50:hover,
+.hover\:bg-slate-100:hover,
+.hover\:bg-slate-50\/50:hover,
+.hover\:bg-slate-50\/80:hover {
   background-color: #334155 !important; /* slate-700 */
 }
 
-/* Subtle badge / alert boxes in dark mode */
-html.dark .bg-rose-50 {
-  background-color: rgba(136, 19, 55, 0.25) !important;
-  border-color: rgba(225, 29, 72, 0.4) !important;
-}
-html.dark .text-rose-950,
-html.dark .text-rose-900 {
-  color: #fecdd3 !important;
-}
-html.dark .text-rose-800 {
-  color: #fda4af !important;
+.hover\:bg-blue-50:hover {
+  background-color: rgba(30, 58, 138, 0.5) !important;
 }
 
-html.dark .bg-emerald-50 {
-  background-color: rgba(6, 78, 59, 0.25) !important;
-  border-color: rgba(16, 185, 129, 0.4) !important;
-}
-html.dark .text-emerald-950,
-html.dark .text-emerald-900 {
-  color: #a7f3d0 !important;
-}
-html.dark .text-emerald-800 {
-  color: #6ee7b7 !important;
-}
-
-html.dark .bg-blue-50 {
-  background-color: rgba(30, 58, 138, 0.25) !important;
-  border-color: rgba(59, 130, 246, 0.4) !important;
-}
-html.dark .text-blue-950,
-html.dark .text-blue-900 {
-  color: #bfdbfe !important;
-}
-html.dark .text-blue-800,
-html.dark .text-blue-700 {
-  color: #93c5fd !important;
+/* 8. Sleek Dark Shadows */
+.shadow-2xs,
+.shadow-xs,
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl {
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.55) !important;
 }
 
-html.dark .bg-amber-50 {
-  background-color: rgba(120, 53, 15, 0.25) !important;
-  border-color: rgba(245, 158, 11, 0.4) !important;
-}
-html.dark .text-amber-950,
-html.dark .text-amber-900 {
-  color: #fde68a !important;
-}
-html.dark .text-amber-800,
-html.dark .text-amber-700 {
-  color: #fcd34d !important;
+/* 9. Layering and Z-Index Hierarchy */
+/* Sticky Navigation Bar */
+header.sticky {
+  z-index: 40 !important;
 }
 
-/* In dark mode, ensure white card shadows look clean and subtle */
-html.dark .shadow-xs,
-html.dark .shadow-sm,
-html.dark .shadow-md,
-html.dark .shadow-lg,
-html.dark .shadow-xl {
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+/* In-Navbar Role Dropdown */
+.navbar-role-dropdown {
+  z-index: 50 !important;
+}
+
+/* AI Copilot Floating Widget */
+.role-copilot-container {
+  z-index: 45 !important;
+}
+
+/* Global Modals (Search, Reports, Project Inspection) */
+.modal-overlay {
+  z-index: 60 !important;
+}
+
+/* Tooltips */
+.global-tooltip {
+  z-index: 70 !important;
 }

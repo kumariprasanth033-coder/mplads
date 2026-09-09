@@ -152,7 +152,7 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
   const quickPrompts = samplePromptsByRole[role] || samplePromptsByRole.CITIZEN;
 
   return (
-    <div className="fixed bottom-5 right-5 z-40">
+    <div className="fixed bottom-5 right-5 z-45 role-copilot-container">
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
@@ -168,12 +168,12 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
         </button>
       ) : (
         <div
-          className={`w-[360px] sm:w-[420px] bg-white rounded-2xl shadow-2xl border border-slate-300 flex flex-col transition-all overflow-hidden ${
+          className={`w-[360px] sm:w-[420px] bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 text-slate-100 flex flex-col transition-all overflow-hidden ${
             isMinimized ? 'h-14' : 'h-[520px]'
           }`}
         >
           {/* Header */}
-          <div className="bg-slate-900 px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
+          <div className="bg-slate-950 px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-2.5">
               <div className="w-7 h-7 rounded-lg bg-emerald-500 text-slate-950 flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
@@ -195,13 +195,13 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
             <div className="flex items-center gap-1">
               <button
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="p-1 text-slate-400 hover:text-white rounded-md"
+                className="p-1 text-slate-400 hover:text-white rounded-md cursor-pointer"
               >
                 {isMinimized ? <Maximize2 className="w-3.5 h-3.5" /> : <Minimize2 className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1 text-slate-400 hover:text-white rounded-md"
+                className="p-1 text-slate-400 hover:text-white rounded-md cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -211,29 +211,29 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
           {!isMinimized && (
             <>
               {/* Message History */}
-              <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-slate-50 text-xs">
+              <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-slate-950 text-xs">
                 {messages.map((m, i) => (
                   <div
                     key={i}
                     className={`flex gap-2 ${m.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     {m.sender === 'bot' && (
-                      <div className="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center shrink-0 mt-0.5">
+                      <div className="w-6 h-6 rounded-full bg-blue-700 text-white flex items-center justify-center shrink-0 mt-0.5">
                         <Bot className="w-3.5 h-3.5" />
                       </div>
                     )}
                     <div
                       className={`max-w-[82%] rounded-xl px-3 py-2 leading-relaxed ${
                         m.sender === 'user'
-                          ? 'bg-blue-900 text-white rounded-tr-none'
-                          : 'bg-white text-slate-800 border border-slate-200 shadow-xs rounded-tl-none whitespace-pre-line'
+                          ? 'bg-blue-600 text-white rounded-tr-none'
+                          : 'bg-slate-800 text-slate-100 border border-slate-700 shadow-md rounded-tl-none whitespace-pre-line'
                       }`}
                     >
                       {m.text}
                       {m.sender === 'bot' && m.source && (
-                        <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[9px] text-slate-500">
+                        <div className="mt-2 pt-1.5 border-t border-slate-700 flex items-center justify-between text-[9px] text-slate-400">
                           <span className="flex items-center gap-1">
-                            <span className={`w-1.5 h-1.5 rounded-full ${m.status === 'LIVE' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                            <span className={`w-1.5 h-1.5 rounded-full ${m.status === 'LIVE' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
                             <span className="font-medium truncate max-w-[170px]">{m.source}</span>
                           </span>
                           <span className="text-slate-400">{m.time}</span>
@@ -253,10 +253,10 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
                   </div>
                 ))}
                 {isLoading && (
-                  <div className="flex items-center gap-2 text-slate-500 text-xs py-1">
-                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce" />
-                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce [animation-delay:0.2s]" />
-                    <div className="w-2 h-2 rounded-full bg-blue-600 animate-bounce [animation-delay:0.4s]" />
+                  <div className="flex items-center gap-2 text-slate-400 text-xs py-1">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" />
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:0.2s]" />
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:0.4s]" />
                     <span className="text-[11px] text-slate-400">Synthesizing intelligence...</span>
                   </div>
                 )}
@@ -264,14 +264,14 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
               </div>
 
               {/* Sample Prompts Carousel */}
-              <div className="px-3 py-1.5 bg-white border-t border-slate-200 flex gap-1.5 overflow-x-auto text-[11px]">
+              <div className="px-3 py-1.5 bg-slate-900 border-t border-slate-800 flex gap-1.5 overflow-x-auto text-[11px]">
                 {quickPrompts.map((prompt, i) => (
                   <button
                     key={i}
                     onClick={() => {
                       setQuery(prompt);
                     }}
-                    className="whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-900 border border-slate-200 text-slate-700 text-[10px]"
+                    className="whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-700 text-slate-300 text-[10px] cursor-pointer"
                   >
                     {prompt}
                   </button>
@@ -281,19 +281,19 @@ I have live access to the 18th Lok Sabha Digital Sansad directory, official MPLA
               {/* Input Box */}
               <form
                 onSubmit={handleSend}
-                className="p-2.5 bg-white border-t border-slate-200 flex items-center gap-2"
+                className="p-2.5 bg-slate-900 border-t border-slate-800 flex items-center gap-2"
               >
                 <input
                   type="text"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                   placeholder="Ask intelligence copilot..."
-                  className="flex-1 text-xs px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:border-blue-600 focus:bg-white text-slate-900"
+                  className="flex-1 text-xs px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg focus:outline-hidden focus:border-blue-500 text-slate-100 placeholder:text-slate-500"
                 />
                 <button
                   type="submit"
                   disabled={!query.trim() || isLoading}
-                  className="p-2 bg-blue-900 hover:bg-blue-800 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
+                  className="p-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded-lg transition-colors cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                 </button>

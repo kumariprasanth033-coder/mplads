@@ -17,64 +17,55 @@ export const THEME_STORAGE_KEY = 'mplads-theme';
  * Applies theme classes and attributes directly to DOM root elements
  * to guarantee no light-theme flash occurs and the styling is immediate.
  */
-export const applyThemeToDocument = (theme: ThemeMode) => {
+export const applyThemeToDocument = (_theme: ThemeMode = 'dark') => {
   if (typeof document === 'undefined') return;
 
   const root = document.documentElement;
-  root.classList.remove('light', 'dark');
-  root.classList.add(theme);
-  root.setAttribute('data-theme', theme);
-  root.style.colorScheme = theme;
+  root.classList.remove('light');
+  root.classList.add('dark');
+  root.setAttribute('data-theme', 'dark');
+  root.style.colorScheme = 'dark';
+  root.style.backgroundColor = '#0f172a';
 
   if (document.body) {
-    if (theme === 'dark') {
-      document.body.classList.add('dark');
-      document.body.classList.remove('light');
-      document.body.style.backgroundColor = '#0f172a';
-      document.body.style.color = '#f1f5f9';
-    } else {
-      document.body.classList.add('light');
-      document.body.classList.remove('dark');
-      document.body.style.backgroundColor = '#f8fafc';
-      document.body.style.color = '#0f172a';
-    }
+    document.body.classList.remove('light');
+    document.body.classList.add('dark');
+    document.body.style.backgroundColor = '#0f172a';
+    document.body.style.color = '#f1f5f9';
+  }
+
+  const rootDiv = document.getElementById('root');
+  if (rootDiv) {
+    rootDiv.style.backgroundColor = '#0f172a';
+    rootDiv.style.color = '#f1f5f9';
   }
 };
 
 /**
  * Global Theme Provider for MPLADS Smart & AI Portal
- * Default Theme: DARK (Consistent before, during, and after login)
+ * Default Theme: DARK (Consistent before, during, and after login across every route)
  */
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(THEME_STORAGE_KEY);
-        if (saved === 'light' || saved === 'dark') {
-          return saved;
-        }
-      } catch (e) {
-        // Fallback to default
-      }
-    }
-    return 'dark'; // Always default to the existing dark/modern theme
-  });
+  // The dark MPLADS theme is the SINGLE global theme for every route before & after login
+  const theme: ThemeMode = 'dark';
 
   useEffect(() => {
-    applyThemeToDocument(theme);
+    applyThemeToDocument('dark');
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, theme);
+      localStorage.setItem(THEME_STORAGE_KEY, 'dark');
     } catch (e) {
       // Ignore localStorage quotas/issues
     }
-  }, [theme]);
+  }, []);
 
-  const setTheme = (newTheme: ThemeMode) => {
-    setThemeState(newTheme);
+  const setTheme = (_newTheme: ThemeMode) => {
+    // Keep single uniform dark theme
+    applyThemeToDocument('dark');
   };
 
   const toggleTheme = () => {
-    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
+    // Keep single uniform dark theme
+    applyThemeToDocument('dark');
   };
 
   return (
