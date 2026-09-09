@@ -70,44 +70,6 @@ export function formatCrAmount(amountCr: number | undefined | null): string {
 }
 
 /**
- * Formats a monetary amount in Lakhs cleanly (e.g. 11461.399999996 -> "₹11,461.40 L").
- * Preserves the underlying data while eliminating ugly floating-point artifacts and card overflows.
- */
-export function formatLakhsAmount(
-  amount: number | string | undefined | null,
-  options?: { showSuffix?: boolean; decimals?: number }
-): string {
-  if (amount === undefined || amount === null || amount === '') return '—';
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  if (isNaN(num)) return '—';
-
-  const showSuffix = options?.showSuffix !== false;
-  const decimals = options?.decimals !== undefined ? options.decimals : 2;
-
-  const formatted = num.toLocaleString('en-IN', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-
-  return `₹${formatted}${showSuffix ? ' L' : ''}`;
-}
-
-/**
- * Formats general numeric metric values with Indian commas and optional decimal cap.
- */
-export function formatCleanNumber(
-  value: number | string | undefined | null,
-  maxDecimals = 0
-): string {
-  if (value === undefined || value === null || value === '') return '—';
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  if (isNaN(num)) return '—';
-  return num.toLocaleString('en-IN', {
-    maximumFractionDigits: maxDecimals,
-  });
-}
-
-/**
  * Formats a works/projects count safely.
  * Returns '—' if undefined or null.
  */

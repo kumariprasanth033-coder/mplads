@@ -39,9 +39,9 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
   });
 
   return (
-    <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-sm p-5 sm:p-6 space-y-4">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-700 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
@@ -51,7 +51,7 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
               {districts.length} Official Districts in {stateName}
             </span>
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-slate-100 tracking-tight mt-1">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-1">
             District-Wise Works, Utilization &amp; Milestone Completion
           </h3>
         </div>
@@ -65,14 +65,14 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
               value={districtSearch}
               onChange={e => setDistrictSearch(e.target.value)}
               placeholder="Search district..."
-              className="pl-8 pr-3 py-1.5 text-xs border border-slate-700 rounded-xl focus:outline-hidden focus:border-blue-500 max-w-[160px]"
+              className="pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-xl focus:outline-hidden focus:border-blue-500 max-w-[160px]"
             />
           </div>
 
           <select
             value={sortBy}
             onChange={e => setSortBy(e.target.value as any)}
-            className="text-xs border border-slate-700 rounded-xl px-2.5 py-1.5 bg-slate-800 text-slate-300 focus:outline-hidden"
+            className="text-xs border border-slate-300 rounded-xl px-2.5 py-1.5 bg-white text-slate-700 focus:outline-hidden"
           >
             <option value="works">Sort by Works</option>
             <option value="utilization">Sort by Utilization %</option>
@@ -93,12 +93,12 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
               className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
                   ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 shadow-md'
-                  : 'border-slate-700 hover:border-blue-300 bg-slate-800 hover:bg-slate-900/60'
+                  : 'border-slate-200 hover:border-blue-300 bg-white hover:bg-slate-50/60'
               }`}
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
-                  <div className="font-bold text-slate-100 text-sm">{d.districtName}</div>
+                  <div className="font-bold text-slate-900 text-sm">{d.districtName}</div>
                   <span
                     className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${
                       d.completionRate >= 75
@@ -114,10 +114,10 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
                   HQ: {d.headquarters || d.districtName}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800 text-xs">
+                <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 text-xs">
                   <div>
                     <span className="text-[10px] text-slate-400 block">Total Works</span>
-                    <span className="font-bold text-slate-100">{d.totalWorks}</span>
+                    <span className="font-bold text-slate-900">{d.totalWorks}</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 block">Sanctioned</span>
@@ -140,7 +140,7 @@ export const DistrictIntelligenceSection: React.FC<Props> = ({
                 </div>
               </div>
 
-              <div className="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[11px] font-semibold text-blue-900">
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-blue-900">
                 <span>{isSelected ? 'Active District' : 'Drill into District'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>

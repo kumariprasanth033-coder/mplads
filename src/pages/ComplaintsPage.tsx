@@ -135,7 +135,7 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         {/* Search & Filter Bar */}
-        <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-4 mb-6">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-4 mb-6">
           <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
             <div className="flex-1 relative">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -144,7 +144,7 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search by Tracking ID (e.g. MPLADS-GRV-2025-4812), location, or problem keywords..."
-                className="w-full pl-10 pr-4 py-2 text-xs bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900 focus:bg-slate-900"
+                className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900 focus:bg-white"
               />
             </div>
 
@@ -152,7 +152,7 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
               <select
                 value={selectedCategory}
                 onChange={e => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-300 font-medium focus:outline-hidden"
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:outline-hidden"
               >
                 <option value="">All Categories</option>
                 <option value="Drinking Water">Drinking Water</option>
@@ -165,7 +165,7 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
               <select
                 value={selectedStatus}
                 onChange={e => setSelectedStatus(e.target.value)}
-                className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-300 font-medium focus:outline-hidden"
+                className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-medium focus:outline-hidden"
               >
                 <option value="">All Statuses</option>
                 <option value="Submitted">Submitted</option>
@@ -194,9 +194,9 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                 <span className="text-xs">Loading grievance registry...</span>
               </div>
             ) : complaints.length === 0 ? (
-              <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8 text-center text-slate-500">
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500">
                 <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                <h4 className="font-bold text-slate-200">No Grievances Match Criteria</h4>
+                <h4 className="font-bold text-slate-800">No Grievances Match Criteria</h4>
                 <p className="text-xs text-slate-400 mt-1">Try resetting the category filter or search query.</p>
               </div>
             ) : (
@@ -204,10 +204,10 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                 <div
                   key={c.id}
                   onClick={() => setSelectedComplaint(c)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-slate-800 ${
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer bg-white ${
                     selectedComplaint?.id === c.id
                       ? 'border-blue-600 shadow-md ring-2 ring-blue-100'
-                      : 'border-slate-700 hover:border-blue-300 hover:shadow-xs'
+                      : 'border-slate-200 hover:border-blue-300 hover:shadow-xs'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs mb-1">
@@ -223,10 +223,10 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-sm text-slate-100">{c.problemTitle}</h3>
+                  <h3 className="font-bold text-sm text-slate-900">{c.problemTitle}</h3>
                   <p className="text-xs text-slate-500 mt-1 line-clamp-2">{c.description}</p>
 
-                  <div className="mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3 h-3 text-slate-400" />
                       <span>{c.location.village}, {c.location.district}</span>
@@ -240,10 +240,10 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
 
           {/* Right Column: Selected Grievance Timeline Stepper (6 cols) */}
           <div className="lg:col-span-6">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6 sticky top-24">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 sticky top-24">
               {selectedComplaint ? (
                 <div className="space-y-4 text-xs">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div>
                       <span className="text-[10px] font-mono text-slate-400 block uppercase">Tracking ID</span>
                       <strong className="text-base font-mono text-blue-900">{selectedComplaint.trackingId}</strong>
@@ -261,16 +261,16 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
 
                   <div>
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Issue Title</span>
-                    <h3 className="text-base font-bold text-slate-100 mt-0.5">{selectedComplaint.problemTitle}</h3>
-                    <p className="text-slate-600 text-xs mt-1.5 leading-relaxed bg-slate-900 p-3 rounded-xl border border-slate-800">
+                    <h3 className="text-base font-bold text-slate-900 mt-0.5">{selectedComplaint.problemTitle}</h3>
+                    <p className="text-slate-600 text-xs mt-1.5 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100">
                       {selectedComplaint.description}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 p-3 bg-slate-900 rounded-xl border border-slate-800">
+                  <div className="grid grid-cols-2 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
                     <div>
                       <span className="text-slate-400 block text-[10px]">Sector Category</span>
-                      <strong className="text-slate-200">{selectedComplaint.category}</strong>
+                      <strong className="text-slate-800">{selectedComplaint.category}</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Assessed Severity</span>
@@ -278,11 +278,11 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Jurisdiction</span>
-                      <strong className="text-slate-200">{selectedComplaint.location.district}, {selectedComplaint.location.state}</strong>
+                      <strong className="text-slate-800">{selectedComplaint.location.district}, {selectedComplaint.location.state}</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Submitted Date</span>
-                      <strong className="text-slate-200">{new Date(selectedComplaint.createdAt).toLocaleDateString()}</strong>
+                      <strong className="text-slate-800">{new Date(selectedComplaint.createdAt).toLocaleDateString()}</strong>
                     </div>
                   </div>
 
@@ -291,11 +291,11 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-3">
                       District Collectorate Resolution Stepper
                     </span>
-                    <div className="relative pl-5 border-l-2 border-slate-700 space-y-4">
+                    <div className="relative pl-5 border-l-2 border-slate-200 space-y-4">
                       {selectedComplaint.timeline.map((item, idx) => (
                         <div key={idx} className="relative">
                           <div className="absolute -left-[25px] top-1 w-3.5 h-3.5 rounded-full bg-blue-900 ring-4 ring-blue-100" />
-                          <div className="flex justify-between font-bold text-slate-200">
+                          <div className="flex justify-between font-bold text-slate-800">
                             <span>{item.status}</span>
                             <span className="text-[10px] font-mono text-slate-400">
                               {new Date(item.timestamp).toLocaleDateString()}
@@ -325,9 +325,9 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
       {/* New Grievance Modal */}
       {showNewModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-700">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-              <h3 className="font-bold text-base text-slate-100">Lodge Citizen Grievance</h3>
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="font-bold text-base text-slate-900">Lodge Citizen Grievance</h3>
               <button
                 onClick={() => setShowNewModal(false)}
                 className="text-slate-400 hover:text-slate-600 text-xs font-bold"
@@ -338,23 +338,23 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
 
             <form onSubmit={handleCreateComplaint} className="mt-4 space-y-3 text-xs">
               <div>
-                <label className="font-semibold text-slate-300 block mb-1">Issue Title</label>
+                <label className="font-semibold text-slate-700 block mb-1">Issue Title</label>
                 <input
                   type="text"
                   required
                   value={problemTitle}
                   onChange={e => setProblemTitle(e.target.value)}
                   placeholder="e.g. RO Drinking Water Plant Motor Burnt Out"
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900"
                 />
               </div>
 
               <div>
-                <label className="font-semibold text-slate-300 block mb-1">Category</label>
+                <label className="font-semibold text-slate-700 block mb-1">Category</label>
                 <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden"
                 >
                   <option value="Drinking Water">Drinking Water</option>
                   <option value="Road Construction">Road Construction</option>
@@ -366,34 +366,34 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="font-semibold text-slate-300 block mb-1">Village / Ward</label>
+                  <label className="font-semibold text-slate-700 block mb-1">Village / Ward</label>
                   <input
                     type="text"
                     value={village}
                     onChange={e => setVillage(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden"
                   />
                 </div>
                 <div>
-                  <label className="font-semibold text-slate-300 block mb-1">District</label>
+                  <label className="font-semibold text-slate-700 block mb-1">District</label>
                   <input
                     type="text"
                     value={district}
                     onChange={e => setDistrict(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-semibold text-slate-300 block mb-1">Detailed Description</label>
+                <label className="font-semibold text-slate-700 block mb-1">Detailed Description</label>
                 <textarea
                   rows={3}
                   required
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Provide exact details of the defect, duration of issue, and impact on local residents..."
-                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-900"
                 />
               </div>
 
@@ -401,7 +401,7 @@ export const ComplaintsPage: React.FC<Props> = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => setShowNewModal(false)}
-                  className="px-4 py-2 bg-slate-800/80 hover:bg-slate-200 text-slate-300 font-semibold rounded-xl"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl"
                 >
                   Cancel
                 </button>

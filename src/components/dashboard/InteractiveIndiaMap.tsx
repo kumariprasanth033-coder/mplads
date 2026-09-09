@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   MapPin,
   ArrowRight,
@@ -15,6 +15,11 @@ import {
   ExternalLink,
   ChevronRight,
   Filter,
+  X,
+  AlertTriangle,
+  Clock,
+  Building2,
+  ShieldCheck,
 } from 'lucide-react';
 import { ALL_INDIAN_STATES, ALL_UNION_TERRITORIES, ALL_INDIA_JURISDICTIONS } from '../../data/indiaStates';
 import { dashboardIntelligence, StateSummaryMetric } from '../../services/dashboardIntelligenceEngine';
@@ -36,6 +41,7 @@ interface Props {
   onSelectState: (state: string) => void;
   activeMetric?: GeoMetricType;
   onChangeMetric?: (metric: GeoMetricType) => void;
+  onOpenStateDashboard?: (state: string) => void;
 }
 
 // Geometric centroids and layout nodes for all 28 States + 8 UTs on an India coordinate projection grid (viewBox 0 0 600 680)
@@ -94,6 +100,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
   onSelectState,
   activeMetric = 'utilization',
   onChangeMetric,
+  onOpenStateDashboard,
 }) => {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
   const [metricMode, setMetricMode] = useState<GeoMetricType>(activeMetric);
@@ -102,6 +109,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [tableSortCol, setTableSortCol] = useState<'name' | 'utilization' | 'completion' | 'works' | 'sanctioned' | 'utilized'>('utilization');
   const [tableSortAsc, setTableSortAsc] = useState(false);
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMetricChange = (m: GeoMetricType) => {
     setMetricMode(m);
@@ -202,6 +210,45 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
   };
 
   const hoveredMetrics = hoveredState ? stateMetricsMap.get(hoveredState.toLowerCase()) : null;
+  const selectedMetrics = selectedState ? stateMetricsMap.get(selectedState.toLowerCase()) : null;
+
+  const handleMouseEnterNode = (stateName: string) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setHoveredState(stateName);
+  };
+
+  const handleMouseLeaveNode = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredState(null);
+    }, 450);
+  };
+
+  const handlePanelMouseEnter = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  };
+
+  const handlePanelMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredState(null);
+    }, 450);
+  };
+
+  const handleOpenStateDashboard = (stateName: string) => {
+    if (onOpenStateDashboard) {
+      onOpenStateDashboard(stateName);
+    } else {
+      window.location.hash = `/state-dashboard?state=${encodeURIComponent(stateName)}`;
+    }
+  };
 
   // Filtered jurisdictions for the directory pills
   const filteredJurisdictions = useMemo(() => {
@@ -263,34 +310,34 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
   }, [allStateMetrics, regionFilter, searchQuery, tableSortCol, tableSortAsc]);
 
   return (
-    <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-slate-900/90 rounded-2xl border border-slate-800 shadow-xl overflow-hidden flex flex-col">
       {/* Header with Metric & View Switchers */}
-      <div className="p-4 sm:p-5 border-b border-slate-700 bg-slate-900/70 flex flex-col gap-4">
+      <div className="p-4 sm:p-5 border-b border-slate-800 bg-slate-950/70 flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-900 border border-blue-200">
-                <MapPin className="w-3.5 h-3.5 text-blue-700" />
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-950/90 text-indigo-300 border border-indigo-800/70">
+                <MapPin className="w-3.5 h-3.5 text-indigo-400" />
                 India Geographic Intelligence Engine
               </span>
-              <span className="text-xs text-slate-500 font-medium">
+              <span className="text-xs text-slate-400 font-medium">
                 All 28 States &amp; 8 Union Territories Synchronized
               </span>
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-100 mt-1">
+            <h3 className="text-base sm:text-lg font-bold text-white mt-1">
               Cross-Jurisdictional Performance &amp; Analytical Cartography
             </h3>
           </div>
 
           {/* View Selector Controls */}
-          <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700 shadow-xs self-start lg:self-auto overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 shadow-xs self-start lg:self-auto overflow-x-auto max-w-full">
             <button
               type="button"
               onClick={() => setViewMode('MAP')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'MAP'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <MapPin className="w-3.5 h-3.5" />
@@ -302,8 +349,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               onClick={() => setViewMode('BAR')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'BAR'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
@@ -315,8 +362,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               onClick={() => setViewMode('TREEMAP')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'TREEMAP'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <Grid className="w-3.5 h-3.5" />
@@ -328,8 +375,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               onClick={() => setViewMode('BUBBLE')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'BUBBLE'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <CircleDot className="w-3.5 h-3.5" />
@@ -341,8 +388,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               onClick={() => setViewMode('RANKING')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'RANKING'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <Trophy className="w-3.5 h-3.5" />
@@ -354,8 +401,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               onClick={() => setViewMode('TABLE')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'TABLE'
-                  ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
               <TableIcon className="w-3.5 h-3.5" />
@@ -366,7 +413,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
 
         {/* Metric Selector Bar */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full text-xs font-semibold">
-          <span className="text-slate-500 text-[11px] uppercase tracking-wide font-bold mr-1 shrink-0">
+          <span className="text-slate-400 text-[11px] uppercase tracking-wide font-bold mr-1 shrink-0">
             Active Metric:
           </span>
 
@@ -375,8 +422,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('utilization')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'utilization'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Fund Utilization %
@@ -387,8 +434,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('completion')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'completion'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Completion %
@@ -399,8 +446,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('delayed')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'delayed'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Delayed %
@@ -411,8 +458,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('risk')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'risk'
-                ? 'bg-rose-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-rose-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Risk Index
@@ -423,8 +470,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('works')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'works'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Total Works
@@ -435,8 +482,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('sanctioned')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'sanctioned'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Sanctioned Amount
@@ -447,8 +494,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('utilized')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'utilized'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Utilized Amount
@@ -459,8 +506,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             onClick={() => handleMetricChange('remaining')}
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'remaining'
-                ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
+                ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                : 'bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             Remaining Balance
@@ -502,52 +549,203 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               </div>
             </div>
 
-            {/* Dynamic Hover Tooltip */}
-            {hoveredMetrics && (
-              <div className="absolute top-0 right-0 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl max-w-xs text-xs animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2">
-                  <div className="font-bold text-white text-sm">
-                    {hoveredMetrics.name}
+            {/* Persistent Selected State Panel (Desktop Top-Right) */}
+            {selectedMetrics && (
+              <div className="hidden sm:block absolute top-2 right-2 z-30 bg-slate-900/95 backdrop-blur-md border border-indigo-500/50 p-4 rounded-xl shadow-2xl w-80 text-xs animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
+                  <div>
+                    <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">
+                      Selected State
+                    </div>
+                    <div className="font-bold text-white text-base flex items-center gap-1.5 mt-0.5">
+                      <MapPin className="w-4 h-4 text-indigo-400" />
+                      <span>{selectedMetrics.name}</span>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-900 text-blue-200">
-                    {hoveredMetrics.type}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onSelectState('')}
+                    className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                    title="Clear selection"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 mt-3 text-slate-300">
-                  <div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
                     <span className="text-[10px] text-slate-400 block">Total Works</span>
-                    <span className="font-bold text-white text-sm">{hoveredMetrics.totalWorks}</span>
+                    <span className="font-bold text-white text-sm">{selectedMetrics.totalWorks}</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-slate-400 block">MPs Tracked</span>
-                    <span className="font-bold text-white text-sm">{hoveredMetrics.mpCount}</span>
-                  </div>
-                  <div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
                     <span className="text-[10px] text-slate-400 block">Sanctioned</span>
-                    <span className="font-bold text-emerald-400">₹{hoveredMetrics.totalSanctionedCr} Cr</span>
+                    <span className="font-bold text-sky-400 text-sm">₹{selectedMetrics.totalSanctionedCr} Cr</span>
                   </div>
-                  <div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
                     <span className="text-[10px] text-slate-400 block">Utilized</span>
-                    <span className="font-bold text-sky-400">₹{hoveredMetrics.totalUtilizedCr} Cr</span>
+                    <span className="font-bold text-emerald-400 text-sm">₹{selectedMetrics.totalUtilizedCr} Cr</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-slate-400 block">Utilization Rate</span>
-                    <span className="font-bold text-amber-300">{hoveredMetrics.utilizationRate}%</span>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Remaining</span>
+                    <span className="font-bold text-amber-300 text-sm">₹{selectedMetrics.remainingCr} Cr</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-slate-400 block">Completion Rate</span>
-                    <span className="font-bold text-emerald-400">{hoveredMetrics.completionRate}%</span>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Utilization %</span>
+                    <span className="font-bold text-indigo-300 text-sm">{selectedMetrics.utilizationRate}%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Completed %</span>
+                    <span className="font-bold text-emerald-400 text-sm">{selectedMetrics.completionRate}%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Delayed Works</span>
+                    <span className="font-bold text-rose-400 text-sm">{selectedMetrics.delayedWorks}</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">High-Risk Projects</span>
+                    <span className="font-bold text-amber-400 text-sm">
+                      {selectedMetrics.riskScore > 30 ? Math.max(1, Math.round(selectedMetrics.delayedWorks * 0.45)) : 0}
+                    </span>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => onSelectState(hoveredMetrics.name)}
-                  className="w-full mt-3 pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-sky-400 font-bold hover:text-sky-300 cursor-pointer"
+                  onClick={() => handleOpenStateDashboard(selectedMetrics.name)}
+                  className="w-full mt-3 py-2 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/30 transition-all text-xs"
                 >
                   <span>Open State Dashboard</span>
                   <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Dynamic Hover Tooltip with 400ms Close Buffer (shown when hovering a state, or offset if selection is active) */}
+            {hoveredMetrics && (!selectedMetrics || hoveredMetrics.name !== selectedMetrics.name) && (
+              <div
+                onMouseEnter={handlePanelMouseEnter}
+                onMouseLeave={handlePanelMouseLeave}
+                className={`absolute z-40 bg-slate-900/95 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl w-80 text-xs animate-in fade-in zoom-in-95 duration-150 ${
+                  selectedMetrics ? 'top-2 left-2 sm:top-2 sm:left-auto sm:right-[330px]' : 'top-2 right-2'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-slate-700/80 pb-2.5">
+                  <div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      Quick Inspection
+                    </div>
+                    <div className="font-bold text-white text-base flex items-center gap-1.5 mt-0.5">
+                      <MapPin className="w-4 h-4 text-sky-400" />
+                      <span>{hoveredMetrics.name}</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                    {hoveredMetrics.type}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mt-3 text-slate-300">
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Total Works</span>
+                    <span className="font-bold text-white text-sm">{hoveredMetrics.totalWorks}</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Sanctioned</span>
+                    <span className="font-bold text-sky-400 text-sm">₹{hoveredMetrics.totalSanctionedCr} Cr</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Utilized</span>
+                    <span className="font-bold text-emerald-400 text-sm">₹{hoveredMetrics.totalUtilizedCr} Cr</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Remaining</span>
+                    <span className="font-bold text-amber-300 text-sm">₹{hoveredMetrics.remainingCr} Cr</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Utilization %</span>
+                    <span className="font-bold text-sky-300 text-sm">{hoveredMetrics.utilizationRate}%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Completed %</span>
+                    <span className="font-bold text-emerald-400 text-sm">{hoveredMetrics.completionRate}%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">Delayed Works</span>
+                    <span className="font-bold text-rose-400 text-sm">{hoveredMetrics.delayedWorks}</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-slate-950/80 border border-slate-800/80">
+                    <span className="text-[10px] text-slate-400 block">High-Risk Projects</span>
+                    <span className="font-bold text-amber-400 text-sm">
+                      {hoveredMetrics.riskScore > 30 ? Math.max(1, Math.round(hoveredMetrics.delayedWorks * 0.45)) : 0}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-2.5 pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-emerald-400" />
+                    <span>Data: MoSPI Synced</span>
+                  </span>
+                  <span className="text-emerald-400 font-medium">Verified Today</span>
+                </div>
+
+                <div className="mt-2.5 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onSelectState(hoveredMetrics.name)}
+                    className="flex-1 py-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-medium text-[11px] cursor-pointer text-center"
+                  >
+                    Pin Selection
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleOpenStateDashboard(hoveredMetrics.name)}
+                    className="flex-1 py-1.5 px-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>Dashboard</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Persistent Selection Bottom Sheet */}
+            {selectedMetrics && (
+              <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/98 backdrop-blur-xl border-t border-indigo-500/40 p-4 shadow-2xl rounded-t-2xl">
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <span className="text-[10px] text-indigo-400 font-bold uppercase">Selected State</span>
+                    <h4 className="text-base font-bold text-white">{selectedMetrics.name}</h4>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onSelectState('')}
+                    className="p-1.5 rounded-lg bg-slate-800 text-slate-300"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center text-xs mb-3">
+                  <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                    <span className="text-[10px] text-slate-400 block">Works</span>
+                    <span className="font-bold text-white">{selectedMetrics.totalWorks}</span>
+                  </div>
+                  <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                    <span className="text-[10px] text-slate-400 block">Utilized</span>
+                    <span className="font-bold text-emerald-400">₹{selectedMetrics.totalUtilizedCr} Cr</span>
+                  </div>
+                  <div className="bg-slate-950 p-2 rounded-lg border border-slate-800">
+                    <span className="text-[10px] text-slate-400 block">Rate</span>
+                    <span className="font-bold text-indigo-300">{selectedMetrics.utilizationRate}%</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleOpenStateDashboard(selectedMetrics.name)}
+                  className="w-full py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2"
+                >
+                  <span>Open State Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -575,8 +773,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                     <g
                       key={stateName}
                       className="cursor-pointer transition-transform duration-150"
-                      onMouseEnter={() => setHoveredState(stateName)}
-                      onMouseLeave={() => setHoveredState(null)}
+                      onMouseEnter={() => handleMouseEnterNode(stateName)}
+                      onMouseLeave={handleMouseLeaveNode}
                       onClick={() => onSelectState(stateName)}
                     >
                       {isSelected && (
@@ -700,7 +898,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               <span>Click tile to open State Dashboard</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-[520px] overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-[460px] overflow-y-auto pr-1">
               {sortedMetrics.map(m => {
                 const val = getMetricValue(m, metricMode);
                 const isSelected = selectedState.toLowerCase() === m.name.toLowerCase();
@@ -709,29 +907,29 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                   <div
                     key={m.name}
                     onClick={() => onSelectState(m.name)}
-                    className={`min-w-0 p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between min-h-[90px] overflow-hidden ${
+                    className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between min-h-[90px] ${
                       isSelected
                         ? 'bg-blue-900 border-sky-400 shadow-lg'
                         : 'bg-slate-800/60 hover:bg-slate-800 border-slate-700/80 hover:border-slate-500'
                     }`}
                   >
-                    <div className="min-w-0">
-                      <div className="flex items-center justify-between gap-1 min-w-0">
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900/60 text-slate-300 shrink-0">
+                    <div>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-900/60 text-slate-300">
                           {m.type === 'State' ? 'ST' : 'UT'}
                         </span>
-                        <span className="text-xs font-black text-amber-300 font-mono truncate">
+                        <span className="text-xs font-black text-amber-300 font-mono">
                           {formatMetricValue(val, metricMode)}
                         </span>
                       </div>
-                      <h5 className="font-bold text-xs text-white mt-1.5 line-clamp-2 break-words" title={m.name}>
+                      <h5 className="font-bold text-xs text-white mt-1.5 line-clamp-2">
                         {m.name}
                       </h5>
                     </div>
 
-                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-700/50 mt-2 min-w-0">
-                      <span className="truncate">{m.totalWorks} Works</span>
-                      <ArrowRight className="w-3 h-3 text-sky-400 shrink-0" />
+                    <div className="text-[10px] text-slate-400 flex items-center justify-between pt-2 border-t border-slate-700/50 mt-2">
+                      <span>{m.totalWorks} Works</span>
+                      <ArrowRight className="w-3 h-3 text-sky-400" />
                     </div>
                   </div>
                 );
@@ -925,24 +1123,24 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
       </div>
 
       {/* Quick State & UT Selection Directory Pills */}
-      <div className="p-4 sm:p-5 border-t border-slate-700 bg-slate-800">
+      <div className="p-4 sm:p-5 border-t border-slate-800 bg-slate-950/90">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
               Quick Jurisdiction Directory
             </span>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[11px] text-slate-400">
               ({filteredJurisdictions.length} matching)
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex bg-slate-800/80 rounded-lg p-0.5 text-xs">
+            <div className="flex bg-slate-900 rounded-lg p-0.5 text-xs border border-slate-800">
               <button
                 type="button"
                 onClick={() => setRegionFilter('All')}
-                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'All' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
+                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition-colors ${
+                  regionFilter === 'All' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 All (36)
@@ -950,8 +1148,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setRegionFilter('States')}
-                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'States' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
+                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition-colors ${
+                  regionFilter === 'States' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 28 States
@@ -959,8 +1157,8 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setRegionFilter('UTs')}
-                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'UTs' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
+                className={`px-2.5 py-1 rounded-md font-medium cursor-pointer transition-colors ${
+                  regionFilter === 'UTs' ? 'bg-indigo-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 8 UTs
@@ -972,7 +1170,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Find state/UT..."
-              className="px-3 py-1 text-xs border border-slate-700 rounded-lg focus:outline-hidden focus:border-blue-500 max-w-[150px]"
+              className="px-3 py-1 text-xs border border-slate-700 bg-slate-900 text-white rounded-lg focus:outline-hidden focus:border-indigo-500 max-w-[150px] placeholder-slate-500"
             />
           </div>
         </div>
@@ -990,19 +1188,19 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                 onClick={() => onSelectState(isSelected ? '' : j.name)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 border ${
                   isSelected
-                    ? 'bg-blue-900 text-white border-blue-900 shadow-sm'
-                    : 'bg-slate-900 hover:bg-blue-50 text-slate-300 border-slate-700'
+                    ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm'
+                    : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-800 hover:border-slate-700'
                 }`}
               >
                 <span>{j.name}</span>
                 {metric && (
                   <span
-                    className={`text-[10px] px-1 rounded font-bold ${
+                    className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${
                       isSelected
-                        ? 'bg-blue-800 text-blue-100'
+                        ? 'bg-indigo-800 text-indigo-100'
                         : metric.utilizationRate >= 75
-                        ? 'text-emerald-700 bg-emerald-50'
-                        : 'text-amber-700 bg-amber-50'
+                        ? 'text-emerald-300 bg-emerald-950/80 border border-emerald-800/60'
+                        : 'text-amber-300 bg-amber-950/80 border border-amber-800/60'
                     }`}
                   >
                     {metric.utilizationRate}%

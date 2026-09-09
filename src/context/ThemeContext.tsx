@@ -15,9 +15,9 @@ export const THEME_STORAGE_KEY = 'mplads-theme';
 
 /**
  * Applies theme classes and attributes directly to DOM root elements
- * to guarantee no light-theme flash occurs and the styling is immediate.
+ * to guarantee no light-theme flash occurs and the dark styling is permanent.
  */
-export const applyThemeToDocument = (_theme: ThemeMode = 'dark') => {
+export const applyThemeToDocument = (_theme?: ThemeMode) => {
   if (typeof document === 'undefined') return;
 
   const root = document.documentElement;
@@ -25,7 +25,6 @@ export const applyThemeToDocument = (_theme: ThemeMode = 'dark') => {
   root.classList.add('dark');
   root.setAttribute('data-theme', 'dark');
   root.style.colorScheme = 'dark';
-  root.style.backgroundColor = '#0f172a';
 
   if (document.body) {
     document.body.classList.remove('light');
@@ -34,47 +33,41 @@ export const applyThemeToDocument = (_theme: ThemeMode = 'dark') => {
     document.body.style.color = '#f1f5f9';
   }
 
-  const rootDiv = document.getElementById('root');
-  if (rootDiv) {
-    rootDiv.style.backgroundColor = '#0f172a';
-    rootDiv.style.color = '#f1f5f9';
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark');
+  } catch (e) {
+    // Ignore localStorage quotas/issues
   }
 };
 
 /**
  * Global Theme Provider for MPLADS Smart & AI Portal
- * Default Theme: DARK (Consistent before, during, and after login across every route)
+ * Standard: Modern Dark Slate Architecture (Ashoka National Portal Palette)
+ * Single global theme before, during, and after login across all routes.
  */
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // The dark MPLADS theme is the SINGLE global theme for every route before & after login
-  const theme: ThemeMode = 'dark';
+  const [theme] = useState<ThemeMode>('dark');
 
   useEffect(() => {
     applyThemeToDocument('dark');
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, 'dark');
-    } catch (e) {
-      // Ignore localStorage quotas/issues
-    }
   }, []);
 
   const setTheme = (_newTheme: ThemeMode) => {
-    // Keep single uniform dark theme
+    // Portal standard mandates single dark theme
     applyThemeToDocument('dark');
   };
 
   const toggleTheme = () => {
-    // Keep single uniform dark theme
     applyThemeToDocument('dark');
   };
 
   return (
     <ThemeContext.Provider
       value={{
-        theme,
+        theme: 'dark',
         setTheme,
         toggleTheme,
-        isDark: theme === 'dark',
+        isDark: true,
       }}
     >
       {children}
@@ -89,3 +82,4 @@ export const useTheme = (): ThemeContextType => {
   }
   return context;
 };
+

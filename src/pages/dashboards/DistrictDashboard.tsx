@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { api } from '../../services/api';
 import { ActionQueueItem, ProjectRecord } from '../../types';
-import { formatLakhsAmount } from '../../utils/safeCalculation';
 
 interface Props {
   onNavigate: (path: string) => void;
@@ -103,9 +102,9 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Action Queue Items (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-5">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <h3 className="font-bold text-base text-slate-100 flex items-center gap-2">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-blue-900" />
                   <span>Pending Action Queue ({actionQueue.length})</span>
                 </h3>
@@ -115,11 +114,11 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
               {actionQueue.length === 0 ? (
                 <div className="py-12 text-center text-slate-400 text-xs">
                   <CheckCircle2 className="w-8 h-8 mx-auto text-emerald-500 mb-2" />
-                  <p className="font-bold text-slate-300">Action Queue Clear</p>
+                  <p className="font-bold text-slate-700">Action Queue Clear</p>
                   <p className="text-[11px] text-slate-500">All MP recommendations have been reviewed and disposed.</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-800 mt-2">
+                <div className="divide-y divide-slate-100 mt-2">
                   {actionQueue.map(item => (
                     <div
                       key={item.id}
@@ -127,7 +126,7 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
                       className={`p-3.5 rounded-xl transition-all cursor-pointer ${
                         selectedItem?.id === item.id
                           ? 'bg-blue-50/80 border-2 border-blue-500'
-                          : 'hover:bg-slate-900 border border-transparent'
+                          : 'hover:bg-slate-50 border border-transparent'
                       }`}
                     >
                       <div className="flex items-center justify-between text-xs">
@@ -147,13 +146,13 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
                         </span>
                       </div>
 
-                      <h4 className="font-bold text-sm text-slate-100 mt-2">
+                      <h4 className="font-bold text-sm text-slate-900 mt-2">
                         {item.title}
                       </h4>
 
-                      <div className="flex items-center justify-between text-xs text-slate-500 mt-2 min-w-0 gap-2">
-                        <span className="truncate">MP: {item.mpName}</span>
-                        <strong className="text-slate-200 shrink-0">{formatLakhsAmount(item.amountLakhs)}</strong>
+                      <div className="flex items-center justify-between text-xs text-slate-500 mt-2">
+                        <span>MP: {item.mpName}</span>
+                        <strong className="text-slate-800">₹{item.amountLakhs} Lakhs</strong>
                       </div>
                     </div>
                   ))}
@@ -164,8 +163,8 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
 
           {/* Right Column: Collector Decision Panel (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
-            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6">
-              <h3 className="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+              <h3 className="font-bold text-base text-slate-900 pb-3 border-b border-slate-100">
                 Collectorate Sanction Adjudication Panel
               </h3>
 
@@ -175,27 +174,27 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                       Proposed Community Asset
                     </span>
-                    <h4 className="font-bold text-base text-slate-100 mt-1">
+                    <h4 className="font-bold text-base text-slate-900 mt-1">
                       {selectedItem.title}
                     </h4>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3 p-3 bg-slate-900 rounded-xl border border-slate-700">
-                    <div className="min-w-0">
+                  <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <div>
                       <span className="text-slate-400 block text-[10px]">Recommending MP</span>
-                      <strong className="text-slate-100 block truncate">{selectedItem.mpName}</strong>
+                      <strong className="text-slate-900">{selectedItem.mpName}</strong>
                     </div>
-                    <div className="min-w-0">
+                    <div>
                       <span className="text-slate-400 block text-[10px]">Recommended Outlay</span>
-                      <strong className="text-blue-400 text-sm block truncate">{formatLakhsAmount(selectedItem.amountLakhs)}</strong>
+                      <strong className="text-blue-900 text-sm">₹{selectedItem.amountLakhs} Lakhs</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Constituency</span>
-                      <strong className="text-slate-100">{selectedItem.constituency}</strong>
+                      <strong className="text-slate-900">{selectedItem.constituency}</strong>
                     </div>
                     <div>
                       <span className="text-slate-400 block text-[10px]">Date Submitted</span>
-                      <strong className="text-slate-100">{selectedItem.submittedDate}</strong>
+                      <strong className="text-slate-900">{selectedItem.submittedDate}</strong>
                     </div>
                   </div>
 
@@ -212,7 +211,7 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
 
                   {/* Official Decision Note */}
                   <div>
-                    <label className="font-bold text-slate-300 block mb-1">
+                    <label className="font-bold text-slate-700 block mb-1">
                       Statutory Endorsement / Site Inspection Note:
                     </label>
                     <textarea
@@ -220,7 +219,7 @@ export const DistrictDashboard: React.FC<Props> = ({ onNavigate }) => {
                       value={officerNote}
                       onChange={e => setOfficerNote(e.target.value)}
                       placeholder="Add official reasons, technical sanction conditions, or specific line agency directives..."
-                      className="w-full px-3 py-2 border border-slate-700 rounded-lg text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-900"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-blue-900"
                     />
                   </div>
 

@@ -22,7 +22,6 @@ import { ProjectIntelligenceCoreVisual } from '../components/ProjectIntelligence
 import { MasterIntelligenceDashboard } from '../components/dashboard/MasterIntelligenceDashboard';
 import { ProjectRecord } from '../types';
 import { searchIntentEngine } from '../services/searchIntentEngine';
-import { formatLakhsAmount, formatCleanNumber } from '../utils/safeCalculation';
 
 
 interface Props {
@@ -146,7 +145,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
           <div className="mt-8 max-w-2xl mx-auto relative z-30">
             <form
               onSubmit={handleSearchSubmit}
-              className="bg-slate-800 text-slate-200 p-2 sm:p-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
+              className="bg-slate-800/95 text-slate-100 p-2 sm:p-2.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
             >
               <div className="p-2.5 rounded-xl bg-blue-900 text-white shrink-0">
                 <Search className="w-5 h-5" />
@@ -180,18 +179,18 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Real-time Autocomplete Dropdown */}
             {showDropdown && searchQuery.trim() && (
               <div className="absolute left-0 right-0 top-full mt-2 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 text-slate-100 overflow-hidden z-50 animate-in fade-in duration-100">
-                <div className="px-4 py-2 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div className="px-4 py-2 bg-slate-900 border-b border-slate-700 flex items-center justify-between text-xs text-slate-400 font-medium">
                   <span>Suggestions for &ldquo;{searchQuery}&rdquo;</span>
                   <button
                     type="button"
                     onClick={() => setShowDropdown(false)}
-                    className="text-slate-400 hover:text-slate-600"
+                    className="text-slate-400 hover:text-slate-200"
                   >
                     Close
                   </button>
                 </div>
 
-                <div className="max-h-72 overflow-y-auto divide-y divide-slate-800">
+                <div className="max-h-72 overflow-y-auto divide-y divide-slate-700">
                   {suggestions.length > 0 ? (
                     suggestions.map((item: any) => (
                       <div
@@ -200,18 +199,18 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                           setShowDropdown(false);
                           onNavigate(item.navPath);
                         }}
-                        className="p-3 hover:bg-blue-50/50 flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                        className="p-3 hover:bg-slate-700/50 flex items-center justify-between gap-3 cursor-pointer transition-colors"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                               item.type === 'MP'
-                                ? 'bg-purple-100 text-purple-800'
+                                ? 'bg-purple-900/50 text-purple-300 border border-purple-700/50'
                                 : item.type === 'Project'
-                                ? 'bg-blue-100 text-blue-800'
+                                ? 'bg-blue-900/50 text-blue-300 border border-blue-700/50'
                                 : item.type === 'Constituency'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-amber-100 text-amber-800'
+                                ? 'bg-emerald-900/50 text-emerald-300 border border-emerald-700/50'
+                                : 'bg-amber-900/50 text-amber-300 border border-amber-700/50'
                             }`}
                           >
                             {item.type}
@@ -220,7 +219,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                             <span className="text-xs font-bold text-slate-100 truncate block">
                               {item.name}
                             </span>
-                            <span className="text-[11px] text-slate-500 truncate block">
+                            <span className="text-[11px] text-slate-400 truncate block">
                               {item.state} {item.constituency ? `• ${item.constituency}` : ''}
                             </span>
                           </div>
@@ -232,17 +231,17 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                       </div>
                     ))
                   ) : (
-                    <div className="p-4 text-center text-xs text-slate-500">
+                    <div className="p-4 text-center text-xs text-slate-400">
                       No immediate suggestions. Press Search or ENTER for full query.
                     </div>
                   )}
                 </div>
 
-                <div className="p-2.5 bg-slate-900 border-t border-slate-800 text-center">
+                <div className="p-2.5 bg-slate-900 border-t border-slate-700 text-center">
                   <button
                     type="button"
                     onClick={() => handleSearchSubmit()}
-                    className="text-xs font-bold text-blue-900 hover:text-blue-700 flex items-center justify-center gap-1 w-full cursor-pointer"
+                    className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center justify-center gap-1 w-full cursor-pointer"
                   >
                     <span>View all matching results on full search page</span>
                     <ArrowRight className="w-3 h-3" />
@@ -288,56 +287,44 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="mt-10 sm:mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto w-full">
-            <div className="min-w-0 bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 sm:p-4 text-center backdrop-blur-xs flex flex-col justify-between overflow-hidden shadow-xs">
-              <div
-                className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white truncate w-full tracking-tight"
-                title={String(stats?.totalProjects ?? '58')}
-              >
-                {formatCleanNumber(stats?.totalProjects ?? 58)}
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto">
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 text-center backdrop-blur-xs">
+              <div className="text-2xl sm:text-3xl font-extrabold text-white">
+                {stats?.totalProjects ?? '58'}
               </div>
-              <div className="text-xs text-slate-300 mt-1 font-medium leading-snug break-words">Total Sanctioned Works</div>
-              <div className="text-[10px] text-emerald-400 mt-0.5 truncate block">National Demo Index</div>
+              <div className="text-xs text-slate-400 mt-1 font-medium">Total Sanctioned Works</div>
+              <div className="text-[10px] text-emerald-400 mt-0.5">National Demo Index</div>
             </div>
 
-            <div className="min-w-0 bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 sm:p-4 text-center backdrop-blur-xs flex flex-col justify-between overflow-hidden shadow-xs">
-              <div
-                className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-emerald-400 truncate w-full tracking-tight"
-                title={formatLakhsAmount(stats?.sanctionedAmountLakhs ?? 948.5)}
-              >
-                {formatLakhsAmount(stats?.sanctionedAmountLakhs ?? 948.5)}
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 text-center backdrop-blur-xs">
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400">
+                ₹{stats?.sanctionedAmountLakhs ?? '948.5'} L
               </div>
-              <div className="text-xs text-slate-300 mt-1 font-medium leading-snug break-words">Total Sanctioned Funds</div>
-              <div className="text-[10px] text-slate-400 mt-0.5 truncate block">Across Entitlement Batches</div>
+              <div className="text-xs text-slate-400 mt-1 font-medium">Total Sanctioned Funds</div>
+              <div className="text-[10px] text-slate-400 mt-0.5">Across Entitlement Batches</div>
             </div>
 
-            <div className="min-w-0 bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 sm:p-4 text-center backdrop-blur-xs flex flex-col justify-between overflow-hidden shadow-xs">
-              <div
-                className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-blue-400 truncate w-full tracking-tight"
-                title={formatLakhsAmount(stats?.utilizedAmountLakhs ?? 512.2)}
-              >
-                {formatLakhsAmount(stats?.utilizedAmountLakhs ?? 512.2)}
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 text-center backdrop-blur-xs">
+              <div className="text-2xl sm:text-3xl font-extrabold text-blue-400">
+                ₹{stats?.utilizedAmountLakhs ?? '512.2'} L
               </div>
-              <div className="text-xs text-slate-300 mt-1 font-medium leading-snug break-words">Recorded Expenditure</div>
-              <div className="text-[10px] text-blue-300 mt-0.5 truncate block">Verified Milestone Invoices</div>
+              <div className="text-xs text-slate-400 mt-1 font-medium">Recorded Expenditure</div>
+              <div className="text-[10px] text-blue-300 mt-0.5">Verified Milestone Invoices</div>
             </div>
 
-            <div className="min-w-0 bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 sm:p-4 text-center backdrop-blur-xs flex flex-col justify-between overflow-hidden shadow-xs">
-              <div
-                className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-amber-400 truncate w-full tracking-tight"
-                title={`${stats ? Math.round(((stats.completedProjects || 0) / (stats.totalProjects || 1)) * 100) : '62'}%`}
-              >
+            <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-4 text-center backdrop-blur-xs">
+              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400">
                 {stats ? Math.round(((stats.completedProjects || 0) / (stats.totalProjects || 1)) * 100) : '62'}%
               </div>
-              <div className="text-xs text-slate-300 mt-1 font-medium leading-snug break-words">Completion Rate</div>
-              <div className="text-[10px] text-amber-300 mt-0.5 truncate block">Geotagged Handover</div>
+              <div className="text-xs text-slate-400 mt-1 font-medium">Completion Rate</div>
+              <div className="text-[10px] text-amber-300 mt-0.5">Geotagged Handover</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Central Development Intelligence Layer (SIH Master Dashboard) */}
-      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-slate-800/80/70 border-b border-slate-700">
+      <section className="py-10 px-4 sm:px-6 lg:px-8 bg-slate-950 border-b border-slate-800">
         <div className="max-w-7xl mx-auto">
           <MasterIntelligenceDashboard onNavigate={onNavigate} />
         </div>
@@ -375,16 +362,16 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
       </section>
 
       {/* 6 Role Workspaces Overview (Crucial for SIH Evaluators) */}
-      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-slate-800 border-b border-slate-700">
+      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900/60 border-b border-slate-800">
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-10">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-900 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-400 bg-blue-900/40 px-3 py-1 rounded-full border border-blue-700/50">
               Role-Based Governance Workspaces
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight mt-3">
               One Unified Platform. Six Tailored Dashboards.
             </h2>
-            <p className="text-sm text-slate-500 mt-2">
+            <p className="text-sm text-slate-400 mt-2">
               Every stakeholder has dedicated toolsets with strict role-based access control, synchronized to the central MPLADS database.
             </p>
           </div>
@@ -393,25 +380,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 1: MP */}
             <div
               onClick={() => onNavigate('/dashboard/mp')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-blue-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-blue-900 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <Building className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-blue-900">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-blue-400">
                     Member of Parliament (MP)
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-blue-100 text-blue-900 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-blue-900/50 text-blue-300 font-mono font-bold border border-blue-700/50">
                     MP
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   Recommend new community works, review AI pre-check advisories, monitor constituency fund utilization against the ₹5 Crore quota, and identify asset-deficient areas.
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-blue-900">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-blue-400">
                 <span>Enter MP Workspace</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -420,25 +407,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 2: District Officer */}
             <div
               onClick={() => onNavigate('/dashboard/district')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-emerald-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-emerald-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <FileCheck className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-emerald-900">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-emerald-400">
                     District Collector / Nodal
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-emerald-100 text-emerald-900 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-emerald-900/50 text-emerald-300 font-mono font-bold border border-emerald-700/50">
                     COLLECTOR
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   Review MP recommendations, inspect action queues, examine AI duplicate/convergence flags, accord Administrative Sanctions (AS), and assign implementing agencies.
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-emerald-700">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-emerald-400">
                 <span>Enter Collector Workspace</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -447,25 +434,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 3: Implementing Agency */}
             <div
               onClick={() => onNavigate('/dashboard/agency')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-amber-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-amber-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <Layers className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-amber-900">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-amber-400">
                     Implementing Agency (DRDA/PWD)
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-amber-100 text-amber-900 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-amber-900/50 text-amber-300 font-mono font-bold border border-amber-700/50">
                     AGENCY
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   Upload geotagged photographic milestone evidence (Before, During, Completed), record physical progress %, file expenditure invoices, and submit Utilization Certificates (UC).
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-amber-700">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-amber-400">
                 <span>Enter Agency Workspace</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -474,25 +461,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 4: Auditor */}
             <div
               onClick={() => onNavigate('/dashboard/auditor')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-rose-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-rose-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-rose-700 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <AlertTriangle className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-rose-900">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-rose-400">
                     Auditor &amp; Monitoring Wing
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-rose-100 text-rose-900 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-rose-900/50 text-rose-300 font-mono font-bold border border-rose-700/50">
                     AUDITOR
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   Automated risk scoring (0-100), schedule rate variance checks, stagnant site alerts, unutilized fund balances, and inspection audit trail generation.
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-rose-700">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-rose-400">
                 <span>Enter Auditor Workspace</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -501,25 +488,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 5: Citizen */}
             <div
               onClick={() => onNavigate('/dashboard/citizen')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-indigo-500 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-indigo-700 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <Users className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-900">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-indigo-400">
                     Citizen &amp; Community Voice
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-indigo-100 text-indigo-900 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-indigo-900/50 text-indigo-300 font-mono font-bold border border-indigo-700/50">
                     CITIZEN
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   Lodge civic issues in natural language via AI grievance assistant, discover local development works, verify physical QR boards, and track progress transparently.
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-indigo-700">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-indigo-400">
                 <span>Lodge Grievance &amp; Track</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -528,25 +515,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             {/* Card 6: Administrator */}
             <div
               onClick={() => onNavigate('/dashboard/admin')}
-              className="p-6 rounded-2xl border border-slate-700 hover:border-slate-700 hover:shadow-lg transition-all cursor-pointer group bg-slate-900/50 flex flex-col justify-between"
+              className="p-6 rounded-2xl border border-slate-800 hover:border-slate-600 hover:shadow-lg transition-all cursor-pointer group bg-slate-800/80 flex flex-col justify-between"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold mb-4 group-hover:scale-105 transition-transform">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-slate-100">
+                  <h3 className="text-lg font-bold text-slate-100 group-hover:text-slate-200">
                     Central Portal Administrator
                   </h3>
-                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-slate-200 text-slate-200 font-mono font-bold">
+                  <span className="text-[10px] px-2 py-0.5 rounded-sm bg-slate-700 text-slate-200 font-mono font-bold border border-slate-600">
                     ADMIN
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                   System configuration, user provisioning, security rule enforcement, telemetry audit logs, and master schema management across national data feeds.
                 </p>
               </div>
-              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-200">
+              <div className="mt-5 pt-3 border-t border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-300">
                 <span>Admin Console</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
@@ -556,24 +543,24 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
       </section>
 
       {/* Featured Community Projects Section */}
-      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-slate-900">
+      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-slate-950/60 border-b border-slate-800">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-700 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800 gap-3">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
                 Public Transparency Feed
               </span>
               <h2 className="text-2xl font-bold text-slate-100 mt-1">
                 Recent High-Impact Development Works
               </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5">
                 Real-time synchronized records with photographic evidence and utilization certificates
               </p>
             </div>
 
             <button
               onClick={() => onNavigate('/projects')}
-              className="text-xs font-bold text-blue-900 hover:text-blue-700 flex items-center gap-1 self-start sm:self-auto"
+              className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 self-start sm:self-auto"
             >
               <span>View All 58 Works</span>
               <ArrowRight className="w-4 h-4" />
@@ -585,11 +572,11 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
               <div
                 key={proj.id}
                 onClick={() => onNavigate(`/projects/${proj.id}`)}
-                className="bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between overflow-hidden group"
+                className="bg-slate-800/90 rounded-xl border border-slate-700 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between overflow-hidden group"
               >
                 <div>
                   {/* Photo thumbnail */}
-                  <div className="h-36 bg-slate-800/80 relative overflow-hidden">
+                  <div className="h-36 bg-slate-100 relative overflow-hidden">
                     {proj.evidence.length > 0 ? (
                       <img
                         src={proj.evidence[proj.evidence.length - 1].url}
@@ -598,7 +585,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                         referrerPolicy="no-referrer"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-slate-800/80 text-slate-400">
+                      <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
                         <FolderGit2 className="w-8 h-8" />
                       </div>
                     )}
@@ -622,7 +609,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                     <span className="text-[11px] font-medium text-blue-800 bg-blue-50 px-2 py-0.5 rounded">
                       {proj.category}
                     </span>
-                    <h4 className="font-bold text-sm text-slate-100 group-hover:text-blue-900 mt-2 line-clamp-2 leading-snug">
+                    <h4 className="font-bold text-sm text-slate-900 group-hover:text-blue-900 mt-2 line-clamp-2 leading-snug">
                       {proj.title}
                     </h4>
                     <div className="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
@@ -637,9 +624,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
                       <span className="text-slate-400">Physical Progress</span>
-                      <span className="font-bold text-slate-200">{proj.progressPercentage}%</span>
+                      <span className="font-bold text-slate-800">{proj.progressPercentage}%</span>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full ${
                           proj.progressPercentage === 100
@@ -653,14 +640,14 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                     <div>
                       <div className="text-[10px] text-slate-400">Sanctioned</div>
-                      <div className="font-bold text-slate-200">₹{proj.financial.sanctionedAmountLakhs} L</div>
+                      <div className="font-bold text-slate-800">₹{proj.financial.sanctionedAmountLakhs} L</div>
                     </div>
                     <div className="text-right">
                       <div className="text-[10px] text-slate-400">MP</div>
-                      <div className="font-medium text-slate-300 truncate max-w-[110px]">{proj.mpName}</div>
+                      <div className="font-medium text-slate-700 truncate max-w-[110px]">{proj.mpName}</div>
                     </div>
                   </div>
                 </div>
@@ -687,14 +674,14 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
             <div className="pt-2 flex flex-wrap gap-3">
               <button
                 onClick={() => onNavigate('/verify')}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-100 hover:bg-slate-800/80 text-xs font-bold flex items-center gap-2 cursor-pointer shadow-lg"
+                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-lg"
               >
-                <QrCode className="w-4 h-4 text-blue-900" />
+                <QrCode className="w-4 h-4 text-white" />
                 <span>Test QR Code Verification Page</span>
               </button>
               <button
                 onClick={() => onNavigate('/projects')}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-medium border border-slate-700 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 cursor-pointer"
               >
                 Browse Projects with Generated QR
               </button>
@@ -702,11 +689,11 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
           </div>
 
           <div className="lg:col-span-4 flex justify-center">
-            <div className="bg-slate-800 p-6 rounded-2xl shadow-2xl text-slate-100 max-w-[280px] w-full text-center border-4 border-amber-500/80">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+            <div className="bg-slate-800/90 p-6 rounded-2xl shadow-2xl text-slate-100 max-w-[280px] w-full text-center border-4 border-amber-500/80">
+              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
                 Sample Physical Site Plaque
               </div>
-              <div className="w-36 h-36 mx-auto bg-slate-800/80 rounded-xl p-2 flex items-center justify-center border border-slate-700">
+              <div className="w-36 h-36 mx-auto bg-white rounded-xl p-2 flex items-center justify-center border border-slate-300 preserve-white" data-preserve-white="true">
                 <img
                   src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://mplads.gov.in/verify/proj-101"
                   alt="QR Code"
@@ -716,7 +703,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, onOpenSearch }) => {
               <div className="mt-3 text-xs font-mono font-bold text-slate-200">
                 MPLADS/2024-25/TN-DHA/101
               </div>
-              <p className="text-[10px] text-slate-500 mt-1">
+              <p className="text-[10px] text-slate-400 mt-1">
                 Pennagaram Bus Stand RO Water Plant
               </p>
             </div>

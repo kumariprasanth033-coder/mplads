@@ -173,7 +173,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
                   <div
                     className={`p-2 rounded-full shadow-lg flex items-center justify-center border-2 ${
                       isSelected
-                        ? 'bg-slate-800 text-slate-950 border-amber-400 ring-4 ring-amber-400/40'
+                        ? 'bg-white text-slate-950 border-amber-400 ring-4 ring-amber-400/40'
                         : proj.status === 'Completed'
                         ? 'bg-emerald-600 text-white border-white'
                         : proj.status === 'Delayed'
@@ -199,20 +199,20 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         {/* Selected Project Dossier Sidebar (4 cols on desktop) */}
-        <div className="lg:col-span-4 bg-slate-800 border-l border-slate-700 p-6 flex flex-col justify-between overflow-y-auto">
+        <div className="lg:col-span-4 bg-slate-900 border-l border-slate-800 p-6 flex flex-col justify-between overflow-y-auto">
           {selectedProject ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800/80 text-slate-300">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
                   {selectedProject.code}
                 </span>
                 <span
                   className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${
                     selectedProject.status === 'Completed'
-                      ? 'bg-emerald-100 text-emerald-800'
+                      ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-800/80'
                       : selectedProject.status === 'Delayed'
-                      ? 'bg-rose-100 text-rose-800'
-                      : 'bg-amber-100 text-amber-800'
+                      ? 'bg-rose-950/80 text-rose-300 border border-rose-800/80'
+                      : 'bg-amber-950/80 text-amber-300 border border-amber-800/80'
                   }`}
                 >
                   {selectedProject.status}
@@ -221,7 +221,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
 
               {/* Photo Thumbnail */}
               {selectedProject.evidence.length > 0 && (
-                <div className="h-44 rounded-xl overflow-hidden bg-slate-800/80 border border-slate-700">
+                <div className="h-44 rounded-xl overflow-hidden bg-slate-800 border border-slate-700">
                   <img
                     src={selectedProject.evidence[selectedProject.evidence.length - 1].url}
                     alt={selectedProject.title}
@@ -232,13 +232,13 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
               )}
 
               <div>
-                <span className="text-xs font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded">
+                <span className="text-xs font-bold text-blue-300 bg-blue-900/50 px-2 py-0.5 rounded border border-blue-700/50">
                   {selectedProject.category}
                 </span>
                 <h3 className="font-bold text-base text-slate-100 mt-2 leading-snug">
                   {selectedProject.title}
                 </h3>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                   {selectedProject.description}
                 </p>
               </div>
@@ -252,7 +252,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">GPS Coordinates</span>
-                  <strong className="font-mono text-slate-200">
+                  <strong className="font-mono text-slate-300">
                     {selectedProject.coordinates.lat}° N, {selectedProject.coordinates.lng}° E
                   </strong>
                 </div>
@@ -264,7 +264,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
                 <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">Disbursed Expenditure</span>
-                  <strong className="text-emerald-700">
+                  <strong className="text-emerald-400">
                     ₹{selectedProject.financial.expenditureLakhs} Lakhs
                   </strong>
                 </div>
@@ -277,7 +277,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
               <div className="pt-2">
                 <button
                   onClick={() => onNavigate(`/projects/${selectedProject.id}`)}
-                  className="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <span>Open Full Project Dossier</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -286,7 +286,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
             </div>
           ) : (
             <div className="text-center py-20 text-slate-400">
-              <MapPin className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+              <MapPin className="w-10 h-10 mx-auto mb-2 text-slate-600" />
               <p className="text-xs">Select any marker on the map to view asset details.</p>
             </div>
           )}
@@ -294,7 +294,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
           {/* Map Footer Note */}
           <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
             <span>SIH DEMO GEODATA</span>
-            <button onClick={() => onNavigate('/reports')} className="text-blue-900 font-bold hover:underline">
+            <button onClick={() => onNavigate('/reports')} className="text-blue-400 font-bold hover:underline">
               Sector Reports →
             </button>
           </div>

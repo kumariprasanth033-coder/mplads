@@ -18,13 +18,6 @@
           doc.classList.add('dark');
           doc.setAttribute('data-theme', 'dark');
           doc.style.colorScheme = 'dark';
-          doc.style.backgroundColor = '#0f172a';
-          if (document.body) {
-            document.body.classList.remove('light');
-            document.body.classList.add('dark');
-            document.body.style.backgroundColor = '#0f172a';
-            document.body.style.color = '#f1f5f9';
-          }
         } catch (e) {
           document.documentElement.classList.add('dark');
           document.documentElement.setAttribute('data-theme', 'dark');

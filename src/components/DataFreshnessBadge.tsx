@@ -50,7 +50,7 @@ export const DataFreshnessBadge: React.FC<DataFreshnessBadgeProps> = ({
         return {
           label: 'DEMO DATA',
           dotClass: 'bg-slate-400',
-          badgeClass: 'bg-slate-800/80 text-slate-300 border-slate-700',
+          badgeClass: 'bg-slate-100 text-slate-700 border-slate-300',
           icon: <AlertCircle className="w-3 h-3 text-slate-500" />,
         };
     }
@@ -79,7 +79,7 @@ export const DataFreshnessBadge: React.FC<DataFreshnessBadgeProps> = ({
       <span className="text-slate-300 font-normal">|</span>
 
       <span className="text-[11px] font-sans font-medium text-slate-600">
-        Source: <strong className="text-slate-100">{source}</strong>
+        Source: <strong className="text-slate-900">{source}</strong>
       </span>
 
       <span className="text-slate-300 font-normal hidden sm:inline">|</span>

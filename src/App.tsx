@@ -24,6 +24,7 @@ import { MpsPage } from './pages/MpsPage';
 import { ExploreMpsPage } from './pages/ExploreMpsPage';
 import { MpDetailPage } from './pages/MpDetailPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
+import { StateDashboardPage } from './pages/StateDashboardPage';
 import { ConstituencyMapPage } from './pages/ConstituencyMapPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { QrVerificationPage } from './pages/QrVerificationPage';
@@ -149,6 +150,11 @@ export default function App() {
       return <ConstituencyMapPage onNavigate={navigate} />;
     }
 
+    if (pathBase === '/state-dashboard' || pathBase.startsWith('/state-dashboard')) {
+      const stateParam = queryParams.get('state') || '';
+      return <StateDashboardPage stateName={stateParam} onNavigate={navigate} />;
+    }
+
     if (pathBase === '/reports') {
       return <ReportsPage onNavigate={navigate} />;
     }
@@ -266,7 +272,7 @@ export default function App() {
             <Footer onNavigate={navigate} />
 
             {/* Role Copilot AI Floating Assistant */}
-            <RoleCopilotWidget onNavigate={navigate} currentPath={currentPath} />
+            <RoleCopilotWidget onNavigate={navigate} />
 
             {/* Global Search Dialog Modal */}
             <GlobalSearchModal

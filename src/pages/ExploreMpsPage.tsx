@@ -485,7 +485,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
         {/* Filter Controls Card */}
-        <div className="bg-slate-800 rounded-2xl shadow-lg border border-slate-700 p-5 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-5 mb-6">
           {/* Top Search Input */}
           <div className="relative mb-4">
             <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -494,7 +494,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search by MP name, parliamentary constituency, state, or political party..."
-              className="w-full pl-12 pr-10 py-3 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 placeholder:text-slate-400 text-sm focus:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
+              className="w-full pl-12 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all font-medium"
             />
             {searchQuery && (
               <button
@@ -507,10 +507,10 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
           </div>
 
           {/* Quick Verification Chips for Audit MPs */}
-          <div className="mb-4 pb-4 border-b border-slate-800">
+          <div className="mb-4 pb-4 border-b border-slate-100">
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span className="text-xs font-bold text-slate-300 uppercase tracking-wide">
+              <span className="text-xs font-bold text-slate-700 uppercase tracking-wide">
                 Quick Verify Test MPs:
               </span>
             </div>
@@ -524,7 +524,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                     className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
                       isSelected
                         ? 'bg-blue-900 text-white font-bold shadow-xs'
-                        : 'bg-slate-800/80 hover:bg-slate-200 text-slate-300'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                     }`}
                   >
                     <span>{mp.label}</span>
@@ -539,13 +539,13 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {/* 1. State / UT */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
                 1. State / UT
               </label>
               <select
                 value={selectedState}
                 onChange={e => handleStateChange(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All 36 States & UTs</option>
                 {ALL_INDIA_JURISDICTIONS.map(j => (
@@ -558,7 +558,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
             {/* 2. Official District */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
                 2. District
               </label>
               <select
@@ -567,8 +567,8 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                 onChange={e => setSelectedDistrict(e.target.value)}
                 className={`w-full px-3 py-2.5 rounded-xl text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   selectedState
-                    ? 'bg-slate-900 border-slate-700 text-slate-200'
-                    : 'bg-slate-800/80 border-slate-700 text-slate-400 cursor-not-allowed'
+                    ? 'bg-slate-50 border-slate-200 text-slate-800'
+                    : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
               >
                 <option value="">
@@ -584,7 +584,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
             {/* 3. Parliamentary Constituency */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
                 3. Constituency
               </label>
               <select
@@ -593,8 +593,8 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                 onChange={e => setSelectedConstituency(e.target.value)}
                 className={`w-full px-3 py-2.5 rounded-xl text-sm font-medium border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                   selectedState
-                    ? 'bg-slate-900 border-slate-700 text-slate-200'
-                    : 'bg-slate-800/80 border-slate-700 text-slate-400 cursor-not-allowed'
+                    ? 'bg-slate-50 border-slate-200 text-slate-800'
+                    : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
               >
                 <option value="">
@@ -610,13 +610,13 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
             {/* 4. House */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
                 4. House
               </label>
               <select
                 value={selectedHouse}
                 onChange={e => setSelectedHouse(e.target.value as any)}
-                className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="All">All Houses (LS + RS)</option>
                 <option value="Lok Sabha">Lok Sabha</option>
@@ -626,13 +626,13 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
             {/* 5. Political Party */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
                 5. Political Party
               </label>
               <select
                 value={selectedParty}
                 onChange={e => setSelectedParty(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="All">All Parties</option>
                 {availableParties.map(p => (
@@ -645,9 +645,9 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
           </div>
 
           {/* Filter Summary & Sort Options */}
-          <div className="mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4 text-sm">
+          <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4 text-sm">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-slate-300">
+              <span className="font-semibold text-slate-700">
                 Showing <strong className="text-blue-900">{filteredMps.length}</strong> of{' '}
                 {allMps.length} representatives
               </span>
@@ -675,7 +675,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                 <select
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value as any)}
-                  className="px-2.5 py-1.5 bg-slate-800/80 border border-slate-700 rounded-lg text-xs font-semibold text-slate-300 focus:outline-none"
+                  className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none"
                 >
                   <option value="name">Name (Alphabetical)</option>
                   <option value="utilization">Fund Utilization % (High to Low)</option>
@@ -689,7 +689,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                 <select
                   value={pageSize}
                   onChange={e => setPageSize(Number(e.target.value))}
-                  className="px-2.5 py-1.5 bg-slate-800/80 border border-slate-700 rounded-lg text-xs font-semibold text-slate-300 focus:outline-none"
+                  className="px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none"
                 >
                   <option value={12}>12</option>
                   <option value={24}>24</option>
@@ -703,9 +703,9 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
         {/* Loading Indicator */}
         {isLoading && (
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8 text-center my-6">
+          <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center my-6">
             <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-300">Loading Parliamentary Directory...</p>
+            <p className="text-sm font-semibold text-slate-700">Loading Parliamentary Directory...</p>
           </div>
         )}
 
@@ -725,7 +725,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                 return (
                   <div
                     key={mp.id}
-                    className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs hover:shadow-xl hover:border-blue-400 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                    className="bg-white rounded-2xl border border-slate-200 shadow-xs hover:shadow-xl hover:border-blue-400 transition-all duration-200 flex flex-col justify-between overflow-hidden group"
                   >
                     <div className="p-5">
                       {/* Top Identity Tags */}
@@ -749,12 +749,12 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                         <MPAvatar mp={mp} size="md" />
 
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-bold text-base text-slate-100 group-hover:text-blue-900 transition-colors truncate">
+                          <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-900 transition-colors truncate">
                             {mp.name}
                           </h3>
                           <div className="text-xs text-slate-600 mt-1 flex items-center gap-1">
                             <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                            <span className="font-semibold text-slate-200 truncate">
+                            <span className="font-semibold text-slate-800 truncate">
                               {mp.constituency}
                             </span>
                           </div>
@@ -772,12 +772,12 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                       </div>
 
                       {/* Financial & Performance Metrics - SAFE ZERO-NaN */}
-                      <div className="mt-5 grid grid-cols-3 gap-2 bg-slate-900 border border-slate-800 rounded-xl p-3 text-center">
+                      <div className="mt-5 grid grid-cols-3 gap-2 bg-slate-50 border border-slate-100 rounded-xl p-3 text-center">
                         <div>
                           <div className="text-[10px] text-slate-500 font-semibold uppercase">
                             Sanctioned
                           </div>
-                          <div className="text-sm font-bold text-slate-100 mt-0.5">
+                          <div className="text-sm font-bold text-slate-900 mt-0.5">
                             {sanctionedText !== '—' ? sanctionedText : <span className="text-xs text-slate-400 font-normal">DATA UNAVAILABLE</span>}
                           </div>
                         </div>
@@ -807,7 +807,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                             {hasUtil ? utilText : <span className="text-slate-400 text-xs font-normal">DATA UNAVAILABLE</span>}
                           </span>
                         </div>
-                        <div className="h-1.5 w-full bg-slate-800/80 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                           {hasUtil ? (
                             <div
                               className={`h-full rounded-full transition-all duration-500 ${
@@ -827,10 +827,10 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                     </div>
 
                     {/* Card Actions Footer */}
-                    <div className="p-3.5 bg-slate-900/80 border-t border-slate-800 grid grid-cols-2 gap-2">
+                    <div className="p-3.5 bg-slate-50/80 border-t border-slate-100 grid grid-cols-2 gap-2">
                       <button
                         onClick={() => onNavigate(`/mp/${mp.id}`)}
-                        className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-blue-50 text-blue-900 text-xs font-bold border border-slate-700 hover:border-blue-300 transition-all flex items-center justify-center gap-1"
+                        className="px-3 py-2 rounded-xl bg-white hover:bg-blue-50 text-blue-900 text-xs font-bold border border-slate-200 hover:border-blue-300 transition-all flex items-center justify-center gap-1"
                       >
                         <span>View Dossier</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -850,18 +850,18 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-800 border border-slate-700 rounded-2xl p-4">
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white border border-slate-200 rounded-2xl p-4">
                 <div className="text-xs text-slate-600">
-                  Showing <strong className="text-slate-100">{(currentPage - 1) * pageSize + 1}</strong> to{' '}
-                  <strong className="text-slate-100">{Math.min(currentPage * pageSize, filteredMps.length)}</strong> of{' '}
-                  <strong className="text-slate-100">{filteredMps.length}</strong> representatives
+                  Showing <strong className="text-slate-900">{(currentPage - 1) * pageSize + 1}</strong> to{' '}
+                  <strong className="text-slate-900">{Math.min(currentPage * pageSize, filteredMps.length)}</strong> of{' '}
+                  <strong className="text-slate-900">{filteredMps.length}</strong> representatives
                 </div>
 
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-200 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
                   >
                     <ChevronLeft className="w-4 h-4" />
                     <span>Prev</span>
@@ -881,7 +881,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
                             currentPage === pageNum
                               ? 'bg-blue-900 text-white shadow-xs'
-                              : 'bg-slate-900 hover:bg-slate-800/80 text-slate-300'
+                              : 'bg-slate-50 hover:bg-slate-100 text-slate-700'
                           }`}
                         >
                           {pageNum}
@@ -893,7 +893,7 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
                   <button
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800/80 hover:bg-slate-200 text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
                   >
                     <span>Next</span>
                     <ChevronRight className="w-4 h-4" />
@@ -903,9 +903,9 @@ export const ExploreMpsPage: React.FC<ExploreMpsPageProps> = ({
             )}
           </>
         ) : !isLoading ? (
-          <div className="bg-slate-800 rounded-2xl border border-slate-700 p-12 text-center max-w-xl mx-auto my-12">
+          <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center max-w-xl mx-auto my-12">
             <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-slate-100">
+            <h3 className="text-lg font-bold text-slate-900">
               No Representatives Found Matching Filters
             </h3>
             <p className="text-sm text-slate-600 mt-2 mb-6">

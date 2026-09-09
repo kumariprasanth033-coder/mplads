@@ -217,7 +217,7 @@ export const ProjectIntelligenceCoreVisual: React.FC<Props> = ({
                   : 'bg-linear-to-tr from-blue-700 via-indigo-700 to-slate-900 ring-4 ring-blue-500/30'
               }`}
             >
-              <div className="w-10 h-10 rounded-full bg-slate-800/10 flex items-center justify-center mb-1">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-1">
                 <Cpu className="w-6 h-6 text-white" />
               </div>
               <span className="text-sm font-extrabold tracking-widest text-white">AI CORE</span>
@@ -253,7 +253,7 @@ export const ProjectIntelligenceCoreVisual: React.FC<Props> = ({
                     isStepActive
                       ? node.activeColor + ' scale-110 shadow-emerald-500/30 ring-4 ring-white/50'
                       : isSelected
-                      ? 'bg-slate-800 text-slate-100 ring-2 ring-emerald-400 font-semibold scale-105'
+                      ? 'bg-white text-slate-900 ring-2 ring-emerald-400 font-semibold scale-105'
                       : 'bg-slate-800/90 text-slate-200 border border-slate-700 hover:bg-slate-750 hover:text-white'
                   }`}
                   aria-label={node.name}

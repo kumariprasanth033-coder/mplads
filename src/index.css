@@ -1,86 +1,95 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   MPLADS SMART & AI POWERED PORTAL - GLOBAL UNIFIED THEME SYSTEM
+   MPLADS SMART & AI POWERED PORTAL - GLOBAL THEME SYSTEM
    Standard: Modern Dark Slate Architecture (Ashoka National Portal Palette)
-   Enforces consistent dark theme before login, after login, and across every route.
-   Eliminates all accidental white backgrounds, text contrast flaws, and layer leaks.
+   Single Global Theme Across All Routes, Before & After Authentication
    ========================================================================= */
 
-:root {
-  color-scheme: dark;
-  --bg-main: #0f172a;       /* slate-900 */
-  --bg-card: #1e293b;       /* slate-800 */
-  --bg-card-subtle: #0f172a; /* slate-900 */
-  --border-card: #334155;   /* slate-700 */
-  --text-primary: #f8fafc;  /* slate-50 */
-  --text-secondary: #cbd5e1;/* slate-300 */
-  --text-muted: #94a3b8;    /* slate-400 */
-}
-
-/* 1. Universal Root & Background Hierarchy */
+:root,
 html,
 body,
-#root,
-main {
+#root {
+  color-scheme: dark !important;
+  background-color: #0f172a !important; /* slate-900 */
+  color: #f1f5f9 !important; /* slate-100 */
+}
+
+/* Ensure body occupies full viewport height and cannot expose white underflow */
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   background-color: #0f172a !important;
   color: #f1f5f9 !important;
-  color-scheme: dark;
-  min-height: 100vh;
-}
-
-/* Prevent unwanted horizontal overflow */
-html,
-body {
   overflow-x: hidden;
-  max-width: 100vw;
 }
 
-/* National Tricolor ribbon preserve white stripe */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #0f172a !important;
+}
+
+/* National Tricolor ribbon: white stripe MUST remain pure white */
 .preserve-white,
 [data-preserve-white="true"] {
   background-color: #ffffff !important;
 }
 
-/* 2. Global Card Surfaces: Replace stark white boxes with dark slate cards */
-.bg-white:not(.preserve-white):not([data-preserve-white="true"]),
-.bg-white\/95,
-.bg-white\/90,
-.bg-white\/85,
-.bg-white\/80,
-.bg-white\/75,
-.bg-white\/70,
-.bg-white\/60,
-.bg-white\/50 {
+/* =========================================================================
+   CARD SURFACES, PANELS, AND OVERLAYS
+   Preserving visual hierarchy:
+   - Primary shell: #0f172a (slate-900)
+   - Raised cards/panels: #1e293b (slate-800)
+   - Inner boxes / subtle trays: #0f172a (slate-900)
+   - Chips, pill tracks, indicators: #334155 (slate-700)
+   ========================================================================= */
+
+/* All card surfaces, dropdown menus, modals, and tables */
+.bg-white:not(.preserve-white):not([data-preserve-white="true"]) {
   background-color: #1e293b !important; /* slate-800 */
 }
 
-/* Subtle card wells, nested containers, tables, and tab strips */
+/* Eliminate blinding semi-transparent white overlays */
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/80,
+.bg-white\/70,
+.bg-white\/60,
+.bg-white\/50 {
+  background-color: rgba(30, 41, 59, 0.88) !important;
+}
+
+.bg-white\/40,
+.bg-white\/30,
+.bg-white\/20,
+.bg-white\/10,
+.bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Page containers, section wrappers, and subtle inner surfaces */
 .bg-slate-50,
-.bg-slate-100,
-.bg-gray-50,
-.bg-gray-100,
-.bg-slate-50\/50,
-.bg-slate-50\/70,
 .bg-slate-50\/80,
-.bg-slate-50\/90 {
-  background-color: #0f172a !important; /* slate-900 inner well */
+.bg-slate-50\/50 {
+  background-color: #0f172a !important; /* slate-900 */
 }
 
-/* Badges, pill tags, and secondary action button backgrounds */
-.bg-slate-200,
-.bg-gray-200 {
+/* Elevated chips, sub-panels, and progress bar tracks */
+.bg-slate-100 {
   background-color: #334155 !important; /* slate-700 */
-  color: #f1f5f9 !important;
 }
 
-/* 3. Global Borders and Dividers */
+.bg-slate-200 {
+  background-color: #334155 !important; /* slate-700 */
+}
+
+/* Borders and dividers */
 .border-slate-100,
 .border-slate-200,
-.border-slate-300,
-.border-gray-100,
-.border-gray-200,
-.border-gray-300 {
+.border-slate-300 {
   border-color: #334155 !important; /* slate-700 */
 }
 
@@ -90,108 +99,142 @@ body {
   border-color: #334155 !important;
 }
 
-/* 4. Global Typography & Readability (Passes WCAG AA on Dark Slate) */
-.text-slate-950,
+/* =========================================================================
+   TEXT CONTRAST HIERARCHY
+   High-contrast, crystal-clear readability on dark slate surfaces
+   ========================================================================= */
+
+/* Headings & primary high-contrast text */
 .text-slate-900,
-.text-slate-800,
-.text-gray-950,
-.text-gray-900,
-.text-gray-800 {
-  color: #f8fafc !important; /* High contrast primary white */
+.text-slate-800 {
+  color: #f8fafc !important; /* slate-50 */
 }
 
-.text-slate-700,
-.text-slate-600,
-.text-gray-700,
-.text-gray-600 {
-  color: #cbd5e1 !important; /* Readable secondary slate-300 */
+/* Secondary & body text */
+.text-slate-700 {
+  color: #e2e8f0 !important; /* slate-200 */
 }
 
-.text-slate-500,
-.text-gray-500 {
-  color: #94a3b8 !important; /* Clean muted slate-400 */
+.text-slate-600 {
+  color: #cbd5e1 !important; /* slate-300 */
 }
 
-.text-slate-400,
-.text-gray-400 {
-  color: #94a3b8 !important;
+/* Muted / label / metadata text */
+.text-slate-500 {
+  color: #94a3b8 !important; /* slate-400 */
 }
 
-/* Ensure blue headline/stat accents are luminous against dark surfaces */
+.text-slate-400 {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+/* =========================================================================
+   COLOR BADGES & STATUS PILLS
+   Prevents invisible light text on light pastel backgrounds!
+   ========================================================================= */
+
+/* Blue Badges */
+.bg-blue-50,
+.bg-blue-100,
+.bg-blue-200 {
+  background-color: rgba(30, 58, 138, 0.35) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+.text-blue-950,
 .text-blue-900,
-.text-blue-800 {
-  color: #60a5fa !important; /* Sky 400 for high readability */
-}
-
+.text-blue-800,
 .text-blue-700 {
-  color: #93c5fd !important;
+  color: #93c5fd !important; /* blue-300 */
 }
 
-/* 5. Thematic Accent Badges & Status Chips */
-/* Emerald / Success */
+/* Emerald Badges */
 .bg-emerald-50,
-.bg-emerald-100 {
-  background-color: rgba(6, 78, 59, 0.45) !important;
+.bg-emerald-100,
+.bg-emerald-200 {
+  background-color: rgba(6, 78, 59, 0.35) !important;
   border-color: rgba(16, 185, 129, 0.4) !important;
 }
 .text-emerald-950,
 .text-emerald-900,
 .text-emerald-800,
 .text-emerald-700 {
-  color: #6ee7b7 !important;
+  color: #6ee7b7 !important; /* emerald-300 */
 }
 
-/* Blue / Info */
-.bg-blue-50,
-.bg-blue-100 {
-  background-color: rgba(30, 58, 138, 0.45) !important;
-  border-color: rgba(59, 130, 246, 0.4) !important;
-}
-.text-blue-950,
-.text-blue-900 {
-  color: #93c5fd !important;
-}
-
-/* Amber / Warning */
+/* Amber Badges */
 .bg-amber-50,
-.bg-amber-100 {
-  background-color: rgba(120, 53, 15, 0.45) !important;
+.bg-amber-100,
+.bg-amber-200 {
+  background-color: rgba(120, 53, 15, 0.35) !important;
   border-color: rgba(245, 158, 11, 0.4) !important;
 }
 .text-amber-950,
 .text-amber-900,
 .text-amber-800,
 .text-amber-700 {
-  color: #fcd34d !important;
+  color: #fcd34d !important; /* amber-300 */
 }
 
-/* Rose / Error / Delayed */
+/* Rose Badges */
 .bg-rose-50,
-.bg-rose-100 {
-  background-color: rgba(136, 19, 55, 0.45) !important;
-  border-color: rgba(225, 29, 72, 0.4) !important;
+.bg-rose-100,
+.bg-rose-200 {
+  background-color: rgba(136, 19, 55, 0.35) !important;
+  border-color: rgba(244, 63, 94, 0.4) !important;
 }
 .text-rose-950,
 .text-rose-900,
 .text-rose-800,
 .text-rose-700 {
-  color: #fda4af !important;
+  color: #fda4af !important; /* rose-300 */
 }
 
-/* Purple / Admin */
+/* Purple Badges */
 .bg-purple-50,
-.bg-purple-100 {
-  background-color: rgba(88, 28, 135, 0.45) !important;
+.bg-purple-100,
+.bg-purple-200 {
+  background-color: rgba(88, 28, 135, 0.35) !important;
   border-color: rgba(168, 85, 247, 0.4) !important;
 }
 .text-purple-950,
 .text-purple-900,
 .text-purple-800,
 .text-purple-700 {
-  color: #d8b4fe !important;
+  color: #d8b4fe !important; /* purple-300 */
 }
 
-/* 6. Form Controls: Input, Select, Textarea */
+/* Indigo Badges */
+.bg-indigo-50,
+.bg-indigo-100,
+.bg-indigo-200 {
+  background-color: rgba(49, 46, 129, 0.35) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+.text-indigo-950,
+.text-indigo-900,
+.text-indigo-800,
+.text-indigo-700 {
+  color: #a5b4fc !important; /* indigo-300 */
+}
+
+/* Teal Badges */
+.bg-teal-50,
+.bg-teal-100,
+.bg-teal-200 {
+  background-color: rgba(19, 78, 74, 0.35) !important;
+  border-color: rgba(20, 184, 166, 0.4) !important;
+}
+.text-teal-950,
+.text-teal-900,
+.text-teal-800,
+.text-teal-700 {
+  color: #5eead4 !important; /* teal-300 */
+}
+
+/* =========================================================================
+   FORM CONTROLS (INPUTS, SELECTS, TEXTAREAS)
+   ========================================================================= */
+
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not(.preserve-input),
 select:not(.preserve-input),
 textarea:not(.preserve-input) {
@@ -200,120 +243,75 @@ textarea:not(.preserve-input) {
   border-color: #334155 !important;
 }
 
+input:focus:not(.preserve-input),
+select:focus:not(.preserve-input),
+textarea:focus:not(.preserve-input) {
+  border-color: #3b82f6 !important;
+  background-color: #0f172a !important;
+}
+
+select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
 input::placeholder,
 textarea::placeholder {
   color: #64748b !important; /* slate-500 */
 }
 
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #3b82f6 !important;
-  outline: none !important;
-}
+/* =========================================================================
+   INTERACTION & HOVER CONTRAST
+   ========================================================================= */
 
-/* 7. Hover States */
 .hover\:bg-slate-50:hover,
 .hover\:bg-slate-100:hover,
-.hover\:bg-slate-50\/50:hover,
-.hover\:bg-slate-50\/80:hover {
+.hover\:bg-slate-200:hover,
+.hover\:bg-blue-50:hover,
+.hover\:bg-purple-50:hover,
+.hover\:bg-emerald-50:hover,
+.hover\:bg-rose-50:hover,
+.hover\:bg-amber-50:hover {
   background-color: #334155 !important; /* slate-700 */
 }
 
-.hover\:bg-blue-50:hover {
-  background-color: rgba(30, 58, 138, 0.5) !important;
+/* Card title hover states on dark backgrounds */
+.hover\:text-blue-900:hover,
+.hover\:text-blue-800:hover,
+.hover\:text-blue-700:hover,
+.group:hover .group-hover\:text-blue-900,
+.group:hover .group-hover\:text-blue-800 {
+  color: #60a5fa !important; /* blue-400 */
 }
 
-/* 8. Sleek Dark Shadows */
-.shadow-2xs,
+.hover\:text-emerald-900:hover,
+.hover\:text-emerald-800:hover,
+.group:hover .group-hover\:text-emerald-900,
+.group:hover .group-hover\:text-emerald-800 {
+  color: #34d399 !important; /* emerald-400 */
+}
+
+.hover\:text-amber-900:hover,
+.hover\:text-amber-800:hover,
+.group:hover .group-hover\:text-amber-900,
+.group:hover .group-hover\:text-amber-800 {
+  color: #fbbf24 !important; /* amber-400 */
+}
+
+.hover\:text-rose-900:hover,
+.hover\:text-rose-800:hover,
+.group:hover .group-hover\:text-rose-900,
+.group:hover .group-hover\:text-rose-800 {
+  color: #fb7185 !important; /* rose-400 */
+}
+
+/* Refined, smooth card shadows in dark mode */
 .shadow-xs,
 .shadow-sm,
 .shadow-md,
 .shadow-lg,
 .shadow-xl,
 .shadow-2xl {
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.55) !important;
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* 9. Layering and Z-Index Hierarchy */
-/* Sticky Navigation Bar */
-header.sticky {
-  z-index: 40 !important;
-}
-
-/* In-Navbar Role Dropdown */
-.navbar-role-dropdown {
-  z-index: 50 !important;
-}
-
-/* AI Copilot Floating Widget */
-.role-copilot-container {
-  z-index: 45 !important;
-}
-
-/* Global Modals (Search, Reports, Project Inspection) */
-.modal-overlay {
-  z-index: 60 !important;
-}
-
-/* Tooltips */
-.global-tooltip {
-  z-index: 70 !important;
-}
-
-/* 10. Dedicated Print & Governance Dossier Stylesheet */
-@media print {
-  @page {
-    margin: 12mm;
-    size: A4 portrait;
-  }
-
-  body, html, #root {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-  }
-
-  /* Hide navigation bars, buttons, toasts, and floating copilots */
-  header,
-  .sticky,
-  button,
-  .role-copilot-container,
-  .no-print {
-    display: none !important;
-  }
-
-  /* Force light surfaces and dark legible text for print */
-  .bg-slate-900,
-  .bg-slate-800,
-  .bg-slate-950 {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-    border-color: #cbd5e1 !important;
-  }
-
-  .text-white,
-  .text-slate-100,
-  .text-slate-200,
-  .text-slate-300 {
-    color: #0f172a !important;
-  }
-
-  .text-slate-400,
-  .text-slate-500 {
-    color: #475569 !important;
-  }
-
-  table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-
-  th, td {
-    border-bottom: 1px solid #cbd5e1 !important;
-    padding: 6px 8px !important;
-  }
-
-  tr {
-    page-break-inside: avoid;
-  }
-}

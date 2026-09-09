@@ -145,13 +145,13 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
   };
 
   return (
-    <div className="fixed inset-0 z-[60] modal-overlay flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-70 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150 text-slate-100"
+        className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 bg-slate-950 text-white flex items-center justify-between border-b border-slate-800">
+        <div className="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-2">
             <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
             <div>
@@ -174,31 +174,31 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
         </div>
 
         {/* Body */}
-        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto text-xs text-slate-200 bg-slate-900">
+        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto text-xs text-slate-700">
           {/* Active Context Banner */}
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-100 text-sm">{reportScope}</span>
-              <span className="text-[10px] text-slate-400 font-mono">{todayStr}</span>
+              <span className="font-bold text-slate-900 text-sm">{reportScope}</span>
+              <span className="text-[10px] text-slate-500 font-mono">{todayStr}</span>
             </div>
 
-            <div className="flex flex-wrap gap-2 pt-1 border-t border-slate-800">
-              <span className="text-[11px] text-slate-400">Active Parameters:</span>
-              <span className="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+            <div className="flex flex-wrap gap-2 pt-1 border-t border-slate-200/80">
+              <span className="text-[11px] text-slate-500">Active Parameters:</span>
+              <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
                 State: {filters.state || 'All India (36)'}
               </span>
               {filters.district && (
-                <span className="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
                   District: {filters.district}
                 </span>
               )}
               {filters.house !== 'All' && (
-                <span className="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
                   House: {filters.house}
                 </span>
               )}
               {filters.category !== 'All' && (
-                <span className="font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                <span className="font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
                   Category: {filters.category}
                 </span>
               )}
@@ -207,41 +207,41 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
 
           {/* Metric Summary Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-              <div className="text-lg font-bold text-slate-100">{totalWorks}</div>
-              <div className="text-[10px] text-slate-400">Filtered Works</div>
+            <div className="p-3 bg-white border border-slate-200 rounded-xl">
+              <div className="text-lg font-bold text-slate-900">{totalWorks}</div>
+              <div className="text-[10px] text-slate-500">Filtered Works</div>
             </div>
 
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-              <div className="text-lg font-bold text-emerald-400">{completionRate}%</div>
-              <div className="text-[10px] text-slate-400">Completion Rate</div>
+            <div className="p-3 bg-white border border-slate-200 rounded-xl">
+              <div className="text-lg font-bold text-emerald-600">{completionRate}%</div>
+              <div className="text-[10px] text-slate-500">Completion Rate</div>
             </div>
 
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-              <div className="text-lg font-bold text-blue-400">₹{(totalSanctionedLakhs / 100).toFixed(1)} Cr</div>
-              <div className="text-[10px] text-slate-400">Sanctioned Funds</div>
+            <div className="p-3 bg-white border border-slate-200 rounded-xl">
+              <div className="text-lg font-bold text-blue-600">₹{(totalSanctionedLakhs / 100).toFixed(1)} Cr</div>
+              <div className="text-[10px] text-slate-500">Sanctioned Funds</div>
             </div>
 
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl">
-              <div className="text-lg font-bold text-emerald-400">₹{(totalExpenditureLakhs / 100).toFixed(1)} Cr</div>
-              <div className="text-[10px] text-slate-400">Recorded Expenditure</div>
+            <div className="p-3 bg-white border border-slate-200 rounded-xl">
+              <div className="text-lg font-bold text-emerald-700">₹{(totalExpenditureLakhs / 100).toFixed(1)} Cr</div>
+              <div className="text-[10px] text-slate-500">Recorded Expenditure</div>
             </div>
           </div>
 
           {/* Statutory Verification & Demo Disclaimer */}
-          <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/60 text-amber-200 space-y-1">
+          <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/80 text-amber-900 space-y-1">
             <div className="font-bold text-xs flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0" />
               <span>Statutory Data Provenance Assurance</span>
             </div>
-            <p className="text-[11px] leading-relaxed text-amber-300/90">
+            <p className="text-[11px] leading-relaxed text-amber-800">
               Generated in conformity with MoSPI MPLADS administrative guidelines. Cross-referenced against 18th Lok Sabha gazette rolls and District DRDA expenditure schedules.
             </p>
           </div>
 
           {/* Format Selection Tabs */}
           <div>
-            <span className="font-bold text-xs text-slate-300 uppercase tracking-wider block mb-2">
+            <span className="font-bold text-xs text-slate-800 uppercase tracking-wider block mb-2">
               Select Output Format
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -250,14 +250,14 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
                 onClick={() => setReportFormat('csv')}
                 className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-1.5 ${
                   reportFormat === 'csv'
-                    ? 'border-emerald-500 bg-emerald-950/60 ring-2 ring-emerald-500/30'
-                    : 'border-slate-800 hover:border-slate-700 bg-slate-950'
+                    ? 'border-emerald-600 bg-emerald-50/40 ring-2 ring-emerald-500/20'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
-                <FileSpreadsheet className="w-5 h-5 text-emerald-400 shrink-0" />
+                <FileSpreadsheet className="w-5 h-5 text-emerald-600 shrink-0" />
                 <div>
-                  <div className="font-bold text-slate-100 text-xs">Spreadsheet (CSV)</div>
-                  <div className="text-[10px] text-slate-400">All tabular fields</div>
+                  <div className="font-bold text-slate-900 text-xs">Spreadsheet (CSV)</div>
+                  <div className="text-[10px] text-slate-500">All tabular fields</div>
                 </div>
               </button>
 
@@ -266,14 +266,14 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
                 onClick={() => setReportFormat('pdf')}
                 className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-1.5 ${
                   reportFormat === 'pdf'
-                    ? 'border-blue-500 bg-blue-950/60 ring-2 ring-blue-500/30'
-                    : 'border-slate-800 hover:border-slate-700 bg-slate-950'
+                    ? 'border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
-                <Printer className="w-5 h-5 text-blue-400 shrink-0" />
+                <Printer className="w-5 h-5 text-blue-600 shrink-0" />
                 <div>
-                  <div className="font-bold text-slate-100 text-xs">Printable PDF</div>
-                  <div className="text-[10px] text-slate-400">Executive layout</div>
+                  <div className="font-bold text-slate-900 text-xs">Printable PDF</div>
+                  <div className="text-[10px] text-slate-500">Executive layout</div>
                 </div>
               </button>
 
@@ -282,14 +282,14 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
                 onClick={() => setReportFormat('json')}
                 className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-1.5 ${
                   reportFormat === 'json'
-                    ? 'border-indigo-500 bg-indigo-950/60 ring-2 ring-indigo-500/30'
-                    : 'border-slate-800 hover:border-slate-700 bg-slate-950'
+                    ? 'border-indigo-600 bg-indigo-50/40 ring-2 ring-indigo-500/20'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
-                <Code2 className="w-5 h-5 text-indigo-400 shrink-0" />
+                <Code2 className="w-5 h-5 text-indigo-600 shrink-0" />
                 <div>
-                  <div className="font-bold text-slate-100 text-xs">JSON Export</div>
-                  <div className="text-[10px] text-slate-400">Machine schema</div>
+                  <div className="font-bold text-slate-900 text-xs">JSON Export</div>
+                  <div className="text-[10px] text-slate-500">Machine schema</div>
                 </div>
               </button>
 
@@ -298,14 +298,14 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
                 onClick={() => setReportFormat('summary')}
                 className={`p-3 rounded-xl border text-left cursor-pointer transition-all flex flex-col justify-between gap-1.5 ${
                   reportFormat === 'summary'
-                    ? 'border-amber-500 bg-amber-950/60 ring-2 ring-amber-500/30'
-                    : 'border-slate-800 hover:border-slate-700 bg-slate-950'
+                    ? 'border-amber-600 bg-amber-50/40 ring-2 ring-amber-500/20'
+                    : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
-                <FileBarChart className="w-5 h-5 text-amber-400 shrink-0" />
+                <FileBarChart className="w-5 h-5 text-amber-600 shrink-0" />
                 <div>
-                  <div className="font-bold text-slate-100 text-xs">Executive Summary</div>
-                  <div className="text-[10px] text-slate-400">Key takeaways</div>
+                  <div className="font-bold text-slate-900 text-xs">Executive Summary</div>
+                  <div className="text-[10px] text-slate-500">Key takeaways</div>
                 </div>
               </button>
             </div>
@@ -313,7 +313,7 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
 
           {/* If Executive Summary is selected, show immediate preview */}
           {reportFormat === 'summary' && (
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-white space-y-3 animate-in fade-in duration-150">
+            <div className="p-4 rounded-xl bg-slate-900 text-white space-y-3 animate-in fade-in duration-150">
               <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
                 <TrendingUp className="w-4 h-4" />
                 <span>Executive Findings for {filters.state || 'National Overview'}</span>
@@ -339,11 +339,11 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
+        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-slate-400 hover:text-slate-200 text-xs font-semibold cursor-pointer"
+            className="px-4 py-2 rounded-xl text-slate-600 hover:text-slate-900 text-xs font-semibold cursor-pointer"
           >
             Close
           </button>
@@ -352,7 +352,7 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
             <button
               type="button"
               onClick={handleDownloadCsv}
-              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
             >
               <Download className="w-4 h-4" />
               <span>{downloadSuccess ? 'Downloaded CSV!' : 'Download CSV Dataset'}</span>
@@ -363,7 +363,7 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
             <button
               type="button"
               onClick={handlePrintPdf}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
             >
               <Printer className="w-4 h-4" />
               <span>Open Print / PDF Preview</span>
@@ -374,7 +374,7 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
             <button
               type="button"
               onClick={handleDownloadJson}
-              className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
             >
               <Download className="w-4 h-4" />
               <span>{downloadSuccess ? 'Downloaded JSON!' : 'Download JSON Export'}</span>
@@ -385,7 +385,7 @@ export const DashboardReportModal: React.FC<Props> = ({ filters, projects, onClo
             <button
               type="button"
               onClick={handlePrintPdf}
-              className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-2 cursor-pointer shadow-sm"
             >
               <Printer className="w-4 h-4" />
               <span>Print Executive Summary</span>
