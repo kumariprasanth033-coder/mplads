@@ -266,7 +266,7 @@ export default function App() {
             <Footer onNavigate={navigate} />
 
             {/* Role Copilot AI Floating Assistant */}
-            <RoleCopilotWidget onNavigate={navigate} />
+            <RoleCopilotWidget onNavigate={navigate} currentPath={currentPath} />
 
             {/* Global Search Dialog Modal */}
             <GlobalSearchModal

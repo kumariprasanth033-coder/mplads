@@ -141,14 +141,14 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Natural-Language Complaint Lodgement (7 cols) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-base text-slate-900">
+                    <h3 className="font-bold text-base text-slate-100">
                       Describe Your Community Issue in Natural Words
                     </h3>
                     <p className="text-[11px] text-slate-500">
@@ -162,7 +162,7 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
               </div>
 
               {/* Sample Prompts */}
-              <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+              <div className="mt-4 p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs">
                 <span className="text-slate-400 text-[11px] font-bold uppercase block mb-1.5">
                   Try Sample Citizen Grievance:
                 </span>
@@ -176,7 +176,7 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                       key={i}
                       type="button"
                       onClick={() => setRawText(example)}
-                      className="text-left text-[11px] p-2 bg-white hover:bg-blue-50 hover:text-blue-900 border border-slate-200 rounded-lg text-slate-700 transition-colors cursor-pointer"
+                      className="text-left text-[11px] p-2 bg-slate-800 hover:bg-blue-50 hover:text-blue-900 border border-slate-700 rounded-lg text-slate-300 transition-colors cursor-pointer"
                     >
                       &ldquo;{example.slice(0, 65)}...&rdquo;
                     </button>
@@ -186,19 +186,19 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
 
               <form onSubmit={handleAiParse} className="mt-4 space-y-4 text-xs">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
+                  <label className="font-semibold text-slate-300 block mb-1">
                     Your Location / Landmark:
                   </label>
                   <input
                     type="text"
                     value={userLocation}
                     onChange={e => setUserLocation(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-800"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg text-slate-200"
                   />
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
+                  <label className="font-semibold text-slate-300 block mb-1">
                     Describe Problem / Issue:
                   </label>
                   <textarea
@@ -206,7 +206,7 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                     value={rawText}
                     onChange={e => setRawText(e.target.value)}
                     placeholder="E.g., The RO drinking water purifier near our village school has broken filters. Around 400 children have no clean drinking water..."
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-800 text-slate-900"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-800 text-slate-100"
                   />
                 </div>
 
@@ -237,18 +237,18 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                       <CheckCircle2 className="w-4 h-4 text-emerald-700" />
                       <span>Structured Citizen Dossier Prepared by AI</span>
                     </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-white text-emerald-900 font-bold border border-emerald-200">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-emerald-900 font-bold border border-emerald-200">
                       Ready for Citizen Verification
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-2.5 bg-white rounded-lg border border-emerald-200">
+                    <div className="p-2.5 bg-slate-800 rounded-lg border border-emerald-200">
                       <span className="text-slate-400 block text-[10px]">Identified Category</span>
-                      <strong className="text-slate-900">{parsedPreview.category}</strong>
+                      <strong className="text-slate-100">{parsedPreview.category}</strong>
                     </div>
 
-                    <div className="p-2.5 bg-white rounded-lg border border-emerald-200">
+                    <div className="p-2.5 bg-slate-800 rounded-lg border border-emerald-200">
                       <span className="text-slate-400 block text-[10px]">Assessed Severity</span>
                       <strong className={
                         parsedPreview.severity === 'Critical' || parsedPreview.severity === 'High'
@@ -259,14 +259,14 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                       </strong>
                     </div>
 
-                    <div className="p-2.5 bg-white rounded-lg border border-emerald-200">
+                    <div className="p-2.5 bg-slate-800 rounded-lg border border-emerald-200">
                       <span className="text-slate-400 block text-[10px]">Responsible Governance Level</span>
-                      <strong className="text-slate-900">{parsedPreview.possibleLevel} Level</strong>
+                      <strong className="text-slate-100">{parsedPreview.possibleLevel} Level</strong>
                     </div>
 
-                    <div className="p-2.5 bg-white rounded-lg border border-emerald-200">
+                    <div className="p-2.5 bg-slate-800 rounded-lg border border-emerald-200">
                       <span className="text-slate-400 block text-[10px]">Target Location</span>
-                      <strong className="text-slate-900 truncate block">{parsedPreview.extractedLocation}</strong>
+                      <strong className="text-slate-100 truncate block">{parsedPreview.extractedLocation}</strong>
                     </div>
                   </div>
 
@@ -284,9 +284,9 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                     </div>
                   )}
 
-                  <div className="p-3 bg-white rounded-lg border border-emerald-200 text-xs">
+                  <div className="p-3 bg-slate-800 rounded-lg border border-emerald-200 text-xs">
                     <span className="text-slate-400 block text-[10px]">Formal Summary Note for District Collector</span>
-                    <p className="text-slate-800 mt-1 leading-relaxed">
+                    <p className="text-slate-200 mt-1 leading-relaxed">
                       {parsedPreview.structuredSummary}
                     </p>
                   </div>
@@ -310,14 +310,14 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
 
           {/* Right Column: Tracked Citizen Complaints & Lifecycles (5 cols) */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
-              <h3 className="font-bold text-base text-slate-900 pb-3 border-b border-slate-100">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-6">
+              <h3 className="font-bold text-base text-slate-100 pb-3 border-b border-slate-800">
                 My Grievance Tracking Lifecycle
               </h3>
 
               {selectedComplaint ? (
                 <div className="mt-4 space-y-4 text-xs">
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <div className="flex items-center justify-between p-3 bg-slate-900 rounded-xl border border-slate-700">
                     <div>
                       <span className="text-[10px] text-slate-400 font-mono block">TRACKING ID</span>
                       <strong className="text-sm font-mono text-blue-900">{selectedComplaint.trackingId}</strong>
@@ -334,7 +334,7 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                   </div>
 
                   <div>
-                    <h4 className="font-bold text-sm text-slate-900">{selectedComplaint.problemTitle}</h4>
+                    <h4 className="font-bold text-sm text-slate-100">{selectedComplaint.problemTitle}</h4>
                     <p className="text-slate-600 text-xs mt-1 leading-relaxed">{selectedComplaint.description}</p>
                   </div>
 
@@ -343,11 +343,11 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
                       Resolution Stepper:
                     </span>
-                    <div className="relative pl-5 border-l-2 border-slate-200 space-y-4">
+                    <div className="relative pl-5 border-l-2 border-slate-700 space-y-4">
                       {selectedComplaint.timeline.map((item, idx) => (
                         <div key={idx} className="relative">
                           <div className="absolute -left-[25px] top-1 w-3.5 h-3.5 rounded-full bg-blue-900 ring-4 ring-blue-100" />
-                          <div className="flex justify-between font-bold text-slate-800">
+                          <div className="flex justify-between font-bold text-slate-200">
                             <span>{item.status}</span>
                             <span className="text-[10px] font-mono text-slate-400">
                               {new Date(item.timestamp).toLocaleDateString()}
@@ -367,7 +367,7 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
             </div>
 
             {/* List of Other Public Grievances */}
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5">
+            <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-xs p-5">
               <h4 className="font-bold text-xs uppercase text-slate-400 tracking-wider mb-3">
                 Recent Public Grievances in Dharmapuri
               </h4>
@@ -379,14 +379,14 @@ export const CitizenDashboard: React.FC<Props> = ({ onNavigate }) => {
                     className={`p-3 rounded-xl border transition-colors cursor-pointer ${
                       selectedComplaint?.id === c.id
                         ? 'border-blue-500 bg-blue-50/50'
-                        : 'border-slate-200 hover:bg-slate-50'
+                        : 'border-slate-700 hover:bg-slate-900'
                     }`}
                   >
                     <div className="flex justify-between text-[10px] font-mono text-slate-400">
                       <span>{c.trackingId}</span>
-                      <span className="font-bold text-slate-700">{c.category}</span>
+                      <span className="font-bold text-slate-300">{c.category}</span>
                     </div>
-                    <div className="font-bold text-slate-800 text-xs mt-1 truncate">
+                    <div className="font-bold text-slate-200 text-xs mt-1 truncate">
                       {c.problemTitle}
                     </div>
                   </div>

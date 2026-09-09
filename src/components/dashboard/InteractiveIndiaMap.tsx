@@ -263,9 +263,9 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
   }, [allStateMetrics, regionFilter, searchQuery, tableSortCol, tableSortAsc]);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-sm overflow-hidden flex flex-col">
       {/* Header with Metric & View Switchers */}
-      <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50/70 flex flex-col gap-4">
+      <div className="p-4 sm:p-5 border-b border-slate-700 bg-slate-900/70 flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
@@ -277,20 +277,20 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                 All 28 States &amp; 8 Union Territories Synchronized
               </span>
             </div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-1">
+            <h3 className="text-base sm:text-lg font-bold text-slate-100 mt-1">
               Cross-Jurisdictional Performance &amp; Analytical Cartography
             </h3>
           </div>
 
           {/* View Selector Controls */}
-          <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-xs self-start lg:self-auto overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1 bg-slate-800 p-1 rounded-xl border border-slate-700 shadow-xs self-start lg:self-auto overflow-x-auto max-w-full">
             <button
               type="button"
               onClick={() => setViewMode('MAP')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'MAP'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <MapPin className="w-3.5 h-3.5" />
@@ -303,7 +303,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'BAR'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <BarChart3 className="w-3.5 h-3.5" />
@@ -316,7 +316,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'TREEMAP'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <Grid className="w-3.5 h-3.5" />
@@ -329,7 +329,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'BUBBLE'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <CircleDot className="w-3.5 h-3.5" />
@@ -342,7 +342,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'RANKING'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <Trophy className="w-3.5 h-3.5" />
@@ -355,7 +355,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 viewMode === 'TABLE'
                   ? 'bg-blue-900 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-600 hover:text-slate-100 hover:bg-slate-800/80'
               }`}
             >
               <TableIcon className="w-3.5 h-3.5" />
@@ -376,7 +376,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'utilization'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Fund Utilization %
@@ -388,7 +388,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'completion'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Completion %
@@ -400,7 +400,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'delayed'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Delayed %
@@ -412,7 +412,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'risk'
                 ? 'bg-rose-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Risk Index
@@ -424,7 +424,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'works'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Total Works
@@ -436,7 +436,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'sanctioned'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Sanctioned Amount
@@ -448,7 +448,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'utilized'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Utilized Amount
@@ -460,7 +460,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
             className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer shrink-0 ${
               metricMode === 'remaining'
                 ? 'bg-blue-900 text-white shadow-xs font-bold'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                : 'bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-800/80'
             }`}
           >
             Remaining Balance
@@ -925,10 +925,10 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
       </div>
 
       {/* Quick State & UT Selection Directory Pills */}
-      <div className="p-4 sm:p-5 border-t border-slate-200 bg-white">
+      <div className="p-4 sm:p-5 border-t border-slate-700 bg-slate-800">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">
               Quick Jurisdiction Directory
             </span>
             <span className="text-[11px] text-slate-500">
@@ -937,12 +937,12 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex bg-slate-100 rounded-lg p-0.5 text-xs">
+            <div className="flex bg-slate-800/80 rounded-lg p-0.5 text-xs">
               <button
                 type="button"
                 onClick={() => setRegionFilter('All')}
                 className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'All' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+                  regionFilter === 'All' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
                 }`}
               >
                 All (36)
@@ -951,7 +951,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                 type="button"
                 onClick={() => setRegionFilter('States')}
                 className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'States' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+                  regionFilter === 'States' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
                 }`}
               >
                 28 States
@@ -960,7 +960,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                 type="button"
                 onClick={() => setRegionFilter('UTs')}
                 className={`px-2.5 py-1 rounded-md font-medium cursor-pointer ${
-                  regionFilter === 'UTs' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+                  regionFilter === 'UTs' ? 'bg-slate-800 text-slate-100 shadow-xs' : 'text-slate-600'
                 }`}
               >
                 8 UTs
@@ -972,7 +972,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Find state/UT..."
-              className="px-3 py-1 text-xs border border-slate-300 rounded-lg focus:outline-hidden focus:border-blue-500 max-w-[150px]"
+              className="px-3 py-1 text-xs border border-slate-700 rounded-lg focus:outline-hidden focus:border-blue-500 max-w-[150px]"
             />
           </div>
         </div>
@@ -991,7 +991,7 @@ export const InteractiveIndiaMap: React.FC<Props> = ({
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 border ${
                   isSelected
                     ? 'bg-blue-900 text-white border-blue-900 shadow-sm'
-                    : 'bg-slate-50 hover:bg-blue-50 text-slate-700 border-slate-200'
+                    : 'bg-slate-900 hover:bg-blue-50 text-slate-300 border-slate-700'
                 }`}
               >
                 <span>{j.name}</span>

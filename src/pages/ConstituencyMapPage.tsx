@@ -173,7 +173,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
                   <div
                     className={`p-2 rounded-full shadow-lg flex items-center justify-center border-2 ${
                       isSelected
-                        ? 'bg-white text-slate-950 border-amber-400 ring-4 ring-amber-400/40'
+                        ? 'bg-slate-800 text-slate-950 border-amber-400 ring-4 ring-amber-400/40'
                         : proj.status === 'Completed'
                         ? 'bg-emerald-600 text-white border-white'
                         : proj.status === 'Delayed'
@@ -199,11 +199,11 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         {/* Selected Project Dossier Sidebar (4 cols on desktop) */}
-        <div className="lg:col-span-4 bg-white border-l border-slate-200 p-6 flex flex-col justify-between overflow-y-auto">
+        <div className="lg:col-span-4 bg-slate-800 border-l border-slate-700 p-6 flex flex-col justify-between overflow-y-auto">
           {selectedProject ? (
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-800/80 text-slate-300">
                   {selectedProject.code}
                 </span>
                 <span
@@ -221,7 +221,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
 
               {/* Photo Thumbnail */}
               {selectedProject.evidence.length > 0 && (
-                <div className="h-44 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                <div className="h-44 rounded-xl overflow-hidden bg-slate-800/80 border border-slate-700">
                   <img
                     src={selectedProject.evidence[selectedProject.evidence.length - 1].url}
                     alt={selectedProject.title}
@@ -235,7 +235,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
                 <span className="text-xs font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded">
                   {selectedProject.category}
                 </span>
-                <h3 className="font-bold text-base text-slate-900 mt-2 leading-snug">
+                <h3 className="font-bold text-base text-slate-100 mt-2 leading-snug">
                   {selectedProject.title}
                 </h3>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">
@@ -244,33 +244,33 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
 
               <div className="space-y-2 text-xs pt-2">
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">Village / Location</span>
-                  <strong className="text-slate-800">
+                  <strong className="text-slate-200">
                     {selectedProject.village || 'Panchayat'}, {selectedProject.district}
                   </strong>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">GPS Coordinates</span>
-                  <strong className="font-mono text-slate-800">
+                  <strong className="font-mono text-slate-200">
                     {selectedProject.coordinates.lat}° N, {selectedProject.coordinates.lng}° E
                   </strong>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">Sanctioned Outlay</span>
-                  <strong className="text-slate-900">
+                  <strong className="text-slate-100">
                     ₹{selectedProject.financial.sanctionedAmountLakhs} Lakhs
                   </strong>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">Disbursed Expenditure</span>
                   <strong className="text-emerald-700">
                     ₹{selectedProject.financial.expenditureLakhs} Lakhs
                   </strong>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-100">
+                <div className="flex justify-between py-1 border-b border-slate-800">
                   <span className="text-slate-400">Physical Progress</span>
-                  <strong className="text-slate-900">{selectedProject.progressPercentage}%</strong>
+                  <strong className="text-slate-100">{selectedProject.progressPercentage}%</strong>
                 </div>
               </div>
 
@@ -292,7 +292,7 @@ export const ConstituencyMapPage: React.FC<Props> = ({ onNavigate }) => {
           )}
 
           {/* Map Footer Note */}
-          <div className="pt-4 border-t border-slate-100 text-[11px] text-slate-400 flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
             <span>SIH DEMO GEODATA</span>
             <button onClick={() => onNavigate('/reports')} className="text-blue-900 font-bold hover:underline">
               Sector Reports →

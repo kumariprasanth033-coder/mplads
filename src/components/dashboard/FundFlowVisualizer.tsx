@@ -90,9 +90,9 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+    <div className="bg-slate-800 rounded-2xl border border-slate-700 shadow-sm p-5 sm:p-6">
       {/* Header with Statutory Clarification */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-200 gap-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-700 gap-3">
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-900 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
@@ -102,7 +102,7 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
               Scope: {contextName} ({contextType})
             </span>
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight mt-1">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-100 tracking-tight mt-1">
             Government Fund Release, Sanction &amp; Expenditure Tracking
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -111,7 +111,7 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
         </div>
 
         {/* Total Utilization Pill */}
-        <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 p-3 rounded-xl self-start md:self-auto">
+        <div className="flex items-center gap-3 bg-slate-900 border border-slate-700 p-3 rounded-xl self-start md:self-auto">
           <div className="text-right">
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Effective Utilization
@@ -146,13 +146,13 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
               className={`p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
                 isSelected
                   ? 'border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20 shadow-md'
-                  : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 hover:bg-slate-50'
+                  : 'border-slate-700 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 mb-2">
                   <span className="font-mono">{s.stepNumber}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-700 font-medium">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-300 font-medium">
                     {s.badge}
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
                   {s.title}
                 </div>
 
-                <div className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">
+                <div className="text-xl sm:text-2xl font-extrabold text-slate-100 mt-2 tracking-tight">
                   {s.amount}
                 </div>
 
@@ -170,10 +170,10 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-200/80">
+              <div className="mt-4 pt-3 border-t border-slate-700/80">
                 <div className="flex justify-between text-[10px] font-medium text-slate-400 mb-1">
                   <span>Relative Volume</span>
-                  <span className="font-bold text-slate-700">{s.pct}%</span>
+                  <span className="font-bold text-slate-300">{s.pct}%</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                   <div
@@ -211,8 +211,8 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
       )}
 
       {/* Visual Proportional Comparison Bar */}
-      <div className="mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-2">
+      <div className="mt-6 p-4 rounded-xl bg-slate-900 border border-slate-700">
+        <div className="flex items-center justify-between text-xs font-semibold text-slate-300 mb-2">
           <span>Macro Distribution: Released vs Sanctioned vs Expended</span>
           <span className="text-[11px] text-slate-500">
             ₹{releasedCr.toLocaleString()} Cr Total Available
@@ -242,21 +242,21 @@ export const FundFlowVisualizer: React.FC<FundFlowProps> = ({
           <div className="flex items-center justify-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
             <span className="text-slate-600">
-              Utilized: <strong className="text-slate-900">₹{utilizedCr} Cr</strong> ({utilizedPct}%)
+              Utilized: <strong className="text-slate-100">₹{utilizedCr} Cr</strong> ({utilizedPct}%)
             </span>
           </div>
 
           <div className="flex items-center justify-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0" />
             <span className="text-slate-600">
-              Under Execution: <strong className="text-slate-900">₹{Math.max(0, sanctionedCr - utilizedCr).toFixed(1)} Cr</strong>
+              Under Execution: <strong className="text-slate-100">₹{Math.max(0, sanctionedCr - utilizedCr).toFixed(1)} Cr</strong>
             </span>
           </div>
 
           <div className="flex items-center justify-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
             <span className="text-slate-600">
-              Uncommitted Balance: <strong className="text-slate-900">₹{remainingCr} Cr</strong> ({remainingPct}%)
+              Uncommitted Balance: <strong className="text-slate-100">₹{remainingCr} Cr</strong> ({remainingPct}%)
             </span>
           </div>
         </div>

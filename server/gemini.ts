@@ -1,5 +1,6 @@
 import { GoogleGenAI, Type, FunctionDeclaration } from '@google/genai';
-import { PrecheckInput, PrecheckResult, ProjectRecord } from '../src/types';
+import { PrecheckInput, PrecheckResult, ProjectRecord, CopilotResponse, CopilotKpi, CopilotCard, CopilotAction } from '../src/types';
+import { processDrishtiQuery } from '../src/services/drishtiIntelligenceEngine.js';
 import { digitalSansadMemberAdapter } from './adapters/digitalSansadMemberAdapter.js';
 import { mpladsDataAdapter } from './adapters/mpladsDataAdapter.js';
 import { projectDataAdapter } from './adapters/projectDataAdapter.js';
@@ -862,14 +863,6 @@ export function executeCopilotTool(
   }
 }
 
-export interface CopilotResponse {
-  reply: string;
-  source: string;
-  lastUpdated: string;
-  status: 'LIVE' | 'CACHED' | 'DEMO';
-  relevantRecords?: any[];
-}
-
 export async function runRoleCopilot(
   role: string,
   query: string,
@@ -884,259 +877,64 @@ export async function runRoleCopilot(
     organization?: string;
     sessionId?: string;
     projectStats?: any;
+    currentPath?: string;
+    currentSearch?: string;
+    activeProjectId?: string;
+    activeMpId?: string;
+    activeState?: string;
+    activeDistrict?: string;
   } = {},
   conversationHistory: Array<{ sender: 'user' | 'bot'; text: string }> = []
 ): Promise<CopilotResponse> {
+  // Step 1: Process query through the verified Drishti Intelligence Engine
+  // (Intent detection, entity extraction, context resolution, portal data query, KPI and Card synthesis)
+  const dataEngineResult = processDrishtiQuery(
+    query,
+    (role as any) || 'CITIZEN',
+    userContext as any,
+    conversationHistory as any
+  );
+
   const client = getGeminiClient();
 
-  const roleTitles: Record<string, string> = {
-    MP: 'MP AI Copilot',
-    DISTRICT_OFFICER: 'District Officer AI Assistant',
-    IMPLEMENTING_AGENCY: 'Execution AI Assistant',
-    AUDITOR: 'Audit & Monitoring AI',
-    ADMIN: 'Admin AI Command Center',
-    CITIZEN: 'Citizen Development Assistant',
-    GUEST: 'Public MPLADS AI Assistant',
-  };
-
-  const title = roleTitles[role] || 'MPLADS AI Assistant';
-
-  const systemInstructions = `You are '${title}', the official personalized AI assistant on the MPLADS Smart & AI Powered Portal.
-LOGGED-IN USER PROFILE:
-- Name: ${userContext.name || 'Official User'}
-- Role: ${role}
-- Constituency: ${userContext.constituency || 'Dharmapuri'}
-- District: ${userContext.district || 'Dharmapuri'}
-- State: ${userContext.state || 'Tamil Nadu'}
-
-CORE GOVERNANCE DIRECTIVES:
-1. AI ASSISTS, HUMAN DECIDES: AI must NOT declare a project completed or execute statutory sanctions. Human confirmation is required.
-2. AUDIT ETHICS: Never accuse a person or organization of corruption. Always use "Flagged for human review" or "Pending physical verification".
-3. STRICT RBAC: Never leak private administrative queues to Citizens or external roles.
-4. REQUIRED RESPONSE FORMAT:
-   Always structure your final response in this exact format:
-   [Clear, direct summary answer]
-   
-   Relevant records / Key points:
-   • ...
-   
-   Source: [Official MPLADS / Digital Sansad / District Collectorate]
-   Updated: [Timestamp or "Current Session"]`;
-
+  // Step 2: If Gemini client is active, attempt grounded natural language enrichment
   if (client) {
     try {
-      // Build conversation contents
-      const formattedHistory = conversationHistory.slice(-6).map(m => ({
-        role: m.sender === 'user' ? 'user' : 'model',
-        parts: [{ text: m.text }],
-      }));
+      const groundedPrompt = `You are Drishti AI, the official intelligent assistant on the MPLADS portal.
+USER ROLE: ${role}
+USER CONSTITUENCY: ${userContext.constituency || 'Dharmapuri'} (${userContext.state || 'Tamil Nadu'})
+QUERY: "${query}"
 
-      const contents = [
-        ...formattedHistory,
-        { role: 'user', parts: [{ text: query }] },
-      ];
+PORTAL VERIFIED GROUND TRUTH DATA:
+${dataEngineResult.reply}
 
-      // Initial call with tools
+${dataEngineResult.kpis && dataEngineResult.kpis.length > 0 ? `KEY KPIS:\n${dataEngineResult.kpis.map(k => `• ${k.label}: ${k.value} (${k.helper || ''})`).join('\n')}` : ''}
+
+DIRECTIVES:
+1. Provide an authoritative, clear, role-appropriate answer using the verified portal ground truth data above.
+2. DO NOT invent fake numbers or contradict the numbers above.
+3. Keep the exact source attribution and statutory caveats.
+4. Structure the text cleanly with bold headings and scannable bullet points.`;
+
       const response = await client.models.generateContent({
-        model: 'gemini-3.8-flash',
-        contents,
-        config: {
-          systemInstruction: systemInstructions,
-          tools: [{ functionDeclarations: copilotToolDeclarations }],
-        },
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: groundedPrompt }] }],
       });
 
-      // Check if Gemini invoked any tools
-      if (response.functionCalls && response.functionCalls.length > 0) {
-        const functionCall = response.functionCalls[0];
-        const toolResult = executeCopilotTool(functionCall.name, functionCall.args, userContext);
-
-        // Follow up with tool response
-        const secondResponse = await client.models.generateContent({
-          model: 'gemini-3.8-flash',
-          contents: [
-            ...contents,
-            {
-              role: 'model',
-              parts: [{
-                functionCall: {
-                  name: functionCall.name,
-                  args: functionCall.args,
-                },
-              }],
-            },
-            {
-              role: 'user',
-              parts: [{
-                functionResponse: {
-                  name: functionCall.name,
-                  response: { result: toolResult },
-                },
-              }],
-            },
-          ],
-          config: {
-            systemInstruction: systemInstructions,
-          },
-        });
-
-        if (secondResponse.text) {
-          return {
-            reply: secondResponse.text,
-            source: toolResult?.source || 'Official MPLADS Portal',
-            lastUpdated: 'Current Session (Live Tool Query)',
-            status: toolResult?.status || 'LIVE',
-            relevantRecords: toolResult?.projects || toolResult?.members || toolResult?.actions,
-          };
-        }
-      }
-
-      if (response.text) {
+      if (response.text && response.text.trim().length > 30) {
         return {
-          reply: response.text,
-          source: 'MPLADS Smart Portal Knowledge Core',
-          lastUpdated: 'Current Session',
-          status: 'LIVE',
+          ...dataEngineResult,
+          reply: response.text.trim(),
         };
       }
     } catch (apiErr) {
-      console.warn('Gemini Copilot Tool Calling error, falling back to deterministic tool execution:', apiErr);
+      // If quota (429) or network issue, silently continue with the fully structured dataEngineResult
+      console.log('Gemini model call bypassed, using verified Drishti Intelligence Engine.');
     }
   }
 
-  // Deterministic tool-executing fallback matching user intent
-  const q = query.toLowerCase();
-
-  if (q.includes('delayed') || q.includes('delay')) {
-    const delayed = executeCopilotTool('getDelayedProjects', {}, userContext);
-    const count = delayed.count || 0;
-    const items = delayed.delayedProjects || [];
-
-    const reply = `Your constituency (${userContext.constituency || 'Dharmapuri'}) currently has ${count} delayed MPLADS works.
-
-Relevant records:
-${items.map((p: any) => `• **${p.title}** (₹${p.sanctionedAmountLakhs}L) — ${p.statusNote}`).join('\n')}
-
-Recommended Next Steps:
-• Convene an inter-departmental review meeting with the District Collector and PWD Executive Engineer.
-• Note: AI provides preliminary progress indicators; human administrative confirmation is required before milestone re-allocation.
-
-Source: Official MPLADS Monitoring System
-Updated: 10 minutes ago`;
-
-    return {
-      reply,
-      source: 'Official MPLADS Monitoring System',
-      lastUpdated: '10 minutes ago',
-      status: 'LIVE',
-      relevantRecords: items,
-    };
-  }
-
-  if (q.includes('action') || q.includes('queue') || q.includes('today')) {
-    if (role === 'DISTRICT_OFFICER' || role === 'ADMIN') {
-      const actions = executeCopilotTool('getPendingActions', {}, userContext);
-      const reply = `District Collectorate Action Queue for ${userContext.district || 'Dharmapuri'}:
-${actions.queueCount} files require administrative attention today.
-
-Relevant records:
-${actions.actions?.map((a: any) => `• [${a.priority}] **${a.title}** (₹${a.amountLakhs}L) — ${a.flagReason}`).join('\n')}
-
-Reminder: Administrative sanction requires physical file sign-off; Human Decision Remains Final.
-
-Source: District Collectorate Action Desk
-Updated: Live Queue`;
-      return {
-        reply,
-        source: 'District Collectorate Action Desk',
-        lastUpdated: 'Live Queue',
-        status: 'LIVE',
-        relevantRecords: actions.actions,
-      };
-    }
-  }
-
-  if (q.includes('water') || q.includes('complaint') || q.includes('grievance') || q.includes('demand')) {
-    if (role === 'CITIZEN') {
-      return {
-        reply: `Namaste! I can assist you in filing or tracking a community grievance under MPLADS.
-
-To draft your structured proposal for the District Collector and MP, please confirm:
-1. **Village / Ward**: Which village or locality needs this facility?
-2. **Problem Description**: What is the primary issue (e.g. low pressure, arsenic/fluoride content, broken handpump)?
-3. **Existing Facility**: Is there an existing Panchayat borewell within 200 meters?
-
-Once you provide these details, I will verify if similar works are already sanctioned nearby to prevent duplicates, and prepare a 1-click submission.
-
-Source: Citizen Social Audit Desk
-Updated: Current Session`,
-        source: 'Citizen Social Audit Desk',
-        lastUpdated: 'Current Session',
-        status: 'LIVE',
-      };
-    }
-  }
-
-  if (q.includes('risk') || q.includes('audit') || q.includes('inspection')) {
-    if (role === 'AUDITOR' || role === 'ADMIN') {
-      const risks = executeCopilotTool('getRiskFlags', {}, userContext);
-      return {
-        reply: `Statutory Audit Digest:
-${risks.items?.length || 0} projects flagged for human review.
-
-Relevant records:
-${risks.items?.map((r: any) => `• [Score: ${r.riskScore}/100] **${r.projectTitle}** — ${r.primaryIssue}`).join('\n')}
-
-Compliance Note: Flagged for human review — physical field inquiry mandatory. AI does not accuse or establish legal culpability.
-
-Source: CAG Social Audit & Risk Intelligence Matrix
-Updated: Today 08:30 AM`,
-        source: 'CAG Social Audit & Risk Intelligence Matrix',
-        lastUpdated: 'Today 08:30 AM',
-        status: 'LIVE',
-        relevantRecords: risks.items,
-      };
-    }
-  }
-
-  if (q.includes('fund') || q.includes('expenditure') || q.includes('balance') || q.includes('unspent')) {
-    const fund = executeCopilotTool('getFundDetails', {}, userContext);
-    const reply = `MPLADS Financial Overview for ${fund.constituency}, ${fund.state}:
-• Annual Entitlement: ₹${fund.entitlementLakhs} Lakhs
-• Total Fund Released: ₹${fund.fundReleasedLakhs} Lakhs
-• Total Expenditure: ₹${fund.totalExpenditureLakhs} Lakhs
-• Unspent Balance: ₹${fund.unspentBalanceLakhs} Lakhs
-• Works Completed: ${fund.totalWorksCompleted} of ${fund.totalWorksRecommended} recommended
-
-Source: ${fund.source}
-Updated: ${fund.lastUpdated}`;
-    return {
-      reply,
-      source: fund.source,
-      lastUpdated: fund.lastUpdated,
-      status: fund.status,
-      relevantRecords: [fund],
-    };
-  }
-
-  // Default welcome response for the role
-  const defaultFunds = mpladsDataAdapter.getConstituencySummary(userContext.constituency || 'Dharmapuri');
-  return {
-    reply: `Namaste! I am the **${title}** configured with your authorized workspace permissions.
-
-Current Status for ${userContext.constituency || 'Dharmapuri'} (${userContext.state || 'Tamil Nadu'}):
-• Sanctioned Works: ${defaultFunds.totalWorksSanctioned}
-• Completed Works: ${defaultFunds.totalWorksCompleted}
-• Active Works: ${defaultFunds.totalWorksOngoing}
-• Delayed Works: ${defaultFunds.totalWorksDelayed}
-
-You can ask me to analyze delayed projects, check duplicate works before sanction, or review utilization metrics.
-
-Source: Official MPLADS Portal & Digital Sansad
-Updated: Just now`,
-    source: 'Official MPLADS Portal & Digital Sansad',
-    lastUpdated: 'Just now',
-    status: 'CACHED',
-  };
+  // Return the rich intent-aware, context-aware, data-aware response
+  return dataEngineResult;
 }
+
 

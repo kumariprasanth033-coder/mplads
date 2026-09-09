@@ -59,8 +59,8 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-12">
         {/* Core Objective & Governance Mission */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2.5 mb-4">
+        <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8 shadow-xs">
+          <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2.5 mb-4">
             <Building className="w-5 h-5 text-blue-900" />
             <span>Mission &amp; Regulatory Alignment</span>
           </h2>
@@ -69,20 +69,20 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-xs font-bold text-slate-900 block mb-1">₹5.0 Crore Cap</span>
+            <div className="p-4 bg-slate-900 rounded-xl border border-slate-700">
+              <span className="text-xs font-bold text-slate-100 block mb-1">₹5.0 Crore Cap</span>
               <p className="text-xs text-slate-500">
                 Statutory annual entitlement released in two tranches of ₹2.5 Crore upon receipt of provisional utilization certificates.
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-xs font-bold text-slate-900 block mb-1">Priority Sector Quotas</span>
+            <div className="p-4 bg-slate-900 rounded-xl border border-slate-700">
+              <span className="text-xs font-bold text-slate-100 block mb-1">Priority Sector Quotas</span>
               <p className="text-xs text-slate-500">
                 Mandatory minimum allocation of 15% for Scheduled Caste (SC) areas and 7.5% for Scheduled Tribe (ST) inhabited areas.
               </p>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <span className="text-xs font-bold text-slate-900 block mb-1">Physical QR Plaques</span>
+            <div className="p-4 bg-slate-900 rounded-xl border border-slate-700">
+              <span className="text-xs font-bold text-slate-100 block mb-1">Physical QR Plaques</span>
               <p className="text-xs text-slate-500">
                 Every sanctioned asset must feature a permanent foundation plaque with a unique QR code linked directly to the public registry.
               </p>
@@ -93,7 +93,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
         {/* The 6 Pillars of the Platform */}
         <div>
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <h2 className="text-2xl font-extrabold text-slate-900">
+            <h2 className="text-2xl font-extrabold text-slate-100">
               The Six-Stakeholder Governance Architecture
             </h2>
             <p className="text-xs text-slate-500 mt-1">
@@ -148,15 +148,15 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+                <div key={idx} className="bg-slate-800 rounded-2xl border border-slate-700 p-5 shadow-xs flex flex-col justify-between">
                   <div>
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 border ${item.color}`}>
                       <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-sm text-slate-900">{item.role}</h3>
+                    <h3 className="font-bold text-sm text-slate-100">{item.role}</h3>
                     <p className="text-xs text-slate-600 mt-2 leading-relaxed">{item.desc}</p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-slate-100">
+                  <div className="mt-4 pt-3 border-t border-slate-800">
                     <button
                       onClick={() => onNavigate(item.path)}
                       className="text-xs font-bold text-blue-900 hover:text-blue-700 flex items-center gap-1 cursor-pointer"

@@ -150,11 +150,11 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
         {/* Input Form & Demo Pre-sets */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
           {/* Left Column: Input Form */}
-          <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="lg:col-span-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-sm p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-blue-900" />
-                <h3 className="font-bold text-base text-slate-900">
+                <h3 className="font-bold text-base text-slate-100">
                   Proposed Project Intelligence Parameters
                 </h3>
               </div>
@@ -164,7 +164,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
             </div>
 
             {/* Quick Demo Pre-sets for Jury Showcase */}
-            <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="mt-4 p-3 bg-slate-900 rounded-xl border border-slate-700">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
                 ⚡ Interactive SIH Jury Scenarios:
               </span>
@@ -196,7 +196,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
               className="mt-5 space-y-4 text-xs"
             >
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">
+                <label className="font-semibold text-slate-300 block mb-1">
                   Proposed Project Title / Scope of Work *
                 </label>
                 <input
@@ -204,17 +204,17 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                   value={form.projectName}
                   onChange={e => setForm({ ...form, projectName: e.target.value })}
                   required
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium text-slate-900"
+                  className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-medium text-slate-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Sector / Category *</label>
+                  <label className="font-semibold text-slate-300 block mb-1">Sector / Category *</label>
                   <select
                     value={form.category}
                     onChange={e => setForm({ ...form, category: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 bg-white"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 bg-slate-800"
                   >
                     <option value="Drinking Water">Drinking Water</option>
                     <option value="Road Construction">Road Construction</option>
@@ -229,7 +229,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">
+                  <label className="font-semibold text-slate-300 block mb-1">
                     Estimated Outlay (₹ Lakhs) *
                   </label>
                   <input
@@ -238,43 +238,43 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                     value={form.estimatedCostLakhs}
                     onChange={e => setForm({ ...form, estimatedCostLakhs: parseFloat(e.target.value) || 0 })}
                     required
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-semibold"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600 font-semibold"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Specific Village / Site Landmark *</label>
+                  <label className="font-semibold text-slate-300 block mb-1">Specific Village / Site Landmark *</label>
                   <input
                     type="text"
                     value={form.location}
                     onChange={e => setForm({ ...form, location: e.target.value })}
                     required
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">District / State *</label>
+                  <label className="font-semibold text-slate-300 block mb-1">District / State *</label>
                   <input
                     type="text"
                     value={`${form.district}, ${form.state}`}
                     disabled
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-100 text-slate-500"
+                    className="w-full px-3 py-2 border border-slate-700 rounded-lg bg-slate-800/80 text-slate-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">
+                <label className="font-semibold text-slate-300 block mb-1">
                   Justification / Community Impact Description *
                 </label>
                 <textarea
                   rows={3}
                   value={form.description}
                   onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-3 py-2 border border-slate-700 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-600"
                 />
               </div>
 
@@ -301,14 +301,14 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
 
           {/* Right Column: AI Analysis Result Output */}
-          <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between">
+          <div className="lg:col-span-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-sm p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div>
                   <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
                     AI DECISION SUPPORT ADVISORY
                   </span>
-                  <h3 className="font-bold text-base text-slate-900">
+                  <h3 className="font-bold text-base text-slate-100">
                     Comprehensive Intelligence Report
                   </h3>
                 </div>
@@ -322,7 +322,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
               {!result && !isScanning && (
                 <div className="py-16 text-center text-slate-400">
                   <Sparkles className="w-12 h-12 mx-auto text-slate-300 mb-3" />
-                  <p className="font-semibold text-slate-700 text-sm">
+                  <p className="font-semibold text-slate-300 text-sm">
                     No Analysis Run Yet
                   </p>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1">
@@ -335,7 +335,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                 <div className="py-16 text-center space-y-4">
                   <div className="w-12 h-12 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin mx-auto" />
                   <div>
-                    <h4 className="font-bold text-slate-800 text-sm">
+                    <h4 className="font-bold text-slate-200 text-sm">
                       Executing Cross-Repository Verification...
                     </h4>
                     <p className="text-xs text-slate-500 mt-1">
@@ -373,14 +373,14 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
 
                     <div className="shrink-0 text-right">
                       <span className="text-[10px] block font-mono font-bold">STATUTORY NOTICE</span>
-                      <span className="text-[11px] font-semibold text-slate-700 bg-white/80 px-2 py-0.5 rounded">
+                      <span className="text-[11px] font-semibold text-slate-300 bg-slate-800/90 px-2 py-0.5 rounded">
                         Non-Binding Advisory
                       </span>
                     </div>
                   </div>
 
                   {/* Navigation Tabs for 6 Pillars */}
-                  <div className="flex border-b border-slate-200 text-xs gap-1 overflow-x-auto">
+                  <div className="flex border-b border-slate-700 text-xs gap-1 overflow-x-auto">
                     {[
                       { id: 'summary', label: 'Overview' },
                       { id: 'duplicate', label: `Duplicate (${result.duplicateCheck.overallSimilarity}%)` },
@@ -396,7 +396,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                         className={`px-3 py-2 font-bold whitespace-nowrap border-b-2 transition-colors cursor-pointer ${
                           activeResultTab === tab.id
                             ? 'border-blue-900 text-blue-900'
-                            : 'border-transparent text-slate-500 hover:text-slate-800'
+                            : 'border-transparent text-slate-500 hover:text-slate-200'
                         }`}
                       >
                         {tab.label}
@@ -405,13 +405,13 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                   </div>
 
                   {/* Tab Contents */}
-                  <div className="text-xs text-slate-700">
+                  <div className="text-xs text-slate-300">
                     {activeResultTab === 'summary' && (
                       <div className="space-y-3 pt-2">
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                          <div className="p-3 bg-slate-900 rounded-lg border border-slate-700">
                             <span className="text-slate-400 block text-[10px]">Duplicate Risk Score</span>
-                            <span className="text-base font-bold text-slate-900">
+                            <span className="text-base font-bold text-slate-100">
                               {result.duplicateCheck.score}%
                             </span>
                             <span className="text-[10px] text-slate-500 block mt-0.5">
@@ -419,7 +419,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                             </span>
                           </div>
 
-                          <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                          <div className="p-3 bg-slate-900 rounded-lg border border-slate-700">
                             <span className="text-slate-400 block text-[10px]">Convergence Potential</span>
                             <span className="text-base font-bold text-emerald-700">
                               ₹{result.convergenceCheck.savingsPotentialLakhs} Lakhs
@@ -430,9 +430,9 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                           </div>
                         </div>
 
-                        <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div className="p-3 bg-slate-900 rounded-lg border border-slate-700">
                           <span className="text-slate-400 block text-[10px]">Jurisdiction &amp; Scope</span>
-                          <p className="text-xs text-slate-800 mt-0.5 font-medium">
+                          <p className="text-xs text-slate-200 mt-0.5 font-medium">
                             {result.problemScopeCheck.scopeLevel} Level — {result.problemScopeCheck.notes}
                           </p>
                         </div>
@@ -447,17 +447,17 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                           <span>Category: <strong>{result.duplicateCheck.categorySimilarity}%</strong></span>
                         </div>
 
-                        <div className="text-xs font-bold text-slate-900 mt-2">
+                        <div className="text-xs font-bold text-slate-100 mt-2">
                           Existing Nearby / Similar Projects in Repository:
                         </div>
                         {result.duplicateCheck.matchedProjects.map(m => (
-                          <div key={m.id} className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between gap-2">
+                          <div key={m.id} className="p-2.5 rounded-lg border border-slate-700 bg-slate-900 flex items-center justify-between gap-2">
                             <div>
-                              <div className="font-bold text-slate-800">{m.title}</div>
+                              <div className="font-bold text-slate-200">{m.title}</div>
                               <div className="text-[11px] text-slate-500">{m.reason}</div>
                             </div>
                             <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
-                              m.similarity > 60 ? 'bg-rose-100 text-rose-800' : 'bg-slate-200 text-slate-700'
+                              m.similarity > 60 ? 'bg-rose-100 text-rose-800' : 'bg-slate-200 text-slate-300'
                             }`}>
                               {m.similarity}% Match
                             </span>
@@ -468,10 +468,10 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
 
                     {activeResultTab === 'convergence' && (
                       <div className="space-y-3 pt-2">
-                        <p className="text-xs text-slate-700 leading-relaxed">
+                        <p className="text-xs text-slate-300 leading-relaxed">
                           {result.convergenceCheck.suggestions}
                         </p>
-                        <div className="text-xs font-bold text-slate-900">
+                        <div className="text-xs font-bold text-slate-100">
                           Identified Central / State Convergence Schemes:
                         </div>
                         <div className="space-y-1.5">
@@ -487,16 +487,16 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
 
                     {activeResultTab === 'funding' && (
                       <div className="space-y-3 pt-2">
-                        <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div className="p-3 bg-slate-900 rounded-lg border border-slate-700">
                           <span className="text-[10px] text-slate-400 block">Treasury Status</span>
-                          <span className="font-bold text-slate-800 block text-xs mt-0.5">
+                          <span className="font-bold text-slate-200 block text-xs mt-0.5">
                             {result.existingFundingCheck.notes}
                           </span>
                         </div>
-                        <div className="text-xs font-bold text-slate-900">Permitted Funding Windows:</div>
+                        <div className="text-xs font-bold text-slate-100">Permitted Funding Windows:</div>
                         <div className="flex flex-wrap gap-1.5">
                           {result.existingFundingCheck.identifiedSources.map((src, idx) => (
-                            <span key={idx} className="px-2.5 py-1 bg-slate-100 border border-slate-200 rounded-md text-slate-700 text-xs font-mono">
+                            <span key={idx} className="px-2.5 py-1 bg-slate-800/80 border border-slate-700 rounded-md text-slate-300 text-xs font-mono">
                               {src}
                             </span>
                           ))}
@@ -513,7 +513,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                           </span>
                         </div>
                         <p className="text-xs text-slate-600">{result.documentCheck.analysis}</p>
-                        <div className="text-xs font-bold text-slate-900">Required Documents Pending Upload:</div>
+                        <div className="text-xs font-bold text-slate-100">Required Documents Pending Upload:</div>
                         <ul className="space-y-1">
                           {result.documentCheck.missingDocuments.map((doc, idx) => (
                             <li key={idx} className="flex items-center gap-1.5 text-rose-700 text-xs">
@@ -533,7 +533,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
                         </div>
                         <div className="space-y-1">
                           {result.riskAnalysis.factors.map((f, idx) => (
-                            <div key={idx} className="flex items-center gap-2 p-2 bg-slate-50 rounded border border-slate-200 text-xs text-slate-700">
+                            <div key={idx} className="flex items-center gap-2 p-2 bg-slate-900 rounded border border-slate-700 text-xs text-slate-300">
                               <Info className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                               <span>{f}</span>
                             </div>
@@ -547,7 +547,7 @@ export const AiPrecheckPage: React.FC<Props> = ({ onNavigate }) => {
             </div>
 
             {/* Footer Disclaimer */}
-            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+            <div className="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
                 <span>Human Decision Remains Final</span>

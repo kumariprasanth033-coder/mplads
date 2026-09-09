@@ -33,7 +33,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
   return (
     <div
       onClick={() => onSelect(mp.id)}
-      className="bg-white rounded-2xl border border-slate-200 hover:border-blue-400 hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between overflow-hidden group p-5 relative"
+      className="bg-slate-800 rounded-2xl border border-slate-700 hover:border-blue-400 hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between overflow-hidden group p-5 relative"
     >
       <div>
         {/* Top Badges & Source Verification */}
@@ -46,7 +46,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
               {mp.party}
             </span>
             {mp.membershipStatus && (
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+              <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800/80 text-slate-300">
                 {mp.membershipStatus}
               </span>
             )}
@@ -75,13 +75,13 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
 
           {/* Member Name and Constituency */}
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-900 transition-colors truncate">
+            <h3 className="font-bold text-base text-slate-100 group-hover:text-blue-900 transition-colors truncate">
               {mp.displayName || mp.name}
             </h3>
 
             <div className="text-xs text-slate-600 mt-1 flex items-center gap-1 flex-wrap">
               <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-              <span className="font-semibold text-slate-800">{mp.constituency}</span>
+              <span className="font-semibold text-slate-200">{mp.constituency}</span>
               {mp.district && mp.district !== mp.constituency && (
                 <span className="text-slate-500 font-normal">({mp.district})</span>
               )}
@@ -102,7 +102,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
         </div>
 
         {/* MPLADS Financial & Works Summary */}
-        <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-2">
+        <div className="mt-4 p-3 bg-slate-900 rounded-xl border border-slate-800 space-y-2">
           <div className="flex justify-between items-center text-xs">
             <span className="text-slate-500 flex items-center gap-1">
               <span>Fund Utilization</span>
@@ -112,7 +112,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
                 </span>
               )}
             </span>
-            <strong className="text-slate-900 font-mono">
+            <strong className="text-slate-100 font-mono">
               ₹{fund.utilizedAmountLakhs} L / ₹{fund.allocatedAmountLakhs} L
             </strong>
           </div>
@@ -126,7 +126,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
 
           <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
             <span>
-              Recommended: <strong className="text-slate-700">{fund.recommendedWorksCount}</strong>
+              Recommended: <strong className="text-slate-300">{fund.recommendedWorksCount}</strong>
             </span>
             <span>
               Completed: <strong className="text-emerald-700">{fund.completedWorksCount}</strong>
@@ -139,7 +139,7 @@ export const MPCard: React.FC<MPCardProps> = ({ mp, onSelect }) => {
       </div>
 
       {/* Footer Navigation */}
-      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+      <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
         {mp.officialProfileUrl ? (
           <a
             href={mp.officialProfileUrl}

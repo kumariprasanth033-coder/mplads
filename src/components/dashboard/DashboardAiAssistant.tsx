@@ -122,7 +122,7 @@ export const DashboardAiAssistant: React.FC<Props> = ({
   ];
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 w-full max-w-sm sm:max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[580px] animate-in slide-in-from-bottom-5 duration-200">
+    <div className="fixed bottom-5 right-5 z-50 w-full max-w-sm sm:max-w-md bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col max-h-[580px] animate-in slide-in-from-bottom-5 duration-200">
       {/* Copilot Header */}
       <div className="p-4 bg-linear-to-r from-blue-900 via-indigo-900 to-slate-900 text-white flex items-center justify-between border-b border-blue-800">
         <div className="flex items-center gap-2.5">
@@ -147,7 +147,7 @@ export const DashboardAiAssistant: React.FC<Props> = ({
       </div>
 
       {/* Messages Scroll Area */}
-      <div className="p-4 overflow-y-auto space-y-3 flex-1 text-xs bg-slate-50/50">
+      <div className="p-4 overflow-y-auto space-y-3 flex-1 text-xs bg-slate-900/50">
         {messages.map(msg => (
           <div
             key={msg.id}
@@ -167,7 +167,7 @@ export const DashboardAiAssistant: React.FC<Props> = ({
               className={`p-3 rounded-2xl max-w-[82%] leading-relaxed ${
                 msg.sender === 'user'
                   ? 'bg-blue-900 text-white rounded-tr-xs'
-                  : 'bg-white text-slate-800 border border-slate-200 rounded-tl-xs shadow-2xs'
+                  : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-xs shadow-2xs'
               }`}
             >
               <p>{msg.text}</p>
@@ -189,13 +189,13 @@ export const DashboardAiAssistant: React.FC<Props> = ({
       </div>
 
       {/* Suggested Quick Prompts */}
-      <div className="p-2.5 bg-white border-t border-slate-100 flex flex-wrap gap-1.5 overflow-x-auto">
+      <div className="p-2.5 bg-slate-800 border-t border-slate-800 flex flex-wrap gap-1.5 overflow-x-auto">
         {samplePrompts.map((p, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleSend(p)}
-            className="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-blue-50 hover:text-blue-900 text-slate-600 font-medium transition-colors cursor-pointer border border-slate-200"
+            className="text-[10px] px-2.5 py-1 rounded-full bg-slate-800/80 hover:bg-blue-50 hover:text-blue-900 text-slate-600 font-medium transition-colors cursor-pointer border border-slate-700"
           >
             {p}
           </button>
@@ -203,7 +203,7 @@ export const DashboardAiAssistant: React.FC<Props> = ({
       </div>
 
       {/* Input Box */}
-      <div className="p-3 bg-white border-t border-slate-200 flex items-center gap-2">
+      <div className="p-3 bg-slate-800 border-t border-slate-700 flex items-center gap-2">
         <input
           type="text"
           value={inputText}
@@ -212,7 +212,7 @@ export const DashboardAiAssistant: React.FC<Props> = ({
             if (e.key === 'Enter') handleSend();
           }}
           placeholder="Ask about funds, states, delayed works, or MPs..."
-          className="flex-1 text-xs border border-slate-300 rounded-xl px-3.5 py-2 focus:outline-hidden focus:border-blue-600"
+          className="flex-1 text-xs border border-slate-700 rounded-xl px-3.5 py-2 focus:outline-hidden focus:border-blue-600"
         />
 
         <button

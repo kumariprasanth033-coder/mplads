@@ -72,7 +72,7 @@ export const MPAvatar: React.FC<MPAvatarProps> = ({
   return (
     <div className={`relative shrink-0 select-none ${className}`}>
       {hasValidImage ? (
-        <div className={`overflow-hidden border border-slate-200 shadow-xs bg-slate-100 ${sizeClasses[size]}`}>
+        <div className={`overflow-hidden border border-slate-700 shadow-xs bg-slate-800/80 ${sizeClasses[size]}`}>
           <img
             src={resolution.imageUrl!}
             alt={mp.name}
